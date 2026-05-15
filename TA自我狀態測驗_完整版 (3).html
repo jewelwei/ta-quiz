@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TA 自我狀態測驗｜黃微老師</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --cp:  #7d0000; --cp-light:  #f5e6e6; --cp-text: #5a0000;
+  --np:  #e597ae; --np-light:  #fdf0f4; --np-text: #8b3a52;
+  --a:   #7ca0cf; --a-light:   #eef4fb; --a-text:  #2d5a8e;
+  --fc:  #ffd966; --fc-light:  #fffbe6; --fc-text: #7a5c00;
+  --ac:  #c4a08a; --ac-light:  #f7f1ec; --ac-text: #6b4a2e;
+  --bg: #F7F6F2; --surface: #FFFFFF; --border: #E2E0D8;
+  --text: #1A1A18; --text-muted: #6B6A65; --text-hint: #A8A7A2;
+  --radius: 14px; --radius-sm: 9px;
+}
+body { font-family:'PingFang TC','Microsoft JhengHei','Noto Sans TC',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; line-height:1.65; }
+.wrap { max-width:660px; margin:0 auto; padding:2.5rem 1.25rem 5rem; }
+
+/* 封面 */
+#coverView { text-align:center; padding-top:1rem; }
+.cover-badge { display:inline-block; font-size:.75rem; font-weight:700; letter-spacing:.08em; color:var(--cp); background:var(--cp-light); padding:5px 14px; border-radius:999px; margin-bottom:1.4rem; }
+.cover-title { font-size:2rem; font-weight:800; line-height:1.25; letter-spacing:-.02em; margin-bottom:1rem; }
+.cover-title span { color:var(--cp); }
+.cover-sub { font-size:.95rem; color:var(--text-muted); max-width:420px; margin:0 auto 1.5rem; line-height:1.8; }
+.cover-note { font-size:.82rem; color:var(--text-hint); margin-bottom:2rem; }
+.start-btn { display:inline-block; padding:14px 40px; background:var(--cp); color:#fff; border:none; border-radius:999px; font-size:1rem; font-weight:700; cursor:pointer; font-family:inherit; transition:background .15s; }
+.start-btn:hover { background:var(--cp-text); }
+.cover-credit { margin-top:2rem; font-size:.78rem; color:var(--text-hint); }
+
+/* 測驗 */
+#quizView { display:none; }
+.prog-meta { display:flex; justify-content:space-between; font-size:.78rem; color:var(--text-hint); margin-bottom:7px; }
+.prog-track { background:var(--border); border-radius:999px; height:5px; overflow:hidden; margin-bottom:1.75rem; }
+.prog-fill { height:5px; border-radius:999px; background:var(--cp); transition:width .4s ease; }
+.qcard { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1.2rem 1.3rem 1.1rem; margin-bottom:10px; }
+.qcard.done { border-color:#c4a0a0; }
+.qnum { font-size:.7rem; font-weight:700; letter-spacing:.06em; color:var(--text-hint); margin-bottom:5px; }
+.qtext { font-size:.95rem; color:var(--text); line-height:1.6; margin-bottom:1rem; }
+.opts { display:grid; grid-template-columns:repeat(3,1fr); gap:7px; }
+.opt { padding:10px 6px; border:1.5px solid var(--border); border-radius:var(--radius-sm); background:transparent; font-size:.82rem; color:var(--text-muted); cursor:pointer; text-align:center; font-family:inherit; transition:all .12s; -webkit-tap-highlight-color:transparent; }
+.opt:hover { border-color:#aaa; color:var(--text); background:var(--bg); }
+.opt.sy { background:#f5e6e6; border-color:var(--cp); color:var(--cp-text); font-weight:700; }
+.opt.sm { background:#e8f5e9; border-color:#4caf50; color:#2e7d32; font-weight:700; }
+.opt.sn { background:#F1EFE8; border-color:#888780; color:#444441; font-weight:700; }
+.nav { display:flex; align-items:center; gap:10px; margin-top:2rem; flex-wrap:wrap; }
+.btn { padding:11px 22px; border:1.5px solid var(--border); border-radius:999px; background:var(--surface); font-size:.88rem; color:var(--text); cursor:pointer; font-family:inherit; font-weight:600; transition:all .12s; }
+.btn:hover { border-color:#999; }
+.btn.p { background:var(--cp); border-color:var(--cp); color:#fff; margin-left:auto; }
+.btn.p:hover { background:var(--cp-text); }
+.warn { font-size:.78rem; color:#A32D2D; width:100%; text-align:center; margin-top:-6px; }
+
+/* 結果 */
+#resultView { display:none; }
+.res-hero { text-align:center; margin-bottom:2rem; }
+.res-hero h2 { font-size:1.5rem; font-weight:800; letter-spacing:-.02em; margin-bottom:.4rem; }
+.res-hero p { font-size:.88rem; color:var(--text-muted); }
+.sgrid { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin-bottom:1.5rem; }
+.scard { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:.9rem .4rem .8rem; text-align:center; }
+.sk { font-size:.82rem; font-weight:800; margin-bottom:2px; }
+.sn2 { font-size:.6rem; color:var(--text-hint); margin-bottom:7px; line-height:1.35; }
+.sv { font-size:1.55rem; font-weight:800; }
+.sm2 { font-size:.65rem; color:var(--text-hint); }
+.chart-box { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1.25rem 1.25rem 1rem; margin-bottom:1.5rem; position:relative; height:260px; }
+.hlgrid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:1.5rem; }
+.hlcard { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1rem 1.1rem; }
+.hl-label { font-size:.7rem; font-weight:700; letter-spacing:.06em; color:var(--text-hint); margin-bottom:4px; }
+.hl-key { font-size:1rem; font-weight:800; margin-bottom:4px; }
+.hl-desc { font-size:.78rem; color:var(--text-muted); line-height:1.55; }
+.stcard { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; margin-bottom:10px; }
+.sthead { display:flex; align-items:center; gap:12px; padding:1rem 1.25rem; cursor:pointer; user-select:none; }
+.stdot { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:.78rem; font-weight:800; flex-shrink:0; }
+.sttitle { flex:1; }
+.stk { font-size:.85rem; font-weight:800; }
+.stname { font-size:.75rem; color:var(--text-muted); }
+.stbadge { font-size:1.1rem; font-weight:800; padding:4px 10px; border-radius:var(--radius-sm); }
+.chev { font-size:.75rem; color:var(--text-hint); transition:transform .2s; margin-left:4px; }
+.chev.open { transform:rotate(180deg); }
+.stbody { padding:0 1.25rem 1.25rem; display:none; }
+.stbody.open { display:block; }
+.stsec { margin-bottom:1rem; }
+.stsec:last-child { margin-bottom:0; }
+.stsec-title { font-size:.72rem; font-weight:700; letter-spacing:.06em; color:var(--text-hint); margin-bottom:5px; }
+.stsec p { font-size:.88rem; color:var(--text-muted); line-height:1.75; }
+.cta-sec { margin-top:1.75rem; }
+.cta-title { font-size:1rem; font-weight:800; margin-bottom:1rem; text-align:center; }
+.cta-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1.1rem 1.25rem; margin-bottom:10px; display:flex; align-items:flex-start; gap:12px; }
+.cta-icon { width:38px; height:38px; border-radius:var(--radius-sm); display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0; }
+.cta-ct { font-size:.9rem; font-weight:700; margin-bottom:3px; }
+.cta-cd { font-size:.8rem; color:var(--text-muted); line-height:1.6; }
+.cta-link { display:inline-block; margin-top:6px; font-size:.78rem; font-weight:700; color:var(--cp); text-decoration:none; }
+.cta-link:hover { text-decoration:underline; }
+.restart { display:block; width:100%; margin-top:1.75rem; padding:12px; text-align:center; border:1.5px solid var(--border); border-radius:999px; background:transparent; font-size:.85rem; color:var(--text-hint); cursor:pointer; font-family:inherit; font-weight:600; }
+.restart:hover { border-color:#999; color:var(--text); }
+@media(max-width:480px){
+  .sgrid{grid-template-columns:repeat(3,1fr);}
+  .hlgrid{grid-template-columns:1fr;}
+  .cover-title{font-size:1.5rem;}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- 封面 -->
+<div id="coverView">
+  <div class="cover-badge">溝通風格自我探索</div>
+  <h1 class="cover-title">你是哪一種<br><span>溝通能量</span>？</h1>
+  <p class="cover-sub">每個人都有屬於自己的溝通慣性，它來自童年，也形塑了你現在的人際關係。這份測驗只需要 5 分鐘，幫你看見自己最熟悉的那個自我。</p>
+  <p class="cover-note">共 50 題，以直覺作答即可</p>
+  <button class="start-btn" onclick="startQuiz()">開始測驗</button>
+  <p class="cover-credit">基於交流分析（TA）理論｜黃微老師</p>
+</div>
+
+<!-- 測驗 -->
+<div id="quizView">
+  <div class="prog-meta"><span id="pLabel">已回答 0 / 50 題</span><span id="pPct">0%</span></div>
+  <div class="prog-track"><div class="prog-fill" id="pFill" style="width:0%"></div></div>
+  <div id="qArea"></div>
+  <div class="nav">
+    <button class="btn" id="prevBtn" onclick="goPage(-1)">← 上一頁</button>
+    <button class="btn p" id="nextBtn" onclick="goPage(1)">下一頁 →</button>
+    <span class="warn" id="warnMsg"></span>
+  </div>
+</div>
+
+<!-- 結果 -->
+<div id="resultView">
+  <div class="res-hero"><h2>你的溝通能量地圖</h2><p>以下是你五種自我狀態的分布</p></div>
+  <div class="sgrid" id="scoreGrid"></div>
+  <div class="chart-box"><canvas id="myChart"></canvas></div>
+  <div class="hlgrid" id="hlCards"></div>
+  <div id="stCards"></div>
+  <div class="cta-sec">
+    <p class="cta-title">看見自己之後，下一步呢？</p>
+    <div class="cta-card">
+      <div class="cta-icon" style="background:var(--cp-light)">🪞</div>
+      <div>
+        <div class="cta-ct">預約一對一教練對話</div>
+        <div class="cta-cd">測驗只是開始。黃微老師將陪你深入解讀你的自我狀態，找到卡關的真正原因，以及可以怎麼鬆動它。</div>
+        <a class="cta-link" href="mailto:jewelwei@gmail.com?subject=預約一對一教練對話">預約諮詢 →</a>
+      </div>
+    </div>
+    <div class="cta-card">
+      <div class="cta-icon" style="background:var(--np-light)">🃏</div>
+      <div>
+        <div class="cta-ct">TA 溝通牌卡</div>
+        <div class="cta-cd">把你的自我狀態帶回日常。這套牌卡是你隨身的覺察練習工具，每天一張，慢慢認識自己的溝通慣性。</div>
+        <a class="cta-link" href="mailto:jewelwei@gmail.com?subject=了解TA溝通牌卡">了解牌卡 →</a>
+      </div>
+    </div>
+    <div class="cta-card">
+      <div class="cta-icon" style="background:var(--a-light)">📚</div>
+      <div>
+        <div class="cta-ct">報名溝通課程</div>
+        <div class="cta-cd">從覺察到行動，黃微老師的課程幫助你不只是「了解」TA 理論，而是真正用在職場與生活中。</div>
+        <a class="cta-link" href="mailto:jewelwei@gmail.com?subject=報名溝通課程">查看課程 →</a>
+      </div>
+    </div>
+  </div>
+  <button class="restart" onclick="restart()">重新作答</button>
+</div>
+
+</div>
+<script>
+const G=[
+  {key:'CP',name:'控制型父母',color:'#7d0000',light:'#f5e6e6',tc:'#5a0000',
+   intro:'你有清晰的原則與標準，對自己和他人都有高度期待。這份嚴謹是你的核心驅動力，也是你最容易讓人感到壓力的地方。',
+   gift:'你的CP能量讓你成為可靠的人——說到做到、有所堅持。在需要規則與方向的場合，你往往是讓局面穩定下來的那個人。',
+   limit:'當CP能量過高時，批判的聲音有時比你意識到的更大。周圍的人可能因為怕犯錯而不敢開口，或是感到被評判而沉默。',
+   grow:'練習在「說出標準」之前，先問一句：「你覺得怎麼樣？」給對方一點空間，你會發現關係鬆開了。',
+   qs:['你會打斷別人的談話，訴說自己的想法嗎？','你會對別人嚴格要求、批判嗎？','你會嚴守約會時間嗎？','你會懷抱理想並去實現嗎？','你會重視社會規則、倫理道德嗎？','你會強烈要求別人盡他的職責嗎？','你會對小小的差錯也在意嗎？','你對他人的教育嚴格嗎？','你認為要求得到權利，先盡義務嗎？','你經常說「應該、不能、你要……」']},
+  {key:'NP',name:'養育型父母',color:'#c9637e',light:'#fdf0f4',tc:'#8b3a52',
+   intro:'你天生關注別人的感受，總是第一個注意到誰需要幫忙。這份溫暖讓人在你身邊覺得安全，也讓你成為許多人倚重的存在。',
+   gift:'你的NP能量是一種珍貴的接納力。你能讓人在你面前放鬆、說真話，這在職場和關係裡都是稀缺的能力。',
+   limit:'當NP能量過高，你可能習慣把別人的需要放在自己前面，久了容易心累卻說不出口，或是難以拒絕而感到委屈。',
+   grow:'學會對自己也說一句：「我需要什麼？」照顧別人之前，先確認自己的杯子是滿的。',
+   qs:['你對別人有強烈的關懷嗎？','你重視人情嗎？','你能常常發現別人的長處與優點嗎？','你看見別人遇到困難，會忍不住主動出手幫忙嗎？','你喜歡孩子或者喜歡照顧別人嗎？','你對他人的錯誤寬容嗎？','你很容易通融和商量嗎？','你能傾聽別人說話嗎？','你喜歡服務他人嗎？','你喜歡參加公益活動嗎？']},
+  {key:'A',name:'成人自我',color:'#5585bc',light:'#eef4fb',tc:'#2d5a8e',
+   intro:'你習慣用理性處理事情，遇到問題會先收集資訊、分析利弊。這讓你在複雜情境中能保持冷靜，做出務實的決策。',
+   gift:'你的A能量是溝通的穩定器。當周圍的人情緒激動或陷入僵局，你能把對話帶回事實層面，找到可以往前走的方向。',
+   limit:'當A能量過高，你可能在情感需要被接住的時候，給出了一個解決方案。對方要的不一定是答案，而是被聽見。',
+   grow:'試著在給建議之前，先說一句：「聽起來真的很不容易。」讓對方感覺到你理解他，再一起找方向。',
+   qs:['你會評估自己的損益並採取行動嗎？','你很少感性的談話嗎？','你做決定時是否經過分析或者深思熟慮？','你會詢問正反意見作為參考嗎？','任何事情都喜歡根據事實做出判讀嗎？','你的談話是理性多情緒少嗎？','你能很快做出決斷而無需煩惱嗎？','你在處理事情時，是快速而有效率的嗎？','你對未來的事情是否會冷靜地預估後再行事？','你身體不佳時，是否會愛惜自己而不勉強工作？']},
+  {key:'FC',name:'自由型兒童',color:'#c9a000',light:'#fffbe6',tc:'#7a5c00',
+   intro:'你充滿活力、直覺敏銳，喜歡跟著感覺走。在你身邊，人容易放鬆，氣氛也容易熱起來——你有一種讓人想靠近的能量。',
+   gift:'你的FC能量是創意與行動力的來源。你不怕表達、不怕嘗試，在需要突破框架的時候，你往往是第一個動起來的人。',
+   limit:'當FC能量過高，衝動有時會在你還沒意識到的時候說出口或做出去。事後的遺憾，往往是那幾秒鐘沒停下來的代價。',
+   grow:'在說出或做出之前，給自己三秒鐘。不是壓抑，只是讓直覺和意識同步一下——你的感覺通常是對的，只是時機有時需要調整。',
+   qs:['你認為自己任性嗎？','你的好奇心很重嗎？','你重視娛樂並追求滿足嗎？','在無法得到自己想要的東西時，你會難受嗎？','你經常使用「哇、耶、太棒了」等感嘆詞嗎？','你會以直覺判斷事物嗎？','你興奮時候會得意忘形嗎？','你想說的事情你會沒有顧慮地說出來嗎？','你容易生氣嗎？','你容易掉淚嗎？']},
+  {key:'AC',name:'順應型兒童',color:'#a07850',light:'#f7f1ec',tc:'#6b4a2e',
+   intro:'你非常敏感於他人的感受與期待，總是把和諧放在第一位。你習慣讀空氣、調整自己，讓周圍的人感到舒適。',
+   gift:'你的AC能量讓你成為一個體貼、易相處的人。你能快速感受到關係中的微妙變化，並且在衝突發生之前就柔和地化解。',
+   limit:'當AC能量過高，你的真實想法可能一直住在心裡，沒有機會被聽見。時間久了，壓抑的感受會以另一種方式浮現。',
+   grow:'練習說出一個小小的「我想要……」就好。不需要一次全說，但給自己的聲音一個出口，是往自由走的第一步。',
+   qs:['心裡想的事你經常會說不出口嗎？','你希望別人喜歡你嗎？','你為人客氣處世低調嗎？','與他人意見不同時，你是否經常妥協呢？','你難受的時候經常強忍下來嗎？','你會照著別人的期待而努力嗎？','你會注意在乎別人的臉色和言談嗎？','你會常常壓抑自己的感情嗎？','你會覺得自己不如別人嗎？','你覺得現在不像真正的自己或應該有的自己嗎？']}
+];
+
+const PS=10;
+let allQ=[],cur=0,tot=0,ci=null;
+
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
+
+function startQuiz(){
+  const r=[];
+  G.forEach(g=>g.qs.forEach(q=>r.push({q,key:g.key,ans:null})));
+  allQ=shuffle(r); tot=Math.ceil(allQ.length/PS); cur=0;
+  document.getElementById('coverView').style.display='none';
+  document.getElementById('quizView').style.display='block';
+  render();
+}
+
+function upProg(){
+  const d=allQ.filter(q=>q.ans!==null).length,p=Math.round(d/50*100);
+  document.getElementById('pLabel').textContent=`已回答 ${d} / 50 題`;
+  document.getElementById('pPct').textContent=p+'%';
+  document.getElementById('pFill').style.width=p+'%';
+}
+
+function render(){
+  upProg();
+  const s=cur*PS,qs=allQ.slice(s,s+PS),last=cur===tot-1;
+  document.getElementById('prevBtn').style.visibility=cur===0?'hidden':'visible';
+  document.getElementById('nextBtn').textContent=last?'查看結果 →':'下一頁 →';
+  document.getElementById('warnMsg').textContent='';
+  const area=document.getElementById('qArea');
+  area.innerHTML='';
+  qs.forEach((item,idx)=>{
+    const abs=s+idx+1;
+    const card=document.createElement('div');
+    card.className='qcard'+(item.ans?' done':'');
+    card.innerHTML=`<div class="qnum">Q${abs}</div><div class="qtext">${item.q}</div><div class="opts"></div>`;
+    const opts=card.querySelector('.opts');
+    [['yes','是（2分）','sy'],['maybe','不一定（1分）','sm'],['no','否（0分）','sn']].forEach(([val,label,cls])=>{
+      const btn=document.createElement('button');
+      btn.className='opt'+(item.ans===val?' '+cls:'');
+      btn.textContent=label;
+      btn.onclick=()=>{
+        allQ[s+idx].ans=val;
+        opts.querySelectorAll('.opt').forEach(b=>b.className='opt');
+        btn.className='opt '+cls;
+        card.className='qcard done';
+        upProg();
+        document.getElementById('warnMsg').textContent='';
+      };
+      opts.appendChild(btn);
+    });
+    area.appendChild(card);
+  });
+}
+
+function goPage(d){
+  if(d===1){
+    const s=cur*PS,u=allQ.slice(s,s+PS).filter(q=>q.ans===null).length;
+    if(u>0){document.getElementById('warnMsg').textContent=`還有 ${u} 題尚未作答`;return;}
+    if(cur===tot-1){showResult();return;}
+    cur++;
+  } else { if(cur>0)cur--; }
+  render();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function calcS(){
+  const s={};G.forEach(g=>s[g.key]=0);
+  allQ.forEach(i=>{if(!i.ans)return;s[i.key]+=i.ans==='yes'?2:i.ans==='maybe'?1:0;});
+  return s;
+}
+
+function showResult(){
+  document.getElementById('quizView').style.display='none';
+  document.getElementById('resultView').style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
+  const sc=calcS(),vals=G.map(g=>sc[g.key]);
+  const mx=Math.max(...vals),mn=Math.min(...vals);
+  const hi=vals.indexOf(mx),lo=vals.indexOf(mn);
+
+  document.getElementById('scoreGrid').innerHTML=G.map((g,i)=>`
+    <div class="scard" style="border-top:3px solid ${g.color}">
+      <div class="sk" style="color:${g.color}">${g.key}</div>
+      <div class="sn2">${g.name}</div>
+      <div class="sv" style="color:${g.color}">${vals[i]}</div>
+      <div class="sm2">/ 20</div>
+    </div>`).join('');
+
+  if(ci){ci.destroy();ci=null;}
+  ci=new Chart(document.getElementById('myChart'),{
+    type:'bar',
+    data:{
+      labels:G.map(g=>g.key),
+      datasets:[{
+        data:vals,
+        backgroundColor:G.map(g=>g.light),
+        borderColor:G.map(g=>g.color),
+        borderWidth:2,
+        borderRadius:10
+      }]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{title:i=>G[i[0].dataIndex].key+' '+G[i[0].dataIndex].name,label:i=>`得分：${i.raw} / 20`}}},
+      scales:{y:{min:0,max:20,ticks:{stepSize:5},grid:{color:'rgba(0,0,0,0.05)'}},x:{grid:{display:false}}}
+    }
+  });
+
+  const h=G[hi],l=G[lo];
+  document.getElementById('hlCards').innerHTML=`
+    <div class="hlcard" style="border-top:3px solid ${h.color}">
+      <div class="hl-label">你最常使用的狀態</div>
+      <div class="hl-key" style="color:${h.color}">${h.key} ${h.name}</div>
+      <div class="hl-desc">${h.intro}</div>
+    </div>
+    <div class="hlcard" style="border-top:3px solid ${l.color}">
+      <div class="hl-label">最有成長空間的狀態</div>
+      <div class="hl-key" style="color:${l.color}">${l.key} ${l.name}</div>
+      <div class="hl-desc">這個部分的能量相對較低，是你值得慢慢探索的空間。</div>
+    </div>`;
+
+  const sorted=G.map((g,i)=>({g,s:vals[i]})).sort((a,b)=>b.s-a.s);
+  const sc2=document.getElementById('stCards');
+  sc2.innerHTML='';
+  sorted.forEach(({g,s},idx)=>{
+    const el=document.createElement('div');
+    el.className='stcard';
+    el.innerHTML=`
+      <div class="sthead" onclick="tog(this)">
+        <div class="stdot" style="background:${g.light};color:${g.tc}">${g.key}</div>
+        <div class="sttitle"><div class="stk" style="color:${g.color}">${g.key}</div><div class="stname">${g.name}</div></div>
+        <div class="stbadge" style="background:${g.light};color:${g.tc}">${s} 分</div>
+        <span class="chev${idx===0?' open':''}">▼</span>
+      </div>
+      <div class="stbody${idx===0?' open':''}">
+        <div class="stsec"><div class="stsec-title">你是這樣的人</div><p>${g.intro}</p></div>
+        <div class="stsec"><div class="stsec-title">這個狀態的禮物</div><p>${g.gift}</p></div>
+        <div class="stsec"><div class="stsec-title">需要留意的地方</div><p>${g.limit}</p></div>
+        <div class="stsec"><div class="stsec-title">可以試試看</div><p>${g.grow}</p></div>
+      </div>`;
+    sc2.appendChild(el);
+  });
+}
+
+function tog(h){
+  const b=h.nextElementSibling,c=h.querySelector('.chev'),o=b.classList.contains('open');
+  b.classList.toggle('open',!o);c.classList.toggle('open',!o);
+}
+
+function restart(){
+  if(ci){ci.destroy();ci=null;}
+  document.getElementById('resultView').style.display='none';
+  document.getElementById('coverView').style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+</body>
+</html>

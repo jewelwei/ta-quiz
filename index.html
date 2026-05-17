@@ -22,13 +22,21 @@ body { font-family:'PingFang TC','Microsoft JhengHei','Noto Sans TC',sans-serif;
 /* 封面 */
 #coverView { text-align:center; padding-top:1rem; }
 .cover-badge { display:inline-block; font-size:.75rem; font-weight:700; letter-spacing:.08em; color:var(--cp); background:var(--cp-light); padding:5px 14px; border-radius:999px; margin-bottom:1.4rem; }
-.cover-title { font-size:2rem; font-weight:800; line-height:1.25; letter-spacing:-.02em; margin-bottom:1rem; }
-.cover-title span { color:var(--cp); }
-.cover-sub { font-size:.95rem; color:var(--text-muted); max-width:420px; margin:0 auto 1.5rem; line-height:1.8; }
-.cover-note { font-size:.82rem; color:var(--text-hint); margin-bottom:2rem; }
+.cover-title { font-size:2rem; font-weight:800; line-height:1.25; letter-spacing:-.02em; margin-bottom:1.1rem; color:var(--text); }
+.cover-body { font-size:.92rem; color:var(--text-muted); max-width:400px; margin:0 auto 1.1rem; line-height:1.95; }
+.cover-body p { margin-bottom:.5rem; }
+.cover-body p:last-child { margin-bottom:0; }
+.cover-meta { display:flex; justify-content:center; gap:1.1rem; font-size:.8rem; color:var(--text-hint); margin:1.25rem 0 1.5rem; flex-wrap:wrap; }
 .start-btn { display:inline-block; padding:14px 40px; background:var(--cp); color:#fff; border:none; border-radius:999px; font-size:1rem; font-weight:700; cursor:pointer; font-family:inherit; transition:background .15s; }
 .start-btn:hover { background:var(--cp-text); }
-.cover-credit { margin-top:2rem; font-size:.78rem; color:var(--text-hint); }
+.cover-preview { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1.1rem 1.25rem; max-width:400px; margin:1.75rem auto 0; text-align:left; }
+.cover-preview-title { font-size:.72rem; font-weight:700; letter-spacing:.06em; color:var(--text-hint); margin-bottom:.75rem; }
+.cover-preview-item { font-size:.85rem; color:var(--text-muted); padding:.28rem 0; display:flex; align-items:baseline; gap:8px; line-height:1.5; }
+.cover-preview-item::before { content:'✓'; color:var(--cp); font-weight:700; font-size:.8rem; flex-shrink:0; }
+.cover-notice { background:var(--bg); border-radius:var(--radius-sm); padding:1rem 1.1rem; max-width:400px; margin:1rem auto 0; text-align:left; }
+.cover-notice-title { font-size:.75rem; font-weight:700; color:var(--text-hint); margin-bottom:.5rem; letter-spacing:.04em; }
+.cover-notice-body { font-size:.83rem; color:var(--text-muted); line-height:1.9; }
+.cover-credit { margin-top:1.5rem; font-size:.78rem; color:var(--text-hint); }
 
 /* 測驗 */
 #quizView { display:none; }
@@ -140,12 +148,40 @@ body { font-family:'PingFang TC','Microsoft JhengHei','Noto Sans TC',sans-serif;
 
 <!-- 封面 -->
 <div id="coverView">
-  <div class="cover-badge">溝通風格自我探索</div>
-  <h1 class="cover-title">你是哪一種<br><span>溝通能量</span>？</h1>
-  <p class="cover-sub">每個人都有屬於自己的溝通慣性，它來自童年，也形塑了你現在的人際關係。這份測驗只需要 5 分鐘，幫你看見自己最熟悉的那個自我。</p>
-  <p class="cover-note">共 50 題，以直覺作答即可</p>
-  <button class="start-btn" onclick="startQuiz()">開始測驗</button>
-  <p class="cover-credit">基於交流分析（TA）理論｜黃微老師</p>
+  <div class="cover-badge">五大自我狀態測驗</div>
+  <h1 class="cover-title">聽見自己，才能選擇自己</h1>
+  <div class="cover-body">
+    <p>每個人心裡，都住著不同的內在聲音。</p>
+    <p>有的提醒你把事情做好、有的習慣照顧別人、<br>有的理性務實、有的渴望自由，有的害怕讓人失望。</p>
+    <p>某些聲音，比其他聲音更常拿著麥克風。</p>
+    <p>完成測驗，看看現在最常替你說話的是誰。</p>
+  </div>
+  <div class="cover-meta">
+    <span>⏱ 約 3 分鐘</span>
+    <span>📝 共 50 題</span>
+    <span>💡 無標準答案，依直覺作答即可</span>
+  </div>
+  <button class="start-btn" onclick="startQuiz()">開始聽見自己</button>
+
+  <div class="cover-preview">
+    <div class="cover-preview-title">你將看見</div>
+    <div class="cover-preview-item">哪個自我狀態最常出現</div>
+    <div class="cover-preview-item">你的溝通慣性與內在傾向</div>
+    <div class="cover-preview-item">容易出現的優勢與盲點</div>
+    <div class="cover-preview-item">面對壓力時可能啟動的模式</div>
+    <div class="cover-preview-item">五種內在聲音的比例</div>
+  </div>
+
+  <div class="cover-notice">
+    <div class="cover-notice-title">先提醒你一件事</div>
+    <div class="cover-notice-body">
+      沒有哪個結果比較好，也沒有哪個聲音應該消失。<br>
+      每個人都擁有全部五種聲音，差別只在於：誰最常搶到麥克風。<br>
+      認識它，不是為了貼標籤，而是讓你多一個選擇。
+    </div>
+  </div>
+
+  <p class="cover-credit">基於溝通分析（TA）理論｜黃微老師</p>
 </div>
 
 <!-- 測驗 -->

@@ -62,12 +62,13 @@ body { font-family:'PingFang TC','Microsoft JhengHei','Noto Sans TC',sans-serif;
 
 /* 結果 */
 #resultView { display:none; }
-.res-hero { text-align:center; margin-bottom:2rem; }
-.res-hero h2 { font-size:1.5rem; font-weight:800; letter-spacing:-.02em; margin-bottom:.4rem; }
-.res-hero p { font-size:.88rem; color:var(--text-muted); }
+.intro-block { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1.25rem 1.5rem; margin-bottom:1.25rem; }
+.intro-block p { font-size:.88rem; color:var(--text-muted); line-height:1.9; margin-bottom:.5rem; }
+.intro-block p:last-child { margin-bottom:0; }
 
 .chart-section { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1.25rem 1.25rem 1rem; margin-bottom:1.25rem; }
 .chart-title { font-size:.75rem; font-weight:700; letter-spacing:.06em; color:var(--text-hint); margin-bottom:1.1rem; }
+.chart-note { font-size:.82rem; color:var(--text-muted); line-height:1.8; margin-top:1rem; padding-top:.75rem; border-top:1px solid var(--border); }
 .egogram { display:flex; align-items:flex-end; justify-content:space-between; gap:10px; height:200px; }
 .ego-col { display:flex; flex-direction:column; align-items:center; justify-content:flex-end; flex:1; height:100%; }
 .ego-score { font-size:.78rem; font-weight:800; margin-bottom:5px; }
@@ -77,69 +78,64 @@ body { font-family:'PingFang TC','Microsoft JhengHei','Noto Sans TC',sans-serif;
 .ego-key { font-size:.82rem; font-weight:800; }
 .ego-name { font-size:.62rem; color:var(--text-hint); margin-top:1px; }
 
-/* 報告區塊 */
-.report-section { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1.5rem 1.5rem; margin-bottom:1.25rem; }
+.report-section { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1.5rem; margin-bottom:1.25rem; }
 .report-label { font-size:.7rem; font-weight:700; letter-spacing:.08em; color:var(--text-hint); margin-bottom:.5rem; text-transform:uppercase; }
-.report-headline { font-size:1.1rem; font-weight:800; color:var(--text); margin-bottom:.75rem; line-height:1.4; }
-.report-body { font-size:.9rem; color:var(--text-muted); line-height:1.85; }
-.report-body p { margin-bottom:.6rem; }
+.report-headline { font-size:1rem; font-weight:800; color:var(--text); margin-bottom:.75rem; line-height:1.5; }
+.report-body { font-size:.88rem; color:var(--text-muted); line-height:1.9; }
+.report-body p { margin-bottom:.65rem; }
 .report-body p:last-child { margin-bottom:0; }
 .report-divider { border:none; border-top:1px solid var(--border); margin:1rem 0; }
 
-/* 展開卡片 */
-.hl-section { margin-bottom:1.25rem; }
-.hl-section-title { font-size:.75rem; font-weight:700; letter-spacing:.06em; color:var(--text-hint); margin-bottom:.6rem; }
-.expand-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; margin-bottom:10px; }
-.expand-head { display:flex; align-items:center; gap:12px; padding:1rem 1.25rem; cursor:pointer; user-select:none; }
-.expand-dot { width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:.78rem; font-weight:800; flex-shrink:0; }
-.expand-info { flex:1; }
-.expand-key { font-size:.85rem; font-weight:800; }
-.expand-name { font-size:.75rem; color:var(--text-muted); }
-.expand-chev { font-size:.7rem; color:var(--text-hint); transition:transform .2s; margin-left:2px; }
-.expand-chev.open { transform:rotate(180deg); }
-.expand-body { display:none; padding:0 1.25rem 1.25rem; }
-.expand-body.open { display:block; }
-.expand-desc { font-size:.88rem; color:var(--text-muted); line-height:1.8; margin-bottom:.75rem; }
-.expand-hint { font-size:.8rem; color:var(--text-hint); font-style:italic; border-left:2px solid var(--border); padding-left:10px; line-height:1.7; }
-
-/* 五狀態 */
 .voices-section { margin-bottom:1.25rem; }
 .voices-title { font-size:.75rem; font-weight:700; letter-spacing:.06em; color:var(--text-hint); margin-bottom:.6rem; }
-.voice-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:.9rem 1.1rem; margin-bottom:8px; display:flex; gap:12px; align-items:flex-start; }
-.voice-dot { width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:.72rem; font-weight:800; flex-shrink:0; margin-top:1px; }
-.voice-body { flex:1; }
-.voice-key { font-size:.78rem; font-weight:800; margin-bottom:2px; }
-.voice-text { font-size:.82rem; color:var(--text-muted); line-height:1.7; }
-.voice-quote { font-style:italic; color:var(--text-hint); }
+.voice-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1rem 1.1rem; margin-bottom:8px; }
+.voice-card-head { display:flex; gap:12px; align-items:center; margin-bottom:.6rem; }
+.voice-dot { width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:.72rem; font-weight:800; flex-shrink:0; }
+.voice-key { font-size:.85rem; font-weight:800; }
+.voice-score { font-size:.78rem; font-weight:400; color:var(--text-hint); margin-left:4px; }
+.voice-quote { font-size:.8rem; font-style:italic; color:var(--text-hint); margin-bottom:.4rem; }
+.voice-strength { font-size:.82rem; color:var(--text-muted); line-height:1.75; }
 
-/* Email 收集區塊 */
-.email-section { background:var(--surface); border:2px solid var(--cp-light); border-radius:var(--radius); padding:1.5rem; margin-bottom:1.25rem; text-align:center; }
-.email-title { font-size:1rem; font-weight:800; margin-bottom:.4rem; }
-.email-sub { font-size:.85rem; color:var(--text-muted); margin-bottom:1.2rem; line-height:1.7; }
-.email-row { display:flex; gap:8px; max-width:420px; margin:0 auto; }
-.email-input { flex:1; padding:11px 14px; border:1.5px solid var(--border); border-radius:999px; font-size:.9rem; font-family:inherit; color:var(--text); outline:none; transition:border-color .15s; }
-.email-input:focus { border-color:var(--cp); }
-.email-btn { padding:11px 22px; background:var(--cp); color:#fff; border:none; border-radius:999px; font-size:.88rem; font-weight:700; cursor:pointer; font-family:inherit; white-space:nowrap; transition:background .15s; }
-.email-btn:hover { background:var(--cp-text); }
-.email-sent { display:none; font-size:.88rem; color:#2e7d32; font-weight:600; margin-top:.75rem; }
-.email-err { display:none; font-size:.82rem; color:#A32D2D; margin-top:.5rem; }
+.cta-main-block { background:var(--surface); border:1.5px solid var(--border); border-radius:var(--radius); padding:1.5rem; margin-bottom:1rem; }
+.cta-main-title { font-size:1rem; font-weight:800; color:var(--text); margin-bottom:.4rem; }
+.cta-main-sub { font-size:.85rem; color:var(--text-muted); line-height:1.8; margin-bottom:1.1rem; }
+.cta-field-label { font-size:.75rem; font-weight:700; color:var(--text-hint); margin-bottom:.4rem; }
+.cta-textarea { width:100%; padding:.65rem .85rem; border:1.5px solid var(--border); border-radius:10px; font-size:.88rem; font-family:inherit; color:var(--text); background:var(--bg); resize:none; height:80px; outline:none; transition:border-color .15s; }
+.cta-textarea:focus { border-color:var(--cp); }
+.cta-email-row { display:flex; gap:8px; margin-top:.6rem; }
+.cta-email-input { flex:1; padding:10px 14px; border:1.5px solid var(--border); border-radius:999px; font-size:.88rem; font-family:inherit; color:var(--text); background:var(--bg); outline:none; transition:border-color .15s; }
+.cta-email-input:focus { border-color:var(--cp); }
+.cta-submit-btn { padding:10px 20px; background:var(--cp); color:#fff; border:none; border-radius:999px; font-size:.88rem; font-weight:700; cursor:pointer; font-family:inherit; white-space:nowrap; transition:background .15s; }
+.cta-submit-btn:hover { background:var(--cp-text); }
+.cta-meta { font-size:.75rem; color:var(--text-hint); margin-top:.6rem; line-height:1.6; }
+.cta-privacy { font-size:.72rem; color:var(--text-hint); margin-top:.25rem; }
+.cta-sent { display:none; font-size:.85rem; color:#2e7d32; font-weight:600; margin-top:.75rem; }
+.cta-err { display:none; font-size:.8rem; color:#A32D2D; margin-top:.4rem; }
 
-/* CTA */
-.cta-sec { margin-top:1.75rem; }
-.cta-title { font-size:1rem; font-weight:800; margin-bottom:1rem; text-align:center; }
-.cta-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1.1rem 1.25rem; margin-bottom:10px; display:flex; align-items:flex-start; gap:12px; }
-.cta-icon { width:38px; height:38px; border-radius:var(--radius-sm); display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0; }
-.cta-ct { font-size:.9rem; font-weight:700; margin-bottom:3px; }
-.cta-cd { font-size:.8rem; color:var(--text-muted); line-height:1.6; }
-.cta-link { display:inline-block; margin-top:6px; font-size:.78rem; font-weight:700; color:var(--cp); text-decoration:none; }
-.cta-link:hover { text-decoration:underline; }
-.restart { display:block; width:100%; margin-top:1.75rem; padding:12px; text-align:center; border:1.5px solid var(--border); border-radius:999px; background:transparent; font-size:.85rem; color:var(--text-hint); cursor:pointer; font-family:inherit; font-weight:600; }
+.cta-sec-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:1rem; }
+.cta-sec-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1rem; cursor:pointer; transition:border-color .15s; }
+.cta-sec-card:hover { border-color:#aaa; }
+.cta-sec-icon { font-size:1.2rem; margin-bottom:.35rem; }
+.cta-sec-title { font-size:.85rem; font-weight:700; color:var(--text); margin-bottom:.2rem; }
+.cta-sec-desc { font-size:.78rem; color:var(--text-muted); line-height:1.5; }
+.cta-sec-copied { display:none; font-size:.75rem; color:#2e7d32; font-weight:600; margin-top:.3rem; }
+
+.cta-tert-row { display:flex; justify-content:center; align-items:center; gap:.75rem; margin-bottom:.75rem; flex-wrap:wrap; }
+.cta-tert-link { font-size:.82rem; color:var(--text-muted); text-decoration:none; }
+.cta-tert-link:hover { color:var(--text); text-decoration:underline; }
+.cta-tert-dot { color:var(--text-hint); font-size:.8rem; }
+
+.cta-notright { text-align:center; font-size:.8rem; color:var(--text-hint); margin-bottom:1rem; }
+.cta-notright-link { color:var(--cp); cursor:pointer; text-decoration:underline; margin-left:4px; }
+
+.restart { display:block; width:100%; margin-top:1rem; padding:12px; text-align:center; border:1.5px solid var(--border); border-radius:999px; background:transparent; font-size:.85rem; color:var(--text-hint); cursor:pointer; font-family:inherit; font-weight:600; }
 .restart:hover { border-color:#999; color:var(--text); }
 
 @media(max-width:480px){
   .cover-title { font-size:1.5rem; }
-  .email-row { flex-direction:column; }
-  .email-btn { width:100%; }
+  .cta-email-row { flex-direction:column; }
+  .cta-submit-btn { width:100%; }
+  .cta-sec-grid { grid-template-columns:1fr; }
 }
 </style>
 </head>
@@ -176,7 +172,7 @@ body { font-family:'PingFang TC','Microsoft JhengHei','Noto Sans TC',sans-serif;
     <div class="cover-notice-title">先提醒你一件事</div>
     <div class="cover-notice-body">
       沒有哪個結果比較好，也沒有哪個聲音應該消失。<br>
-      每個人都擁有全部五種聲音，差別只在於：哪個聲音最常搶到麥克風。<br>
+      每個人都擁有全部五種聲音，差別只在於：誰最常搶到麥克風。<br>
       認識它，不是為了貼標籤，而是讓你多一個選擇。
     </div>
   </div>
@@ -201,15 +197,19 @@ body { font-family:'PingFang TC','Microsoft JhengHei','Noto Sans TC',sans-serif;
 
 <!-- 結果 -->
 <div id="resultView">
-  <div class="res-hero">
-    <h2>你的溝通能量地圖</h2>
-    <p>以下是你五種自我狀態的分布</p>
+
+  <!-- 開頭說明 -->
+  <div class="intro-block">
+    <p>你心裡住著五種聲音，每一種都有它的時候。</p>
+    <p>最常出現的那個，是你的優勢——它讓你在很多時刻應對自如。但用久了，它也會變成一種慣性，在不需要它的時候，還是第一個跑出來說話。</p>
+    <p>這份報告不是在評分，也不是要你把某個聲音消滅。它只是讓你看見，現在的你，最習慣從哪裡出發。</p>
   </div>
 
   <!-- 長條圖 -->
   <div class="chart-section">
-    <div class="chart-title">五種自我狀態分數</div>
+    <div class="chart-title">五種內在聲音的比例</div>
     <div id="barChart"></div>
+    <div class="chart-note" id="chartNote"></div>
   </div>
 
   <!-- 個人報告 -->
@@ -217,41 +217,54 @@ body { font-family:'PingFang TC','Microsoft JhengHei','Noto Sans TC',sans-serif;
 
   <!-- 五狀態聲音簡介 -->
   <div class="voices-section">
-    <div class="voices-title">五種自我狀態，各有一把聲音</div>
+    <div class="voices-title">五種內在聲音，各有一把聲音</div>
     <div id="voiceCards"></div>
   </div>
 
-  <!-- Email 收集 -->
-  <div class="email-section">
-    <div class="email-title">想更深入了解自己的溝通慣性？</div>
-    <div class="email-sub">留下你的 email，黃微老師會寄給你一份更完整的個人分析報告。</div>
-    <div class="email-row">
-      <input class="email-input" type="email" id="emailInput" placeholder="your@email.com" />
-      <button class="email-btn" onclick="submitEmail()">寄給我</button>
+  <!-- CTA 主要：留下困擾 -->
+  <div class="cta-main-block">
+    <div class="cta-main-title">這份報告能告訴你的，是你的輪廓。</div>
+    <div class="cta-main-sub">輪廓裡面的細節，需要對話才能看清楚。<br>如果你讀完這裡，心裡有一個「對，但是……」<br>那個「但是」後面的東西，才是真正值得談的。</div>
+    <div class="cta-main-sub" style="margin-top:.5rem;">寫下你現在的困擾，黃微老師會親自讀完，然後回覆你。不是自動回信，是真的有人在看。</div>
+    <div class="cta-field-label">現在最困擾你的是什麼？（選填）</div>
+    <textarea class="cta-textarea" id="ctaQuestion" placeholder="說說看，可以是一句話，也可以多說一點…"></textarea>
+    <div class="cta-email-row">
+      <input class="cta-email-input" type="email" id="ctaEmail" placeholder="your@email.com" />
+      <button class="cta-submit-btn" onclick="submitCTA()">送出</button>
     </div>
-    <div class="email-sent" id="emailSent">✓ 收到了！報告會在幾天內寄到你的信箱。</div>
-    <div class="email-err" id="emailErr">請輸入有效的 email 地址。</div>
+    <div class="cta-meta">黃微老師將親自閱讀並於 48 小時內回覆你。目前開放名額有限，額滿將暫停收件。</div>
+    <div class="cta-privacy">你分享的內容只有黃微老師本人會看到。</div>
+    <div class="cta-sent" id="ctaSent">收到了！黃微老師會盡快回覆你。</div>
+    <div class="cta-err" id="ctaErr">請輸入有效的 email 地址。</div>
   </div>
 
-  <!-- CTA -->
-  <div class="cta-sec">
-    <p class="cta-title">看見自己之後，下一步呢？</p>
-    <div class="cta-card">
-      <div class="cta-icon" style="background:var(--cp-light)">🪞</div>
-      <div>
-        <div class="cta-ct">預約一對一教練對話</div>
-        <div class="cta-cd">測驗只是開始。黃微老師將陪你深入解讀你的自我狀態，找到卡關的真正原因，以及可以怎麼鬆動它。</div>
-        <a class="cta-link" href="mailto:jewelwei@gmail.com?subject=預約一對一教練對話">預約諮詢 →</a>
-      </div>
+  <!-- CTA 次要：分享 -->
+  <div class="cta-sec-grid">
+    <div class="cta-sec-card" onclick="copyLink()">
+      <div class="cta-sec-icon">&#128279;</div>
+      <div class="cta-sec-title">傳給朋友做做看</div>
+      <div class="cta-sec-desc">把這個測驗傳給一個你想了解的人</div>
+      <div class="cta-sec-copied" id="linkCopied">連結已複製！</div>
     </div>
-    <div class="cta-card">
-      <div class="cta-icon" style="background:var(--np-light)">🃏</div>
-      <div>
-        <div class="cta-ct">TA 溝通牌卡</div>
-        <div class="cta-cd">把你的自我狀態帶回日常。這套牌卡是你隨身的覺察練習工具，每天一張，慢慢認識自己的溝通慣性。</div>
-        <a class="cta-link" href="mailto:jewelwei@gmail.com?subject=了解TA溝通牌卡">了解牌卡 →</a>
-      </div>
+    <div class="cta-sec-card" onclick="copyResult()">
+      <div class="cta-sec-icon">&#128203;</div>
+      <div class="cta-sec-title">分享我的結果</div>
+      <div class="cta-sec-desc">複製一段文字，貼到社群上說說心得</div>
+      <div class="cta-sec-copied" id="resultCopied">已複製！</div>
     </div>
+  </div>
+
+  <!-- CTA 第三層 -->
+  <div class="cta-tert-row">
+    <a class="cta-tert-link" href="https://www.facebook.com/profile.php?id=61589193428575" target="_blank">認識黃微老師</a>
+    <span class="cta-tert-dot">·</span>
+    <a class="cta-tert-link" href="https://www.facebook.com/profile.php?id=61589193428575" target="_blank">追蹤內在聲音研究室</a>
+  </div>
+
+  <!-- 覺得不準 -->
+  <div class="cta-notright">
+    覺得結果跟你想的不一樣？
+    <span class="cta-notright-link" onclick="document.getElementById('ctaQuestion').focus();document.getElementById('ctaQuestion').placeholder='說說你覺得哪裡不太準…';document.querySelector('.cta-main-block').scrollIntoView({behavior:'smooth'})">這反而值得聊聊 →</span>
   </div>
 
   <button class="restart" onclick="restart()">重新作答</button>
@@ -272,7 +285,7 @@ const STATES = [
     loDesc: '你不太喜歡用標準去框人，包括自己。你相對隨和，不容易評判別人，這讓人在你身邊感覺輕鬆。',
     loHint: '有時候，「都可以」的背後，是你還不太確定自己真正在乎什麼。遇到不合理的事，你可能發現自己不知道從哪裡開口。',
     voice: '我知道什麼是對的。這件事應該這樣做。',
-    voiceDesc: 'CP 是那個心裡有標準、很清楚「應該怎樣」的聲音。它讓你可靠、有原則，但有時候也讓人感到壓力。',
+    strength: 'CP 的禮物是那份確信——清楚什麼值得被認真對待，願意為它負責。有原則、說到做到，是讓人真正放心把事情交給你的原因。在需要把關、帶領、建立規範的時候，CP 是最有力量的聲音。',
     qs: ['你會打斷別人的談話，訴說自己的想法嗎？','你會對別人嚴格要求、批判嗎？','你會嚴守約會時間嗎？','你會懷抱理想並去實現嗎？','你會重視社會規則、倫理道德嗎？','你會強烈要求別人盡他的職責嗎？','你會對小小的差錯也在意嗎？','你對他人的教育嚴格嗎？','你認為要求得到權利，先盡義務嗎？','你經常說「應該、不能、你要……」？']
   },
   {
@@ -283,7 +296,7 @@ const STATES = [
     loDesc: '你不太習慣主動照顧別人，比較傾向讓對方自己處理。你給人空間，不干涉，這有時候是一種尊重。',
     loHint: '你不是不在乎，是不知道怎麼讓那份在乎說出來。看見別人難受，你心裡有感覺，只是那個感覺不太知道怎麼走到嘴巴。',
     voice: '你還好嗎？我來幫你。',
-    voiceDesc: 'NP 是那個溫暖、想要照顧別人的聲音。它讓你成為別人的依靠，但過高時也可能讓你忘記照顧自己。',
+    strength: 'NP 的禮物是讓人感覺被看見——在壓力最大的時候，還記得回頭看看你。這份溫暖是真實的力量，讓人在你身邊覺得安全，覺得不是一個人。在建立關係、輔導新人、凝聚團隊的時候，NP 是最溫暖的聲音。',
     qs: ['你對別人有強烈的關懷嗎？','你重視人情嗎？','你能常常發現別人的長處與優點嗎？','你看見別人遇到困難，會忍不住主動出手幫忙嗎？','你喜歡孩子或者喜歡照顧別人嗎？','你對他人的錯誤寬容嗎？','你很容易通融和商量嗎？','你能傾聽別人說話嗎？','你喜歡服務他人嗎？','你喜歡參加公益活動嗎？']
   },
   {
@@ -294,7 +307,7 @@ const STATES = [
     loDesc: '你比較依賴感覺和直覺，不喜歡分析太多。反應快，有溫度，跟你在一起不會覺得被評估。',
     loHint: '遇到重要的決定，P的「應該」和C的「感覺」會同時說話，沒有一個聲音出來核對：實際發生了什麼？那時候，你可能在自己加工過的版本裡待很久。',
     voice: '讓我們看看數據說什麼。這樣做比較合理。',
-    voiceDesc: 'A 是那個冷靜、分析、不情緒化的聲音。它幫你做出務實的決策，但過高時可能讓人覺得你有距離感。',
+    strength: 'A 的禮物是那份清醒——在情緒最激烈、資訊最混亂的時候，還能讓事情回到可以被解決的地方。務實、冷靜、不被情緒帶著跑，是讓人在混亂中放心依靠你的原因。在談判、決策、解決複雜問題的時候，A 是最穩定的聲音。',
     qs: ['你會評估自己的損益並採取行動嗎？','你很少感性的談話嗎？','你做決定時是否經過分析或者深思熟慮？','你會詢問正反意見作為參考嗎？','任何事情都喜歡根據事實做出判讀嗎？','你的談話是理性多情緒少嗎？','你能很快做出決斷而無需煩惱嗎？','你在處理事情時，是快速而有效率的嗎？','你對未來的事情是否會冷靜地預估後再行事？','你身體不佳時，是否會愛惜自己而不勉強工作？']
   },
   {
@@ -305,7 +318,7 @@ const STATES = [
     loDesc: '你習慣把感覺收起來，不太容易在外面看見你真正的情緒。別人可能覺得你沉穩、好相處，但你自己知道，裡面其實有很多。',
     loHint: '問題不是你沒有感覺，是那些感覺很少有機會出來透透氣。時間久了，你可能會開始感覺有點平，什麼事都可以，但什麼事也都沒有特別想要。',
     voice: '好玩！我想試試！管他的，先去做再說！',
-    voiceDesc: 'FC 是那個活潑、直覺、想要享受當下的聲音。它是你的創意來源，也是讓你充滿活力的那塊。',
+    strength: 'FC 的禮物是那份熱情——在一個很多人已經學會差不多就好的世界裡，FC 是那個還會為一件事真心燃起來的人。那份燃是會傳染的，走進來空氣就不一樣了。在創意發想、啟動新事物、帶動團隊能量的時候，FC 是最有活力的聲音。',
     qs: ['你認為自己任性嗎？','你的好奇心很重嗎？','你重視娛樂並追求滿足嗎？','在無法得到自己想要的東西時，你會難受嗎？','你經常使用「哇、耶、太棒了」等感嘆詞嗎？','你會以直覺判斷事物嗎？','你興奮時候會得意忘形嗎？','你想說的事情你會沒有顧慮地說出來嗎？','你容易生氣嗎？','你容易掉淚嗎？']
   },
   {
@@ -316,7 +329,7 @@ const STATES = [
     loDesc: '你清楚自己的立場，不太會為了讓別人舒服而委屈自己。你有主見，知道自己要什麼，不需要別人的眼神來確認你的選擇。',
     loHint: '有時候，「不需要配合」和「沒有注意到對方在哪裡」會長得有點像。不是你不在乎，是那個「先感受一下對方的狀態」的動作，不太自然。',
     voice: '沒關係，你決定就好。我不想造成麻煩。',
-    voiceDesc: 'AC 是那個習慣順從、不想製造麻煩的聲音。它讓你體貼、好相處，但過高時你的需求可能一直沒被說出口。',
+    strength: 'AC 的禮物是那份體貼——在大家都在搶著表達的環境裡，AC 是那個還願意退一步讓事情往前走的人。敏感、善於協調、讓人在你身邊感覺安全，是你讓關係保持和諧的方式。在需要凝聚共識、照顧團隊情緒的時候，AC 是最溫柔的聲音。',
     qs: ['心裡想的事你經常會說不出口嗎？','你希望別人喜歡你嗎？','你為人客氣處世低調嗎？','與他人意見不同時，你是否經常妥協呢？','你難受的時候經常強忍下來嗎？','你會照著別人的期待而努力嗎？','你會注意在乎別人的臉色和言談嗎？','你會常常壓抑自己的感情嗎？','你會覺得自己不如別人嗎？','你覺得現在不像真正的自己或應該有的自己嗎？']
   }
 ];
@@ -497,51 +510,88 @@ function calcScores() {
   return scores;
 }
 
+/* 兩高組合描述 */
+const COMBOS = {
+  'CP+A':  { tendency: '你清楚知道自己要什麼，也清楚知道怎麼做到。有標準，有判斷，在需要把關和決策的場合，你幾乎是最穩的那個。', struggle: '你習慣用結論說話。對方還在消化，你已經在想下一步了。那個落差，有時候讓人覺得跟你有點距離——不是你冷漠，是你太專注在事情本身。', stress: '壓力來的時候，你會變得更理性、更要求、更想把事情解決掉。情緒往裡收，讓人有時候看不見你也有壓力的那一面。' },
+  'CP+NP': { tendency: '你在乎人，也在乎事情有沒有被好好對待。你會記得關心別人，也會記得把事情做好。在你身邊，人感覺被照顧，也感覺被要求。', struggle: '你給出去的，有時候混著溫暖，也混著標準。對方感受到的，不只是關心，還有一種「你最好也要做好」的壓力——你不是故意的，但那個混在一起的訊號，有時候讓人不知道怎麼回應你。', stress: '壓力來的時候，CP 會先跑出來——標準更高，要求更明確。NP 退到後面，但那份在乎還在，只是說出來的方式，變得更像評判。' },
+  'CP+FC': { tendency: '你有熱情，也有原則。你對自己在乎的事，願意全力投入，也願意為它設立標準。你走進一個空間，人家既感覺到你的能量，也感覺到你的要求。', struggle: '你很清楚自己要什麼，但有時候，你對別人也用同樣的標準在期待。對方跟不上你的速度，或者做法不一樣，你心裡那個「為什麼不能好好做」會來得很快。', stress: '壓力來的時候，FC 先跑——情緒直接，反應快，說完才發現說重了。然後 CP 接手，開始要求自己和別人都做得更好。' },
+  'CP+AC': { tendency: '你對自己有很高的要求，但你不太把那個要求說出來。你心裡有一把尺，但外面看起來，你是那個好說話、不製造麻煩的人。那個落差，你自己最清楚。', struggle: '外面配合，裡面標準很高。時間久了，那個沒有說出口的要求，會轉向自己——「我應該做得更好」「這樣還不夠」。對自己最嚴苛的那個聲音，往往就是自己。', stress: '壓力來的時候，你更容易往內收——不說，繼續扛，繼續配合。但 CP 的那把尺還在轉，只是對象變成自己。累垮的方式，是安靜的。' },
+  'NP+A':  { tendency: '你有溫度，也有清醒。你能感覺到別人需要什麼，也能在混亂的時候把事情整理清楚。你是那種讓人覺得安心的存在——靠得住，也有人味。', struggle: '你給出去的，有時候是答案，有時候是關心，但偶爾你自己也搞不清楚，對方現在需要的是哪一個。想幫忙是真的，但幫的方式，有時候不是對方最需要的那種。', stress: '壓力來的時候，A 先跑——開始分析、解決、整理。NP 退後一步，但那份想照顧的心還在，只是被理性的外殼包著，對方感覺到的是「他在處理這件事」，不是「他在乎我」。' },
+  'NP+FC': { tendency: '你是那個讓空氣活起來的人。你走進來，大家感覺到溫暖，也感覺到活力。你很容易跟人建立關係，也很容易讓人在你身邊放鬆。', struggle: '你很享受在一起的感覺，有時候會少了一個步驟：這個關係，對我是好的嗎？這個投入，我有沒有餘裕？給出去的是真心，但給著給著，有時候忘了問自己還好不好。', stress: '壓力來的時候，你更需要人。NP 想靠過去照顧別人，FC 想找人說說話。但如果周圍剛好沒有人接住你，那個落空的感覺，會比你預期的還要大。' },
+  'NP+AC': { tendency: '你很體貼，也很敏感。你知道怎麼讓別人舒服，也很少讓人難堪。在你身邊，人感覺被照顧，也感覺輕鬆。', struggle: '你把別人放在前面，是真心的。但久了，你自己的需求一直排在後面。那個「我也需要被看見」的聲音，你不太說出來——不是不知道，是說出來這件事，感覺有點危險。', stress: '壓力來的時候，AC 先跑——繼續配合，繼續照顧，把自己的不舒服壓下來。NP 還在給，但給的人已經沒有餘裕了。最後爆出來的方式，往往讓自己也嚇一跳。' },
+  'A+FC':  { tendency: '你有熱情，也有清醒。你能為一件事真心燃起來，也能在燃起來之後，把它想清楚、做下去。你不只有想法，你有辦法。', struggle: '你在事情上很投入，但有時候，對人的那個部分會少一步。你解決了問題，但旁邊那個人的感受，你不一定注意到了。不是不在乎，是你的注意力在事情上面。', stress: '壓力來的時候，A 先跑——分析、整理、找解法。FC 退後，但能量還在，只是變成一種焦躁，一種「為什麼還沒解決」的不耐。' },
+  'A+AC':  { tendency: '你做事穩，也好相處。你給人清楚的資訊，也不製造麻煩。在需要配合和判斷的場合，你幾乎不會出錯。', struggle: '你習慣把感覺收起來，先把事情處理好。但處理好了之後，那個「我其實不太舒服」的聲音還是在那裡，只是你沒有讓它說話。時間久了，那個收起來的感覺，會在某一天用一個你沒預料到的方式出來。', stress: '壓力來的時候，你更往裡收——A 繼續分析，AC 繼續配合。外面看起來還好，裡面其實已經很滿了。' },
+  'FC+AC': { tendency: '你有熱情，也很敏感。你容易為一件事燃起來，也很在意身邊的人有沒有感覺還好。你給出去的，都是真心的。', struggle: '你用自己猜測的方式，拼命做你以為對方想要的事。但那個「以為」，有時候沒有先確認過。做了很多，卻不一定是對方最需要的——那份委屈是真實的，但方向可以調。', stress: '壓力來的時候，FC 的情緒先跑出來，然後 AC 開始讀空氣、開始擔心——我這樣會不會讓人不舒服？兩個聲音同時說話，很容易讓你不知道自己現在到底在哪裡。' },
+};
+
+function getComboKey(k1, k2) {
+  const order = ['CP','NP','A','FC','AC'];
+  const sorted = [k1,k2].sort((a,b) => order.indexOf(a) - order.indexOf(b));
+  return sorted.join('+');
+}
+
 function generateReport(scores) {
   const vals = STATES.map(s => scores[s.key]);
   const maxVal = Math.max(...vals);
   const minVal = Math.min(...vals);
-  const hiState = STATES[vals.indexOf(maxVal)];
-  const loState = STATES[vals.indexOf(minVal)];
-
-  // 判斷每個狀態是hi還是lo（以中位數12為界）
-  const getLevel = (key) => scores[key] >= 12 ? 'hi' : 'lo';
+  const sortedByScore = [...STATES].map((s,i) => ({s, v: vals[i]})).sort((a,b) => b.v - a.v);
+  const hiState = sortedByScore[0].s;
+  const secondState = sortedByScore[1].s;
+  const loState = sortedByScore[sortedByScore.length-1].s;
   const hiMat = REPORT_MATERIAL[hiState.key].hi;
   const loMat = REPORT_MATERIAL[loState.key].lo;
-
-  // 判斷是否均衡（最高最低差距小於6）
   const isBalanced = (maxVal - minVal) < 6;
+  const comboKey = getComboKey(hiState.key, secondState.key);
+  const combo = COMBOS[comboKey];
+  const secondIsRelevant = sortedByScore[1].v >= (maxVal - 4);
 
   let html = '';
 
-  // 開場標題
-  html += `<div class="report-label">你的溝通能量</div>`;
-
   if (isBalanced) {
+    html += `<div class="report-label">哪個自我狀態最常出現</div>`;
     html += `<div class="report-headline">你的五個聲音，音量相當接近。</div>`;
-    html += `<div class="report-body"><p>你沒有一個特別強勢的慣性，也沒有一個幾乎不出現的聲音。這是一種彈性——你可以在不同的情境裡，切換不同的回應方式。</p><p>但有時候，這份彈性也會帶來一種迷惘：情境來了，你不確定現在該用哪個聲音。覺察，對你來說尤其重要——不是找到「最好的那個」，而是在每個當下，知道哪個聲音最適合。</p></div>`;
+    html += `<div class="report-body"><p>你沒有一個特別強勢的慣性，也沒有一個幾乎不出現的聲音。這是一種彈性，代表你可以在不同情境裡切換不同的回應方式。</p></div>`;
+    html += `<hr class="report-divider">`;
+    html += `<div class="report-label">溝通慣性與內在傾向</div>`;
+    html += `<div class="report-body"><p>正因為沒有一個聲音特別大，有時候你可能不太確定：這個情境，我現在該用哪個聲音？覺察，對你來說尤其重要——不是找到「最好的那個」，而是在每個當下，知道哪個聲音最適合。</p></div>`;
   } else {
-    // 你是這樣的人
-    html += `<div class="report-headline">${hiMat.trait}</div>`;
+    // 1. 最常出現的狀態
+    html += `<div class="report-label">哪個自我狀態最常出現</div>`;
+    html += `<div class="report-headline" style="color:${hiState.color}">${hiState.key} ${hiState.name}</div>`;
+    html += `<div class="report-body"><p>${hiMat.trait}</p><p>這是你最常使用的聲音，也是你天然的優勢。</p></div>`;
     html += `<hr class="report-divider">`;
 
-    // 你可能有這樣的困境
-    html += `<div class="report-label">你可能有這樣的困境</div>`;
-    html += `<div class="report-body"><p>${hiMat.struggle}</p></div>`;
+    // 2. 溝通慣性（融合兩高）
+    html += `<div class="report-label">溝通慣性與內在傾向</div>`;
+    if (secondIsRelevant && combo) {
+      html += `<div class="report-body"><p>${combo.tendency}</p><p>${combo.struggle}</p></div>`;
+    } else {
+      html += `<div class="report-body"><p>${hiMat.trait}</p><p>${hiMat.struggle}</p></div>`;
+    }
     html += `<hr class="report-divider">`;
 
-    // 職場上的你
-    html += `<div class="report-label">職場上的你</div>`;
-    html += `<div class="report-body"><p>${hiMat.work}</p></div>`;
+    // 3. 優勢與盲點
+    html += `<div class="report-label">容易出現的優勢與盲點</div>`;
+    const workParts = hiMat.work.split('但');
+    html += `<div class="report-body"><p><strong>優勢：</strong>${workParts[0].trim()}</p>`;
+    if (workParts.length > 1) {
+      html += `<p><strong>盲點：</strong>但${workParts.slice(1).join('但')}</p>`;
+    }
+    html += `</div>`;
     html += `<hr class="report-divider">`;
 
-    // 值得多給自己的
+    // 4. 壓力模式（融合兩高）
+    html += `<div class="report-label">面對壓力時可能啟動的模式</div>`;
+    if (secondIsRelevant && combo) {
+      html += `<div class="report-body"><p>${combo.stress}</p></div>`;
+    } else {
+      html += `<div class="report-body"><p>壓力來的時候，你更容易退回 ${hiState.key} 的慣性——${hiMat.struggle}</p></div>`;
+    }
+    html += `<hr class="report-divider">`;
+
+    // 5. 值得多給自己的（最低狀態）
     html += `<div class="report-label">值得多給自己的</div>`;
     html += `<div class="report-body"><p>${loMat.growth}</p></div>`;
-    html += `<hr class="report-divider">`;
-
-    // 最後一句
-    html += `<div class="report-body"><p style="font-style:italic;color:var(--text-hint)">這份報告能告訴你的，是你的輪廓。但輪廓裡面的細節，需要對話才能看清楚。</p></div>`;
   }
 
   return html;
@@ -574,31 +624,44 @@ function showResult() {
     }).join('') + `</div>`;
   document.getElementById('barChart').innerHTML = barHTML;
 
+  // 圖下說明
+  const sorted = [...STATES].map((s, i) => ({ s, v: vals[i] })).sort((a, b) => b.v - a.v);
+  const hiS = sorted[0].s;
+  const loS = sorted[sorted.length-1].s;
+  const maxV = Math.max(...vals);
+  const minV = Math.min(...vals);
+  const isBalanced = (maxV - minV) < 6;
+  let noteText = '';
+  if (isBalanced) {
+    noteText = `你的五個聲音分布相當均衡，沒有特別強勢或特別安靜的。這是一種彈性，也代表你在不同情境裡需要多一點意識，才能知道現在該讓哪個聲音說話。`;
+  } else {
+    noteText = `你的五個聲音裡，<strong style="color:${hiS.color}">${hiS.key} ${hiS.name}</strong>的音量最大，<strong style="color:${loS.color}">${loS.key} ${loS.name}</strong>相對安靜。最常出現的聲音是你的優勢，也可能是你的慣性；最安靜的聲音，往往是最值得多給一點空間的地方。`;
+  }
+  document.getElementById('chartNote').innerHTML = noteText;
+
   // 報告
   document.getElementById('reportBlock').innerHTML = generateReport(scores);
 
-  // 五狀態聲音簡介（依分數排序）
-  const sorted = [...STATES].map((s, i) => ({ s, v: vals[i] })).sort((a, b) => b.v - a.v);
+  // 五狀態聲音簡介（依分數排序，顯示正向優勢）
   document.getElementById('voiceCards').innerHTML = sorted.map(({ s, v }) => `
     <div class="voice-card">
-      <div class="voice-dot" style="background:${s.light};color:${s.tc}">${s.key}</div>
-      <div class="voice-body">
-        <div class="voice-key" style="color:${s.color}">${s.key} ${s.name} <span style="font-weight:400;color:var(--text-hint)">${v} 分</span></div>
-        <div class="voice-text voice-quote">「${s.voice}」</div>
-        <div class="voice-text">${s.voiceDesc}</div>
+      <div class="voice-card-head">
+        <div class="voice-dot" style="background:${s.light};color:${s.tc}">${s.key}</div>
+        <div class="voice-key" style="color:${s.color}">${s.key} ${s.name}<span class="voice-score">${v} 分</span></div>
       </div>
+      <div class="voice-quote">「${s.voice}」</div>
+      <div class="voice-strength">${s.strength}</div>
     </div>
   `).join('');
 }
 
-/* ════════════════════════════════
-  Email 送出（Formspree）
-════════════════════════════════ */
-async function submitEmail() {
-  const emailEl = document.getElementById('emailInput');
-  const sentEl = document.getElementById('emailSent');
-  const errEl = document.getElementById('emailErr');
+async function submitCTA() {
+  const emailEl = document.getElementById('ctaEmail');
+  const sentEl = document.getElementById('ctaSent');
+  const errEl = document.getElementById('ctaErr');
+  const questionEl = document.getElementById('ctaQuestion');
   const email = emailEl.value.trim();
+  const question = questionEl.value.trim();
 
   sentEl.style.display = 'none';
   errEl.style.display = 'none';
@@ -614,13 +677,15 @@ async function submitEmail() {
     const res = await fetch('https://formspree.io/f/mgoqwdnw', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify({ email, scores: scoreStr })
+      body: JSON.stringify({ email, scores: scoreStr, question: question || '（未填寫）' })
     });
     if (res.ok) {
       sentEl.style.display = 'block';
       emailEl.value = '';
+      questionEl.value = '';
       emailEl.disabled = true;
-      document.querySelector('.email-btn').disabled = true;
+      questionEl.disabled = true;
+      document.querySelector('.cta-submit-btn').disabled = true;
     } else {
       errEl.textContent = '送出時發生問題，請稍後再試。';
       errEl.style.display = 'block';
@@ -629,6 +694,25 @@ async function submitEmail() {
     errEl.textContent = '網路連線異常，請稍後再試。';
     errEl.style.display = 'block';
   }
+}
+
+function copyLink() {
+  const url = window.location.href.split('?')[0];
+  navigator.clipboard.writeText(url).then(() => {
+    const el = document.getElementById('linkCopied');
+    el.style.display = 'block';
+    setTimeout(() => el.style.display = 'none', 2500);
+  });
+}
+
+function copyResult() {
+  const hiState = [...STATES].map(s => ({ s, v: lastScores[s.key] })).sort((a,b) => b.v - a.v)[0].s;
+  const text = `我剛做了一個溝通自我狀態測驗，我最常出現的內在聲音是「${hiState.key} ${hiState.name}」。你的呢？來做做看 → ${window.location.href.split('?')[0]}`;
+  navigator.clipboard.writeText(text).then(() => {
+    const el = document.getElementById('resultCopied');
+    el.style.display = 'block';
+    setTimeout(() => el.style.display = 'none', 2500);
+  });
 }
 
 function restart() {

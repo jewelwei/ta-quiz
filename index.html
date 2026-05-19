@@ -96,6 +96,17 @@ body { font-family:'PingFang TC','Microsoft JhengHei','Noto Sans TC',sans-serif;
 .voice-quote { font-size:.8rem; font-style:italic; color:var(--text-hint); margin-bottom:.4rem; }
 .voice-strength { font-size:.82rem; color:var(--text-muted); line-height:1.75; }
 
+/* ── 【修改3】下一步輕量入口 ── */
+.next-step-block { background:var(--np-light); border:1px solid #e8c0cc; border-radius:var(--radius); padding:1.25rem 1.5rem; margin-bottom:1.25rem; }
+.next-step-title { font-size:.88rem; font-weight:800; color:var(--np-text); margin-bottom:.4rem; }
+.next-step-body { font-size:.83rem; color:var(--np-text); line-height:1.8; margin-bottom:.85rem; opacity:.85; }
+.next-step-links { display:flex; flex-direction:column; gap:8px; }
+.next-step-link { display:flex; align-items:center; gap:10px; padding:.65rem 1rem; background:var(--surface); border:1px solid #e8c0cc; border-radius:var(--radius-sm); text-decoration:none; color:var(--text); font-size:.83rem; transition:border-color .15s; }
+.next-step-link:hover { border-color:var(--np); }
+.next-step-link-icon { font-size:1.1rem; flex-shrink:0; }
+.next-step-link-text { font-weight:600; }
+.next-step-link-desc { font-size:.75rem; color:var(--text-muted); margin-top:1px; }
+
 .cta-main-block { background:var(--surface); border:1.5px solid var(--border); border-radius:var(--radius); padding:1.5rem; margin-bottom:1rem; }
 .cta-main-title { font-size:1rem; font-weight:800; color:var(--text); margin-bottom:.4rem; }
 .cta-main-sub { font-size:.85rem; color:var(--text-muted); line-height:1.8; margin-bottom:1.1rem; }
@@ -107,6 +118,7 @@ body { font-family:'PingFang TC','Microsoft JhengHei','Noto Sans TC',sans-serif;
 .cta-email-input:focus { border-color:var(--cp); }
 .cta-submit-btn { padding:10px 20px; background:var(--cp); color:#fff; border:none; border-radius:999px; font-size:.88rem; font-weight:700; cursor:pointer; font-family:inherit; white-space:nowrap; transition:background .15s; }
 .cta-submit-btn:hover { background:var(--cp-text); }
+/* 【修改1】meta 文字改為真實說法 */
 .cta-meta { font-size:.75rem; color:var(--text-hint); margin-top:.6rem; line-height:1.6; }
 .cta-privacy { font-size:.72rem; color:var(--text-hint); margin-top:.25rem; }
 .cta-sent { display:none; font-size:.85rem; color:#2e7d32; font-weight:600; margin-top:.75rem; }
@@ -221,6 +233,28 @@ body { font-family:'PingFang TC','Microsoft JhengHei','Noto Sans TC',sans-serif;
     <div id="voiceCards"></div>
   </div>
 
+  <!-- 【修改3】下一步輕量入口 -->
+  <div class="next-step-block">
+    <div class="next-step-title">想更深入認識自己的溝通模式？</div>
+    <div class="next-step-body">這份測驗是起點。TA 牌卡和課程能幫你把結果帶進真實的對話裡，看見慣性，開始有選擇。</div>
+    <div class="next-step-links">
+      <a class="next-step-link" href="https://www.facebook.com/profile.php?id=61589193428575" target="_blank">
+        <span class="next-step-link-icon">🃏</span>
+        <div>
+          <div class="next-step-link-text">認識 TA 牌卡</div>
+          <div class="next-step-link-desc">把五種聲音帶進日常練習</div>
+        </div>
+      </a>
+      <a class="next-step-link" href="https://www.facebook.com/profile.php?id=61589193428575" target="_blank">
+        <span class="next-step-link-icon">🗓</span>
+        <div>
+          <div class="next-step-link-text">了解課程與工作坊</div>
+          <div class="next-step-link-desc">與黃微老師一起深入探索</div>
+        </div>
+      </a>
+    </div>
+  </div>
+
   <!-- CTA 主要：留下困擾 -->
   <div class="cta-main-block">
     <div class="cta-main-title">這份報告能告訴你的，是你的輪廓。</div>
@@ -232,7 +266,8 @@ body { font-family:'PingFang TC','Microsoft JhengHei','Noto Sans TC',sans-serif;
       <input class="cta-email-input" type="email" id="ctaEmail" placeholder="your@email.com" />
       <button class="cta-submit-btn" onclick="submitCTA()">送出</button>
     </div>
-    <div class="cta-meta">黃微老師將親自閱讀並於 48 小時內回覆你。目前開放名額有限，額滿將暫停收件。</div>
+    <!-- 【修改1】移除「名額有限」，改為真實說法 -->
+    <div class="cta-meta">黃微老師會親自閱讀你的留言，並盡力在 48 小時內回覆你。</div>
     <div class="cta-privacy">你分享的內容只有黃微老師本人會看到。</div>
     <div class="cta-sent" id="ctaSent">收到了！黃微老師會盡快回覆你。</div>
     <div class="cta-err" id="ctaErr">請輸入有效的 email 地址。</div>
@@ -249,7 +284,8 @@ body { font-family:'PingFang TC','Microsoft JhengHei','Noto Sans TC',sans-serif;
     <div class="cta-sec-card" onclick="copyResult()">
       <div class="cta-sec-icon">&#128203;</div>
       <div class="cta-sec-title">分享我的結果</div>
-      <div class="cta-sec-desc">複製一段文字，貼到社群上說說心得</div>
+      <!-- 【修改2】說明複製內容包含結果摘要 -->
+      <div class="cta-sec-desc">複製含結果的一句話，貼到社群上</div>
       <div class="cta-sec-copied" id="resultCopied">已複製！</div>
     </div>
   </div>
@@ -275,6 +311,7 @@ body { font-family:'PingFang TC','Microsoft JhengHei','Noto Sans TC',sans-serif;
 <script>
 /* ════════════════════════════════
   資料層
+  【修改4】NP 名稱統一為「撫育型父母」
 ════════════════════════════════ */
 const STATES = [
   {
@@ -289,7 +326,7 @@ const STATES = [
     qs: ['你會打斷別人的談話，訴說自己的想法嗎？','你會對別人嚴格要求、批判嗎？','你會嚴守約會時間嗎？','你會懷抱理想並去實現嗎？','你會重視社會規則、倫理道德嗎？','你會強烈要求別人盡他的職責嗎？','你會對小小的差錯也在意嗎？','你對他人的教育嚴格嗎？','你認為要求得到權利，先盡義務嗎？','你經常說「應該、不能、你要……」？']
   },
   {
-    key: 'NP', name: '養育型父母',
+    key: 'NP', name: '撫育型父母',
     color: '#c9637e', light: '#fdf0f4', tc: '#8b3a52',
     hiDesc: '你很容易感覺到別人需要什麼，有時候對方還沒開口，你已經靠過去了。那份溫暖是真的，不是表演。你讓人覺得安全，在你身邊，人會不自覺地放鬆。',
     hiHint: '給著給著，有時候會忘記問自己：我呢？那些沒有說出口的「我也需要被看見」，會一直累積。',
@@ -413,9 +450,16 @@ const REPORT_MATERIAL = {
 /* ════════════════════════════════
   測驗邏輯
 ════════════════════════════════ */
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbxOWu20LVGTs6cOHS-9VOL7JiDDBgY5lucncI-XR9lwxcGLAjPPSHk3odd9omyA2Vpq4A/exec';
+
 const PAGE_SIZE = 10;
 let allQ = [], curPage = 0, totalPages = 0;
 let lastScores = {};
+
+// 換答記錄：{ 題目絕對index: 換答次數 }
+let changeCount = {};
+// 每題對應的自我狀態
+let questionStateMap = {};
 
 function shuffle(arr) {
   const a = [...arr];
@@ -432,6 +476,15 @@ function startQuiz() {
   allQ = shuffle(raw);
   totalPages = Math.ceil(allQ.length / PAGE_SIZE);
   curPage = 0;
+
+  // 初始化換答記錄
+  changeCount = {};
+  questionStateMap = {};
+  allQ.forEach((item, idx) => {
+    changeCount[idx] = 0;
+    questionStateMap[idx] = item.key;
+  });
+
   document.getElementById('coverView').style.display = 'none';
   document.getElementById('quizView').style.display = 'block';
   renderPage();
@@ -467,6 +520,10 @@ function renderPage() {
       btn.className = 'opt' + (item.ans === val ? ' ' + cls : '');
       btn.textContent = label;
       btn.onclick = () => {
+        // 若已有答案且選了不同選項，累計換答次數
+        if (allQ[absIdx].ans !== null && allQ[absIdx].ans !== val) {
+          changeCount[absIdx] = (changeCount[absIdx] || 0) + 1;
+        }
         allQ[absIdx].ans = val;
         opts.querySelectorAll('.opt').forEach(b => b.className = 'opt');
         btn.className = 'opt ' + cls;
@@ -510,7 +567,6 @@ function calcScores() {
   return scores;
 }
 
-/* 兩高組合描述 */
 const COMBOS = {
   'CP+A':  { tendency: '你清楚知道自己要什麼，也清楚知道怎麼做到。有標準，有判斷，在需要把關和決策的場合，你幾乎是最穩的那個。', struggle: '你習慣用結論說話。對方還在消化，你已經在想下一步了。那個落差，有時候讓人覺得跟你有點距離——不是你冷漠，是你太專注在事情本身。', stress: '壓力來的時候，你會變得更理性、更要求、更想把事情解決掉。情緒往裡收，讓人有時候看不見你也有壓力的那一面。' },
   'CP+NP': { tendency: '你在乎人，也在乎事情有沒有被好好對待。你會記得關心別人，也會記得把事情做好。在你身邊，人感覺被照顧，也感覺被要求。', struggle: '你給出去的，有時候混著溫暖，也混著標準。對方感受到的，不只是關心，還有一種「你最好也要做好」的壓力——你不是故意的，但那個混在一起的訊號，有時候讓人不知道怎麼回應你。', stress: '壓力來的時候，CP 會先跑出來——標準更高，要求更明確。NP 退到後面，但那份在乎還在，只是說出來的方式，變得更像評判。' },
@@ -555,13 +611,11 @@ function generateReport(scores) {
     html += `<div class="report-label">溝通慣性與內在傾向</div>`;
     html += `<div class="report-body"><p>正因為沒有一個聲音特別大，有時候你可能不太確定：這個情境，我現在該用哪個聲音？覺察，對你來說尤其重要——不是找到「最好的那個」，而是在每個當下，知道哪個聲音最適合。</p></div>`;
   } else {
-    // 1. 最常出現的狀態
     html += `<div class="report-label">哪個自我狀態最常出現</div>`;
     html += `<div class="report-headline" style="color:${hiState.color}">${hiState.key} ${hiState.name}</div>`;
     html += `<div class="report-body"><p>${hiMat.trait}</p><p>這是你最常使用的聲音，也是你天然的優勢。</p></div>`;
     html += `<hr class="report-divider">`;
 
-    // 2. 溝通慣性（融合兩高）
     html += `<div class="report-label">溝通慣性與內在傾向</div>`;
     if (secondIsRelevant && combo) {
       html += `<div class="report-body"><p>${combo.tendency}</p><p>${combo.struggle}</p></div>`;
@@ -570,7 +624,6 @@ function generateReport(scores) {
     }
     html += `<hr class="report-divider">`;
 
-    // 3. 優勢與盲點
     html += `<div class="report-label">容易出現的優勢與盲點</div>`;
     const workParts = hiMat.work.split('但');
     html += `<div class="report-body"><p><strong>優勢：</strong>${workParts[0].trim()}</p>`;
@@ -580,7 +633,6 @@ function generateReport(scores) {
     html += `</div>`;
     html += `<hr class="report-divider">`;
 
-    // 4. 壓力模式（融合兩高）
     html += `<div class="report-label">面對壓力時可能啟動的模式</div>`;
     if (secondIsRelevant && combo) {
       html += `<div class="report-body"><p>${combo.stress}</p></div>`;
@@ -589,7 +641,6 @@ function generateReport(scores) {
     }
     html += `<hr class="report-divider">`;
 
-    // 5. 值得多給自己的（最低狀態）
     html += `<div class="report-label">值得多給自己的</div>`;
     html += `<div class="report-body"><p>${loMat.growth}</p></div>`;
   }
@@ -607,7 +658,6 @@ function showResult() {
   const vals = STATES.map(s => scores[s.key]);
   const maxVal = Math.max(...vals);
 
-  // 長條圖
   const barHTML = `<div class="egogram">` +
     STATES.map((s, i) => {
       const pct = vals[i] / 20 * 100;
@@ -624,7 +674,6 @@ function showResult() {
     }).join('') + `</div>`;
   document.getElementById('barChart').innerHTML = barHTML;
 
-  // 圖下說明
   const sorted = [...STATES].map((s, i) => ({ s, v: vals[i] })).sort((a, b) => b.v - a.v);
   const hiS = sorted[0].s;
   const loS = sorted[sorted.length-1].s;
@@ -639,10 +688,8 @@ function showResult() {
   }
   document.getElementById('chartNote').innerHTML = noteText;
 
-  // 報告
   document.getElementById('reportBlock').innerHTML = generateReport(scores);
 
-  // 五狀態聲音簡介（依分數排序，顯示正向優勢）
   document.getElementById('voiceCards').innerHTML = sorted.map(({ s, v }) => `
     <div class="voice-card">
       <div class="voice-card-head">
@@ -653,6 +700,35 @@ function showResult() {
       <div class="voice-strength">${s.strength}</div>
     </div>
   `).join('');
+
+  // 計算換答統計
+  const changesByState = { CP:0, NP:0, A:0, FC:0, AC:0 };
+  let totalChanges = 0;
+  Object.entries(changeCount).forEach(([idx, cnt]) => {
+    if (cnt > 0) {
+      const stateKey = questionStateMap[idx];
+      if (stateKey && changesByState[stateKey] !== undefined) {
+        changesByState[stateKey] += cnt;
+        totalChanges += cnt;
+      }
+    }
+  });
+
+  // 發送完成記錄到 Google Sheets
+  const sortedForLog = [...STATES].map(s => ({ s, v: scores[s.key] })).sort((a,b) => b.v - a.v);
+  const payload = {
+    type: 'complete',
+    scores: { CP: scores.CP, NP: scores.NP, A: scores.A, FC: scores.FC, AC: scores.AC },
+    topState: sortedForLog[0].s.key,
+    lowState: sortedForLog[sortedForLog.length-1].s.key,
+    totalChanges,
+    changesByState
+  };
+  fetch(GAS_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify(payload)
+  }).catch(() => {});
 }
 
 async function submitCTA() {
@@ -686,6 +762,21 @@ async function submitCTA() {
       emailEl.disabled = true;
       questionEl.disabled = true;
       document.querySelector('.cta-submit-btn').disabled = true;
+
+      // 同步記錄到 Google Sheets 聯絡留言分頁
+      const sortedForContact = [...STATES].map(s => ({ s, v: lastScores[s.key] })).sort((a,b) => b.v - a.v);
+      const contactPayload = {
+        type: 'contact',
+        email,
+        question: question || '（未填寫）',
+        scores: { CP: lastScores.CP, NP: lastScores.NP, A: lastScores.A, FC: lastScores.FC, AC: lastScores.AC },
+        topState: sortedForContact[0].s.key
+      };
+      fetch(GAS_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify(contactPayload)
+      }).catch(() => {});
     } else {
       errEl.textContent = '送出時發生問題，請稍後再試。';
       errEl.style.display = 'block';
@@ -705,9 +796,13 @@ function copyLink() {
   });
 }
 
+/* 【修改2】分享結果包含完整結果摘要與分數 */
 function copyResult() {
-  const hiState = [...STATES].map(s => ({ s, v: lastScores[s.key] })).sort((a,b) => b.v - a.v)[0].s;
-  const text = `我剛做了一個溝通自我狀態測驗，我最常出現的內在聲音是「${hiState.key} ${hiState.name}」。你的呢？來做做看 → ${window.location.href.split('?')[0]}`;
+  const sorted = [...STATES].map(s => ({ s, v: lastScores[s.key] })).sort((a,b) => b.v - a.v);
+  const hiState = sorted[0].s;
+  const loState = sorted[sorted.length - 1].s;
+  const scoresSummary = STATES.map(s => `${s.key}${lastScores[s.key]}`).join('・');
+  const text = `我做了 TA 溝通自我狀態測驗，最常出現的內在聲音是「${hiState.key} ${hiState.name}」，最安靜的是「${loState.key} ${loState.name}」。（${scoresSummary}）你的呢？來試試看 → ${window.location.href.split('?')[0]}`;
   navigator.clipboard.writeText(text).then(() => {
     const el = document.getElementById('resultCopied');
     el.style.display = 'block';

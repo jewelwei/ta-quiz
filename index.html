@@ -255,21 +255,17 @@ body { font-family:'PingFang TC','Microsoft JhengHei','Noto Sans TC',sans-serif;
     </div>
   </div>
 
-  <!-- CTA 主要：留下困擾 -->
+  <!-- CTA 主要：留下 email 收報告 -->
   <div class="cta-main-block">
-    <div class="cta-main-title">這份報告能告訴你的，是你的輪廓。</div>
-    <div class="cta-main-sub">輪廓裡面的細節，需要對話才能看清楚。<br>如果你讀完這裡，心裡有一個「對，但是……」<br>那個「但是」後面的東西，才是真正值得談的。</div>
-    <div class="cta-main-sub" style="margin-top:.5rem;">寫下你現在的困擾，黃微老師會親自讀完，然後回覆你。不是自動回信，是真的有人在看。</div>
-    <div class="cta-field-label">現在最困擾你的是什麼？（選填）</div>
-    <textarea class="cta-textarea" id="ctaQuestion" placeholder="說說看，可以是一句話，也可以多說一點…"></textarea>
-    <div class="cta-email-row">
+    <div class="cta-main-title">把這份報告留下來。</div>
+    <div class="cta-main-sub">輸入你的 email，把完整報告寄給自己，慢慢讀。</div>
+    <div class="cta-email-row" style="margin-top:.85rem;">
       <input class="cta-email-input" type="email" id="ctaEmail" placeholder="your@email.com" />
-      <button class="cta-submit-btn" onclick="submitCTA()">送出</button>
+      <button class="cta-submit-btn" onclick="submitCTA()">寄給我</button>
     </div>
-    <!-- 【修改1】移除「名額有限」，改為真實說法 -->
-    <div class="cta-meta">送出後，你的完整測驗報告將寄送至你的信箱。黃微老師也會親自閱讀你的留言，並盡力在 48 小時內回覆你。</div>
-    <div class="cta-privacy">你分享的內容只有黃微老師本人會看到。</div>
-    <div class="cta-sent" id="ctaSent">收到了！黃微老師會盡快回覆你。</div>
+    <div class="cta-meta">報告將在幾分鐘內寄達。如果你有任何想法或問題，歡迎直接回覆那封信，黃微老師會親自看。</div>
+    <div class="cta-privacy">你的 email 只有黃微老師本人會看到。</div>
+    <div class="cta-sent" id="ctaSent">寄出了！請去信箱收取你的報告。</div>
     <div class="cta-err" id="ctaErr">請輸入有效的 email 地址。</div>
   </div>
 
@@ -718,6 +714,7 @@ function showResult() {
   const sortedForLog = [...STATES].map(s => ({ s, v: scores[s.key] })).sort((a,b) => b.v - a.v);
   const payload = {
     type: 'complete',
+    email: '',
     scores: { CP: scores.CP, NP: scores.NP, A: scores.A, FC: scores.FC, AC: scores.AC },
     topState: sortedForLog[0].s.key,
     lowState: sortedForLog[sortedForLog.length-1].s.key,
@@ -735,9 +732,7 @@ async function submitCTA() {
   const emailEl = document.getElementById('ctaEmail');
   const sentEl = document.getElementById('ctaSent');
   const errEl = document.getElementById('ctaErr');
-  const questionEl = document.getElementById('ctaQuestion');
   const email = emailEl.value.trim();
-  const question = questionEl.value.trim();
 
   sentEl.style.display = 'none';
   errEl.style.display = 'none';
@@ -753,24 +748,23 @@ async function submitCTA() {
     const res = await fetch('https://formspree.io/f/mgoqwdnw', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify({ email, scores: scoreStr, question: question || '（未填寫）' })
+      body: JSON.stringify({ email, scores: scoreStr })
     });
     if (res.ok) {
       sentEl.style.display = 'block';
       emailEl.value = '';
-      questionEl.value = '';
       emailEl.disabled = true;
-      questionEl.disabled = true;
       document.querySelector('.cta-submit-btn').disabled = true;
 
-      // 同步記錄到 Google Sheets 聯絡留言分頁
+      // 同步記錄到 Google Sheets 並寄送報告
       const sortedForContact = [...STATES].map(s => ({ s, v: lastScores[s.key] })).sort((a,b) => b.v - a.v);
       const contactPayload = {
         type: 'contact',
         email,
-        question: question || '（未填寫）',
+        question: '',
         scores: { CP: lastScores.CP, NP: lastScores.NP, A: lastScores.A, FC: lastScores.FC, AC: lastScores.AC },
-        topState: sortedForContact[0].s.key
+        topState: sortedForContact[0].s.key,
+        lowState: sortedForContact[sortedForContact.length-1].s.key
       };
       fetch(GAS_URL, {
         method: 'POST',

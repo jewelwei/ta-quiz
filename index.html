@@ -756,15 +756,28 @@ async function submitCTA() {
       emailEl.disabled = true;
       document.querySelector('.cta-submit-btn').disabled = true;
 
-      // 同步記錄到 Google Sheets 並寄送報告
+      // 計算換答統計（和 showResult 裡一樣的邏輯）
+      const changesByStateForContact = { CP:0, NP:0, A:0, FC:0, AC:0 };
+      let totalChangesForContact = 0;
+      Object.entries(changeCount).forEach(([idx, cnt]) => {
+        if (cnt > 0) {
+          const stateKey = questionStateMap[idx];
+          if (stateKey && changesByStateForContact[stateKey] !== undefined) {
+            changesByStateForContact[stateKey] += cnt;
+            totalChangesForContact += cnt;
+          }
+        }
+      });
+
       const sortedForContact = [...STATES].map(s => ({ s, v: lastScores[s.key] })).sort((a,b) => b.v - a.v);
       const contactPayload = {
         type: 'contact',
         email,
-        question: '',
         scores: { CP: lastScores.CP, NP: lastScores.NP, A: lastScores.A, FC: lastScores.FC, AC: lastScores.AC },
         topState: sortedForContact[0].s.key,
-        lowState: sortedForContact[sortedForContact.length-1].s.key
+        lowState: sortedForContact[sortedForContact.length-1].s.key,
+        totalChanges: totalChangesForContact,
+        changesByState: changesByStateForContact
       };
       fetch(GAS_URL, {
         method: 'POST',

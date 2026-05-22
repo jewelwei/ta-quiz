@@ -738,57 +738,65 @@ async function submitCTA() {
   errEl.style.display = 'none';
 
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    errEl.textContent = '請輸入有效的 email 地址。';
     errEl.style.display = 'block';
     return;
   }
 
-  const scoreStr = `CP:${lastScores.CP} NP:${lastScores.NP} A:${lastScores.A} FC:${lastScores.FC} AC:${lastScores.AC}`;
+  // 送出前請使用者確認 email 是否正確
+  if (!confirm(`請確認你的 email 地址：\n\n${email}\n\n確定要寄送報告到這個地址嗎？`)) {
+    return;
+  }
+
+  // 停用按鈕避免重複送出
+  const submitBtn = document.querySelector('.cta-submit-btn');
+  submitBtn.disabled = true;
+  submitBtn.textContent = '寄送中…';
+
+  // 計算換答統計
+  const changesByStateForContact = { CP:0, NP:0, A:0, FC:0, AC:0 };
+  let totalChangesForContact = 0;
+  Object.entries(changeCount).forEach(([idx, cnt]) => {
+    if (cnt > 0) {
+      const stateKey = questionStateMap[idx];
+      if (stateKey && changesByStateForContact[stateKey] !== undefined) {
+        changesByStateForContact[stateKey] += cnt;
+        totalChangesForContact += cnt;
+      }
+    }
+  });
+
+  const sortedForContact = [...STATES].map(s => ({ s, v: lastScores[s.key] })).sort((a,b) => b.v - a.v);
+  const contactPayload = {
+    type: 'contact',
+    email,
+    scores: { CP: lastScores.CP, NP: lastScores.NP, A: lastScores.A, FC: lastScores.FC, AC: lastScores.AC },
+    topState: sortedForContact[0].s.key,
+    lowState: sortedForContact[sortedForContact.length-1].s.key,
+    totalChanges: totalChangesForContact,
+    changesByState: changesByStateForContact
+  };
 
   try {
-    const res = await fetch('https://formspree.io/f/mgoqwdnw', {
+    const res = await fetch(GAS_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify({ email, scores: scoreStr })
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify(contactPayload)
     });
-    if (res.ok) {
+    const data = await res.json();
+    if (data.status === 'ok') {
       sentEl.style.display = 'block';
       emailEl.value = '';
       emailEl.disabled = true;
-      document.querySelector('.cta-submit-btn').disabled = true;
-
-      // 計算換答統計（和 showResult 裡一樣的邏輯）
-      const changesByStateForContact = { CP:0, NP:0, A:0, FC:0, AC:0 };
-      let totalChangesForContact = 0;
-      Object.entries(changeCount).forEach(([idx, cnt]) => {
-        if (cnt > 0) {
-          const stateKey = questionStateMap[idx];
-          if (stateKey && changesByStateForContact[stateKey] !== undefined) {
-            changesByStateForContact[stateKey] += cnt;
-            totalChangesForContact += cnt;
-          }
-        }
-      });
-
-      const sortedForContact = [...STATES].map(s => ({ s, v: lastScores[s.key] })).sort((a,b) => b.v - a.v);
-      const contactPayload = {
-        type: 'contact',
-        email,
-        scores: { CP: lastScores.CP, NP: lastScores.NP, A: lastScores.A, FC: lastScores.FC, AC: lastScores.AC },
-        topState: sortedForContact[0].s.key,
-        lowState: sortedForContact[sortedForContact.length-1].s.key,
-        totalChanges: totalChangesForContact,
-        changesByState: changesByStateForContact
-      };
-      fetch(GAS_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify(contactPayload)
-      }).catch(() => {});
     } else {
+      submitBtn.disabled = false;
+      submitBtn.textContent = '寄給我';
       errEl.textContent = '送出時發生問題，請稍後再試。';
       errEl.style.display = 'block';
     }
   } catch(e) {
+    submitBtn.disabled = false;
+    submitBtn.textContent = '寄給我';
     errEl.textContent = '網路連線異常，請稍後再試。';
     errEl.style.display = 'block';
   }

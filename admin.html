@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TA 測驗管理後台｜黃微</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --cp: #7d0000; --cp-light: #f5e6e6;
+  --np: #c9637e; --np-light: #fdf0f4;
+  --a:  #5585bc; --a-light:  #eef4fb;
+  --fc: #c9a000; --fc-light: #fffbe6;
+  --ac: #a07850; --ac-light: #f7f1ec;
+  --bg: #F4F3EF; --surface: #FFFFFF; --border: #E0DED6;
+  --text: #1A1A18; --muted: #6B6A65; --hint: #A8A7A2;
+  --radius: 12px; --radius-sm: 8px;
+}
+body { font-family:'PingFang TC','Microsoft JhengHei',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+
+/* ── 登入畫面 ── */
+#loginScreen {
+  display:flex; align-items:center; justify-content:center;
+  min-height:100vh; padding:2rem;
+}
+.login-box {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius); padding:2.5rem 2rem; width:100%; max-width:360px;
+  text-align:center;
+}
+.login-logo { font-size:1.5rem; font-weight:800; color:var(--cp); margin-bottom:.3rem; }
+.login-sub { font-size:.82rem; color:var(--muted); margin-bottom:2rem; }
+.login-input {
+  width:100%; padding:11px 14px; border:1.5px solid var(--border);
+  border-radius:999px; font-size:.9rem; font-family:inherit;
+  outline:none; transition:border-color .15s; margin-bottom:.75rem;
+}
+.login-input:focus { border-color:var(--cp); }
+.login-btn {
+  width:100%; padding:12px; background:var(--cp); color:#fff;
+  border:none; border-radius:999px; font-size:.9rem; font-weight:700;
+  cursor:pointer; font-family:inherit;
+}
+.login-err { font-size:.8rem; color:var(--cp); margin-top:.5rem; display:none; }
+
+/* ── 主介面 ── */
+#mainScreen { display:none; }
+.topbar {
+  background:var(--surface); border-bottom:1px solid var(--border);
+  padding:.85rem 1.5rem; display:flex; align-items:center; justify-content:space-between;
+  position:sticky; top:0; z-index:100;
+}
+.topbar-brand { font-size:.95rem; font-weight:800; color:var(--cp); }
+.topbar-right { display:flex; align-items:center; gap:1rem; }
+.topbar-hint { font-size:.78rem; color:var(--hint); }
+.logout-btn {
+  padding:6px 14px; border:1.5px solid var(--border); border-radius:999px;
+  background:transparent; font-size:.78rem; color:var(--muted); cursor:pointer;
+  font-family:inherit;
+}
+.wrap { max-width:900px; margin:0 auto; padding:1.75rem 1.25rem 4rem; }
+
+/* ── Tab 導覽 ── */
+.tabs { display:flex; gap:6px; margin-bottom:1.75rem; border-bottom:1px solid var(--border); padding-bottom:0; }
+.tab {
+  padding:9px 18px; border:none; background:transparent;
+  font-size:.88rem; font-weight:600; color:var(--muted); cursor:pointer;
+  font-family:inherit; border-bottom:2.5px solid transparent; margin-bottom:-1px;
+  transition:color .12s, border-color .12s;
+}
+.tab.active { color:var(--cp); border-bottom-color:var(--cp); }
+
+/* ── 卡片 ── */
+.card {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius); padding:1.5rem; margin-bottom:1rem;
+}
+.card-title { font-size:.95rem; font-weight:800; margin-bottom:1.25rem; }
+.card-sub { font-size:.8rem; color:var(--muted); margin-top:.25rem; font-weight:400; }
+
+/* ── 表單元素 ── */
+.form-row { display:grid; gap:.75rem; margin-bottom:1rem; }
+.form-row.cols2 { grid-template-columns:1fr 1fr; }
+.form-row.cols3 { grid-template-columns:1fr 1fr 80px; }
+label { font-size:.78rem; font-weight:700; color:var(--muted); display:block; margin-bottom:.3rem; }
+input[type=text], input[type=number], input[type=email] {
+  width:100%; padding:9px 13px; border:1.5px solid var(--border);
+  border-radius:var(--radius-sm); font-size:.88rem; font-family:inherit;
+  color:var(--text); background:var(--bg); outline:none; transition:border-color .15s;
+}
+input:focus { border-color:var(--cp); }
+.btn-primary {
+  padding:10px 22px; background:var(--cp); color:#fff; border:none;
+  border-radius:999px; font-size:.88rem; font-weight:700; cursor:pointer;
+  font-family:inherit; transition:background .12s;
+}
+.btn-primary:hover { background:#5a0000; }
+.btn-primary:disabled { background:#ccc; cursor:not-allowed; }
+.btn-sec {
+  padding:8px 16px; background:transparent; color:var(--text);
+  border:1.5px solid var(--border); border-radius:999px; font-size:.82rem;
+  font-weight:600; cursor:pointer; font-family:inherit;
+}
+.btn-sec:hover { border-color:#999; }
+.btn-danger {
+  padding:8px 16px; background:transparent; color:var(--cp);
+  border:1.5px solid var(--cp-light); border-radius:999px; font-size:.82rem;
+  font-weight:600; cursor:pointer; font-family:inherit;
+}
+
+/* ── 訊息提示 ── */
+.msg { font-size:.82rem; padding:.6rem .85rem; border-radius:var(--radius-sm); margin-top:.75rem; display:none; }
+.msg.ok { background:#e8f5e9; color:#2e7d32; }
+.msg.err { background:var(--cp-light); color:var(--cp); }
+.msg.info { background:var(--a-light); color:#2d5a8e; }
+
+/* ── 邀請碼結果 ── */
+.codes-result {
+  background:var(--bg); border-radius:var(--radius-sm);
+  padding:1rem; margin-top:1rem; display:none;
+}
+.codes-result-title { font-size:.78rem; font-weight:700; color:var(--muted); margin-bottom:.5rem; }
+.codes-grid { display:flex; flex-wrap:wrap; gap:7px; }
+.code-chip {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:6px; padding:5px 10px; font-size:.85rem; font-weight:700;
+  font-family:monospace; color:var(--text); letter-spacing:.05em;
+  cursor:pointer; transition:border-color .12s;
+  position:relative;
+}
+.code-chip:hover { border-color:var(--cp); }
+.code-chip.copied { border-color:#4caf50; color:#2e7d32; }
+.copy-all-btn { margin-top:.75rem; }
+
+/* ── 企業列表 ── */
+.org-table { width:100%; border-collapse:collapse; font-size:.85rem; }
+.org-table th {
+  text-align:left; font-size:.72rem; font-weight:700; letter-spacing:.05em;
+  color:var(--hint); padding:.5rem .75rem; border-bottom:1px solid var(--border);
+}
+.org-table td { padding:.7rem .75rem; border-bottom:1px solid var(--border); vertical-align:middle; }
+.org-table tr:last-child td { border-bottom:none; }
+.org-table tr:hover td { background:var(--bg); }
+.status-badge {
+  display:inline-block; padding:3px 9px; border-radius:999px;
+  font-size:.72rem; font-weight:700;
+}
+.status-full { background:#e8f5e9; color:#2e7d32; }
+.status-partial { background:var(--fc-light); color:var(--fc); }
+.status-empty { background:var(--bg); color:var(--hint); }
+.progress-bar-wrap { width:80px; height:6px; background:var(--border); border-radius:999px; overflow:hidden; }
+.progress-bar-fill { height:100%; background:var(--cp); border-radius:999px; transition:width .3s; }
+
+/* ── 報告列表 ── */
+.report-row {
+  display:flex; align-items:center; gap:1rem; padding:.85rem 0;
+  border-bottom:1px solid var(--border);
+}
+.report-row:last-child { border-bottom:none; }
+.report-info { flex:1; }
+.report-name { font-size:.9rem; font-weight:700; }
+.report-meta { font-size:.75rem; color:var(--muted); margin-top:2px; }
+.report-actions { display:flex; gap:8px; }
+
+/* ── 空狀態 ── */
+.empty { text-align:center; padding:2.5rem 1rem; color:var(--hint); font-size:.88rem; }
+
+/* ── Loading ── */
+.loading { text-align:center; padding:2rem; color:var(--hint); font-size:.85rem; }
+
+@media(max-width:600px) {
+  .form-row.cols2, .form-row.cols3 { grid-template-columns:1fr; }
+  .org-table th:nth-child(4), .org-table td:nth-child(4) { display:none; }
+}
+</style>
+</head>
+<body>
+
+<!-- 登入畫面 -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">內在聲音研究室</div>
+    <div class="login-sub">企業版管理後台</div>
+    <input class="login-input" type="password" id="pwInput" placeholder="請輸入管理密碼"
+      onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">進入後台</button>
+    <div class="login-err" id="loginErr">密碼錯誤，請再試一次。</div>
+  </div>
+</div>
+
+<!-- 主介面 -->
+<div id="mainScreen">
+  <div class="topbar">
+    <div class="topbar-brand">TA 測驗管理後台</div>
+    <div class="topbar-right">
+      <span class="topbar-hint" id="topbarHint"></span>
+      <button class="logout-btn" onclick="doLogout()">登出</button>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('codes')">產生邀請碼</button>
+      <button class="tab" onclick="switchTab('orgs')">企業列表</button>
+      <button class="tab" onclick="switchTab('reports')">報告記錄</button>
+    </div>
+
+    <!-- ── Tab 1：產生邀請碼 ── -->
+    <div id="tabCodes">
+      <div class="card">
+        <div class="card-title">建立新一批邀請碼
+          <span class="card-sub">每個邀請碼只能使用一次，員工輸入後才能進入企業版測驗。</span>
+        </div>
+        <div class="form-row cols2">
+          <div>
+            <label>企業名稱</label>
+            <input type="text" id="orgName" placeholder="例：哈佛企管顧問公司">
+          </div>
+          <div>
+            <label>企業代碼（英數，建議用縮寫）</label>
+            <input type="text" id="orgCodeInput" placeholder="例：HARVARD2025" style="text-transform:uppercase">
+          </div>
+        </div>
+        <div class="form-row" style="grid-template-columns:120px 1fr">
+          <div>
+            <label>產生幾個碼</label>
+            <input type="number" id="codeCount" value="10" min="1" max="200">
+          </div>
+          <div style="display:flex;align-items:flex-end;">
+            <button class="btn-primary" onclick="createCodes()">產生邀請碼</button>
+          </div>
+        </div>
+        <div class="msg" id="codeMsg"></div>
+
+        <div class="codes-result" id="codesResult">
+          <div class="codes-result-title" id="codesResultTitle"></div>
+          <div class="codes-grid" id="codesGrid"></div>
+          <button class="btn-sec copy-all-btn" onclick="copyAllCodes()">複製全部邀請碼</button>
+          <div style="margin-top:.5rem;font-size:.75rem;color:var(--hint)">
+            點每個碼可以單獨複製。「複製全部」會把所有碼複製到剪貼簿（每行一個）。
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">補發邀請碼（為現有企業增加人數）</div>
+        <div class="form-row cols3">
+          <div>
+            <label>企業代碼</label>
+            <input type="text" id="addOrgCode" placeholder="輸入現有企業代碼" style="text-transform:uppercase">
+          </div>
+          <div>
+            <label>補發幾個</label>
+            <input type="number" id="addCount" value="5" min="1" max="100">
+          </div>
+          <div style="display:flex;align-items:flex-end;">
+            <button class="btn-primary" onclick="addCodes()">補發</button>
+          </div>
+        </div>
+        <div class="msg" id="addMsg"></div>
+        <div class="codes-result" id="addCodesResult">
+          <div class="codes-result-title" id="addCodesResultTitle"></div>
+          <div class="codes-grid" id="addCodesGrid"></div>
+          <button class="btn-sec copy-all-btn" onclick="copyAllAddCodes()">複製全部</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Tab 2：企業列表 ── -->
+    <div id="tabOrgs" style="display:none;">
+      <div class="card">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;">
+          <div class="card-title" style="margin-bottom:0">所有企業</div>
+          <button class="btn-sec" onclick="loadOrgs()">重新整理</button>
+        </div>
+        <div id="orgsContent"><div class="loading">載入中…</div></div>
+      </div>
+    </div>
+
+    <!-- ── Tab 3：報告記錄 ── -->
+    <div id="tabReports" style="display:none;">
+      <div class="card">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;">
+          <div class="card-title" style="margin-bottom:0">所有報告</div>
+          <button class="btn-sec" onclick="loadReports()">重新整理</button>
+        </div>
+        <div id="reportsContent"><div class="loading">載入中…</div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- 企業詳情 Modal -->
+<div id="orgModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:none;align-items:center;justify-content:center;padding:1rem;">
+  <div style="background:var(--surface);border-radius:var(--radius);padding:1.75rem;width:100%;max-width:560px;max-height:85vh;overflow-y:auto;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;">
+      <div style="font-size:1rem;font-weight:800;" id="modalTitle">企業詳情</div>
+      <button class="btn-sec" onclick="closeModal()">關閉</button>
+    </div>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<!-- 產生報告 Modal -->
+<div id="reportModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:center;justify-content:center;padding:1rem;">
+  <div style="background:var(--surface);border-radius:var(--radius);padding:1.75rem;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;">
+      <div>
+        <div style="font-size:1rem;font-weight:800;">產生彙整報告</div>
+        <div style="font-size:.82rem;color:var(--muted);margin-top:2px;" id="reportModalOrgName"></div>
+      </div>
+      <button class="btn-sec" onclick="document.getElementById('reportModal').style.display='none'">關閉</button>
+    </div>
+    <input type="hidden" id="reportModalOrgCode">
+
+    <div style="margin-bottom:1.25rem;">
+      <label style="font-size:.78rem;font-weight:700;color:var(--muted);display:block;margin-bottom:.4rem;">這個企業最想解決的議題（選填）</label>
+      <select id="issueSelect" onchange="onIssueSelect()"
+        style="width:100%;padding:9px 13px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:.88rem;font-family:inherit;color:var(--text);background:var(--bg);outline:none;appearance:none;cursor:pointer;">
+        <option value="">— 選擇議題，或直接手動輸入 —</option>
+      </select>
+    </div>
+
+    <div style="margin-bottom:1rem;">
+      <label style="font-size:.78rem;font-weight:700;color:var(--muted);display:block;margin-bottom:.4rem;">
+        針對性建議（會顯示在報告的「針對你們現在最想解決的事」區塊）
+      </label>
+      <textarea id="issueNote"
+        style="width:100%;padding:.75rem .9rem;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:.85rem;font-family:inherit;color:var(--text);background:var(--bg);resize:vertical;min-height:200px;outline:none;line-height:1.75;transition:border-color .15s;"
+        onfocus="this.style.borderColor='var(--cp)'" onblur="this.style.borderColor='var(--border)'"
+        placeholder="選擇議題後會自動帶入草稿文案，你可以直接修改。也可以不選議題，直接在這裡輸入。若留空，報告裡不會顯示這個區塊。"></textarea>
+      <div style="font-size:.72rem;color:var(--hint);margin-top:.35rem;">選完議題後草稿會自動帶入，可以直接在框裡修改。留空代表報告裡不顯示此區塊。</div>
+    </div>
+
+    <div class="msg" id="reportModalMsg"></div>
+
+    <div style="display:flex;gap:.75rem;margin-top:1.25rem;justify-content:flex-end;">
+      <button class="btn-sec" onclick="document.getElementById('reportModal').style.display='none'">取消</button>
+      <button class="btn-primary" id="reportModalBtn" onclick="confirmGenerateReport()">產生報告並寄通知</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════
+//  設定
+// ════════════════════════════════
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbzU8y0Sz7xablFZBaH8mQh8llwNmnpXGHvpERjt_msY0OrK3riSkZz8PR7oyjBruco-cw/exec';
+const ADMIN_PASSWORD = 'YOUR_PASSWORD_HERE'; // ← 改成你的密碼（與 Code.gs 一致）
+const STATE_COLORS = { CP:'#7d0000', NP:'#c9637e', A:'#5585bc', FC:'#c9a000', AC:'#a07850' };
+const STATE_NAMES = { CP:'控制型父母', NP:'撫育型父母', A:'成人自我', FC:'自由型兒童', AC:'順應型兒童' };
+
+let adminToken = '';
+let lastCodes = [];
+let lastAddCodes = [];
+
+// ════════════════════════════════
+//  登入 / 登出
+// ════════════════════════════════
+function doLogin() {
+  const pw = document.getElementById('pwInput').value;
+  if (pw === ADMIN_PASSWORD) {
+    adminToken = pw;
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('mainScreen').style.display = 'block';
+    document.getElementById('topbarHint').textContent = new Date().toLocaleDateString('zh-TW');
+    loadOrgs();
+    loadReports();
+  } else {
+    document.getElementById('loginErr').style.display = 'block';
+  }
+}
+
+function doLogout() {
+  adminToken = '';
+  document.getElementById('mainScreen').style.display = 'none';
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('pwInput').value = '';
+}
+
+// ════════════════════════════════
+//  Tab 切換
+// ════════════════════════════════
+function switchTab(name) {
+  ['codes','orgs','reports'].forEach(t => {
+    document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1)).style.display = t === name ? 'block' : 'none';
+  });
+  document.querySelectorAll('.tab').forEach((btn, i) => {
+    btn.classList.toggle('active', ['codes','orgs','reports'][i] === name);
+  });
+}
+
+// ════════════════════════════════
+//  API 呼叫
+// ════════════════════════════════
+async function callAPI(payload) {
+  const res = await fetch(GAS_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify({ ...payload, token: adminToken })
+  });
+  return await res.json();
+}
+
+// ════════════════════════════════
+//  產生邀請碼
+// ════════════════════════════════
+async function createCodes() {
+  const orgName = document.getElementById('orgName').value.trim();
+  const orgCode = document.getElementById('orgCodeInput').value.trim().toUpperCase();
+  const count = parseInt(document.getElementById('codeCount').value) || 10;
+  const msg = document.getElementById('codeMsg');
+
+  if (!orgName || !orgCode) {
+    showMsg(msg, 'err', '請填寫企業名稱和企業代碼。');
+    return;
+  }
+
+  showMsg(msg, 'info', '產生中，請稍候…');
+  document.querySelector('#tabCodes .btn-primary').disabled = true;
+
+  try {
+    const data = await callAPI({ type: 'adminCreateCodes', orgCode, orgName, count });
+    document.querySelector('#tabCodes .btn-primary').disabled = false;
+
+    if (data.status === 'ok') {
+      showMsg(msg, 'ok', `成功產生 ${data.count} 個邀請碼，企業代碼：${data.orgCode}`);
+      lastCodes = data.codes;
+      renderCodes(data.codes, 'codesGrid', 'codesResultTitle', `${orgName}（${data.orgCode}）的邀請碼`);
+      document.getElementById('codesResult').style.display = 'block';
+      loadOrgs();
+    } else {
+      showMsg(msg, 'err', data.message || '發生錯誤');
+    }
+  } catch(e) {
+    document.querySelector('#tabCodes .btn-primary').disabled = false;
+    showMsg(msg, 'err', '網路錯誤，請再試一次。');
+  }
+}
+
+async function addCodes() {
+  const orgCode = document.getElementById('addOrgCode').value.trim().toUpperCase();
+  const count = parseInt(document.getElementById('addCount').value) || 5;
+  const msg = document.getElementById('addMsg');
+
+  if (!orgCode) {
+    showMsg(msg, 'err', '請填寫企業代碼。');
+    return;
+  }
+
+  showMsg(msg, 'info', '補發中…');
+
+  try {
+    // 補發時企業名稱留空，後端會沿用現有名稱
+    const data = await callAPI({ type: 'adminCreateCodes', orgCode, orgName: orgCode, count });
+    if (data.status === 'ok') {
+      showMsg(msg, 'ok', `成功補發 ${data.count} 個邀請碼`);
+      lastAddCodes = data.codes;
+      renderCodes(data.codes, 'addCodesGrid', 'addCodesResultTitle', `${orgCode} 補發的邀請碼`);
+      document.getElementById('addCodesResult').style.display = 'block';
+      loadOrgs();
+    } else {
+      showMsg(msg, 'err', data.message || '發生錯誤');
+    }
+  } catch(e) {
+    showMsg(msg, 'err', '網路錯誤，請再試一次。');
+  }
+}
+
+function renderCodes(codes, gridId, titleId, title) {
+  document.getElementById(titleId).textContent = title;
+  const grid = document.getElementById(gridId);
+  grid.innerHTML = '';
+  codes.forEach(code => {
+    const chip = document.createElement('div');
+    chip.className = 'code-chip';
+    chip.textContent = code;
+    chip.title = '點擊複製';
+    chip.onclick = () => {
+      navigator.clipboard.writeText(code).then(() => {
+        chip.classList.add('copied');
+        chip.textContent = '已複製 ✓';
+        setTimeout(() => { chip.classList.remove('copied'); chip.textContent = code; }, 1500);
+      });
+    };
+    grid.appendChild(chip);
+  });
+}
+
+function copyAllCodes() {
+  navigator.clipboard.writeText(lastCodes.join('\n')).then(() => {
+    document.querySelector('#codesResult .copy-all-btn').textContent = '已複製！';
+    setTimeout(() => document.querySelector('#codesResult .copy-all-btn').textContent = '複製全部邀請碼', 2000);
+  });
+}
+
+function copyAllAddCodes() {
+  navigator.clipboard.writeText(lastAddCodes.join('\n')).then(() => {
+    document.querySelector('#addCodesResult .copy-all-btn').textContent = '已複製！';
+    setTimeout(() => document.querySelector('#addCodesResult .copy-all-btn').textContent = '複製全部', 2000);
+  });
+}
+
+// ════════════════════════════════
+//  企業列表
+// ════════════════════════════════
+async function loadOrgs() {
+  const el = document.getElementById('orgsContent');
+  el.innerHTML = '<div class="loading">載入中…</div>';
+  try {
+    const data = await callAPI({ type: 'adminGetOrgs' });
+    if (data.status !== 'ok' || data.orgs.length === 0) {
+      el.innerHTML = '<div class="empty">還沒有企業資料。</div>';
+      return;
+    }
+    const rows = data.orgs.map(org => {
+      const pct = org.totalInvited > 0 ? Math.round(org.completed / org.totalInvited * 100) : 0;
+      const statusClass = pct === 100 ? 'status-full' : pct > 0 ? 'status-partial' : 'status-empty';
+      const statusText = pct === 100 ? '全部完成' : pct > 0 ? `${pct}% 完成` : '尚未開始';
+      return `<tr>
+        <td><strong>${org.orgName}</strong><br><span style="font-size:.72rem;color:var(--hint)">${org.orgCode}</span></td>
+        <td>${org.completed} / ${org.totalInvited} 人</td>
+        <td>
+          <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${pct}%"></div></div>
+        </td>
+        <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+        <td>
+          <button class="btn-sec" style="font-size:.75rem;padding:5px 10px" onclick="showOrgDetail('${org.orgCode}','${org.orgName}')">詳情</button>
+          <button class="btn-danger" style="font-size:.75rem;padding:5px 10px;margin-left:4px" onclick="generateReport('${org.orgCode}','${org.orgName}')">產生報告</button>
+        </td>
+      </tr>`;
+    }).join('');
+    el.innerHTML = `<table class="org-table">
+      <thead><tr>
+        <th>企業</th><th>完成進度</th><th style="width:100px">進度條</th><th>狀態</th><th>操作</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+  } catch(e) {
+    el.innerHTML = '<div class="empty">載入失敗，請重新整理。</div>';
+  }
+}
+
+async function showOrgDetail(orgCode, orgName) {
+  document.getElementById('modalTitle').textContent = orgName;
+  document.getElementById('modalContent').innerHTML = '<div class="loading">載入中…</div>';
+  document.getElementById('orgModal').style.display = 'flex';
+
+  try {
+    const data = await callAPI({ type: 'adminGetOrgStatus', orgCode });
+    if (data.status !== 'ok' || data.completed === 0) {
+      document.getElementById('modalContent').innerHTML = '<div class="empty">目前尚無完成記錄。</div>';
+      return;
+    }
+
+    // 計算統計
+    const n = data.records.length;
+    const avg = { CP:0, NP:0, A:0, FC:0, AC:0 };
+    const topCount = { CP:0, NP:0, A:0, FC:0, AC:0 };
+    data.records.forEach(r => {
+      ['CP','NP','A','FC','AC'].forEach(k => avg[k] += (parseInt(r.scores[k])||0));
+      if (r.topState && avg[r.topState] !== undefined) topCount[r.topState] = (topCount[r.topState]||0)+1;
+    });
+    ['CP','NP','A','FC','AC'].forEach(k => avg[k] = Math.round(avg[k]/n*10)/10);
+
+    const sorted = ['CP','NP','A','FC','AC'].map(k => ({ k, v: avg[k] })).sort((a,b) => b.v-a.v);
+
+    const bars = sorted.map(({ k, v }) => `
+      <div style="margin-bottom:.6rem">
+        <div style="display:flex;justify-content:space-between;font-size:.78rem;margin-bottom:3px">
+          <span style="font-weight:700;color:${STATE_COLORS[k]}">${k} ${STATE_NAMES[k]}</span>
+          <span style="color:var(--muted)">${v} 分</span>
+        </div>
+        <div style="background:var(--border);border-radius:999px;height:8px;overflow:hidden">
+          <div style="height:100%;background:${STATE_COLORS[k]};width:${v/20*100}%;border-radius:999px"></div>
+        </div>
+      </div>`).join('');
+
+    document.getElementById('modalContent').innerHTML = `
+      <div style="font-size:.82rem;color:var(--muted);margin-bottom:1.25rem">共 ${n} 人完成測驗</div>
+      <div style="font-size:.82rem;font-weight:700;color:var(--hint);margin-bottom:.75rem">五種聲音平均分數</div>
+      ${bars}
+      <div style="margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--border)">
+        <div style="font-size:.82rem;font-weight:700;color:var(--hint);margin-bottom:.5rem">最常出現的聲音分布</div>
+        ${['CP','NP','A','FC','AC'].map(k => {
+          const pct = n > 0 ? Math.round((topCount[k]||0)/n*100) : 0;
+          return `<div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.35rem;font-size:.82rem">
+            <span style="color:${STATE_COLORS[k]};font-weight:700;width:28px">${k}</span>
+            <span style="color:var(--muted)">${topCount[k]||0} 人（${pct}%）</span>
+          </div>`;
+        }).join('')}
+      </div>
+      <div style="margin-top:1rem">
+        <button class="btn-primary" onclick="generateReport('${orgCode}','${orgName}');closeModal()">產生彙整報告</button>
+      </div>`;
+  } catch(e) {
+    document.getElementById('modalContent').innerHTML = '<div class="empty">載入失敗。</div>';
+  }
+}
+
+function closeModal() {
+  document.getElementById('orgModal').style.display = 'none';
+}
+
+// 議題選項與對應草稿文案
+const ISSUE_PRESETS = [
+  {
+    label: '中間主管不願說真話、習慣順應',
+    draft: `這個團隊的AC整體偏高，說明大家普遍習慣先讀空氣、再決定要不要開口。這不是能力問題，是長期在「說了也沒用」或「說了會有麻煩」的環境裡學來的生存方式。
+
+要讓這個習慣鬆動，關鍵不在於鼓勵大家「勇敢說出來」，而是先讓說出來這件事變得安全。
+
+可以從這裡開始：在例行的一對一或團隊會議裡，主管先說一件「自己最近做得不夠好的事」。不需要很大，只是讓對方看見：在這裡，承認不足是被允許的。這個動作，比任何「歡迎大家暢所欲言」的宣示都更有效。
+
+第二步，把「我有一個不同的想法」這句話變成常態用語。每次討論結束前，固定留兩分鐘問一句：「有沒有人有不一樣的角度？」讓沉默有一個結構性的出口。`
+  },
+  {
+    label: '團隊創新力與主動性不足',
+    draft: `這個團隊的FC整體偏低，代表大家在工作裡比較少展現自發的熱情和好奇心。不是沒有想法，是那些想法還沒有安全的地方落地。
+
+創新力不是訓練出來的，是被允許出來的。
+
+可以從這裡開始：設立一個「不需要完美才能說」的提案機制。不是正式的創新提案，而是每個月一次，每個人用三分鐘說一件「我最近觀察到的、覺得可以不一樣的事」。不評分，不要求可行性，只是讓那個聲音有機會被聽見。
+
+第二步，當有人提出想法，先問「這個方向有什麼有趣的地方」，而不是「這樣可行嗎」。FC的聲音在被評估之前，需要先被好奇。`
+  },
+  {
+    label: '新人留不住、離職率偏高',
+    draft: `這個團隊的CP整體偏高、NP相對偏低，說明大家對品質和標準很在乎，但對「新人現在在哪裡、他需要什麼」的感知相對少一些。新人流失，很多時候不是因為工作太難，而是因為感覺自己一個人在撐。
+
+可以從這裡開始：為每一位新人指定一個「入職夥伴」，不是要他教工作，而是每週固定問一句：「這週有沒有什麼讓你困惑的事？」這個角色不需要給答案，只需要讓新人知道有人在注意他。
+
+第二步，在新人到職的前三個月，主管每月做一次 15 分鐘的非正式對話，不談績效，只問：「你覺得自己現在最需要什麼支持？」讓新人感覺被看見，是留住他們最根本的事。`
+  },
+  {
+    label: '跨部門溝通卡關、協作摩擦大',
+    draft: `跨部門溝通卡關，很多時候不是立場問題，而是雙方用不同的自我狀態在說話——一方在講原則（CP），另一方在講感受（NP或AC），中間沒有一個共同的語言讓彼此聽見對方。
+
+可以從這裡開始：在跨部門會議前，先花五分鐘對齊「這次我們要解決的是什麼」，讓A的聲音先把事實說清楚，再討論怎麼做。這個步驟很小，但它能大幅減少「雞同鴨講」的機率。
+
+第二步，遇到卡關，先問「對方最在乎的是什麼」，而不是急著解釋自己的立場。大部分的跨部門摩擦，根源不是利益衝突，而是雙方都覺得自己沒有被聽見。`
+  },
+  {
+    label: '主管給回饋的能力不足',
+    draft: `給回饋這件事，對很多主管來說是最難的溝通場景之一——太直接，對方防衛；太保守，問題沒有解決；不說，事情一直重複發生。
+
+這個困境，往往來自主管的CP和NP拉扯：CP想說清楚哪裡不對，NP又不想讓對方難受。兩個聲音同時說話，最後說出來的，是一個讓雙方都不太確定的模糊版本。
+
+可以從這裡開始：練習把「觀察」和「評判」分開說。不說「你的報告做得不夠好」，改說「這份報告的數據來源我看不清楚，你可以補充一下嗎？」前者是評判，後者是觀察加上具體的需求。
+
+第二步，給回饋前先問一句：「你自己覺得這次哪裡可以做得更好？」讓對方先說，主管再補充，這樣的對話通常比單向告知更容易被接受。`
+  },
+  {
+    label: '團隊士氣低落、缺乏歸屬感',
+    draft: `士氣低落，通常不是因為工作太難，而是因為大家感覺自己的付出沒有被看見，或者不確定自己在這裡有沒有位置。這個感受，和NP的缺席有很直接的關係。
+
+可以從這裡開始：讓「被看見」變成一個有結構的事。每週團隊例會的最後五分鐘，輪流說一件「這週有人做了什麼讓你覺得很有幫助」。不需要很正式，就是讓彼此的貢獻有機會被說出來。
+
+第二步，主管在一對一的時候，多問「你最近工作上有沒有什麼讓你覺得特別有意義的事」，而不只是問「進度怎麼樣了」。那個問題，讓對方知道你在乎的不只是他的產出，也在乎他這個人。`
+  },
+  {
+    label: '高壓環境下的情緒管理與衝突處理',
+    draft: `在高壓的環境下，每個人的慣性聲音都會變得更大聲——CP的人更容易要求，AC的人更容易退縮，FC的人更容易情緒外放。衝突，往往就在這個時候發生。
+
+衝突不是問題，衝突的處理方式才是。
+
+可以從這裡開始：當你感覺到自己開始情緒化，先做一件事：暫停。不需要解釋，只說「讓我想一下」或「我們十分鐘後繼續」。這個暫停，給的是A的聲音出來說話的空間。
+
+第二步，衝突過後，找一個安靜的時刻，問對方一句：「剛才那個討論，你有沒有什麼想法還沒說出來？」這個問題，讓對話有機會繼續，也讓關係有機會修復。`
+  },
+  {
+    label: '個人貢獻者升主管後的角色轉換困難',
+    draft: `從個人貢獻者升任主管，是職涯裡最大的溝通轉換之一。原本靠自己做好事情就夠了，現在要靠讓別人做好事情才算成功。這個轉換，對很多人來說，比想像的還要難。
+
+難的地方，往往不是不知道該怎麼做，而是放不下手。A的聲音說「交給他比較有效率」，CP的聲音說「他做的不如我做的好」，於是又親自動手了。
+
+可以從這裡開始：刻意選一件你覺得「自己做比較快」的事，交給團隊成員做，然後忍住不插手。這不是放棄品質，而是讓自己練習：我的工作，是讓他做好，而不是替他做好。
+
+第二步，每次開會前，先問自己一個問題：「今天我想讓誰說話？」而不是「今天我要說什麼」。這個問題的轉換，是主管角色真正開始的地方。`
+  },
+  {
+    label: '自訂（手動輸入）',
+    draft: ''
+  }
+];
+
+// 開啟產生報告的 Modal（含議題選擇）
+function generateReport(orgCode, orgName) {
+  document.getElementById('reportModalOrgCode').value = orgCode;
+  document.getElementById('reportModalOrgName').textContent = orgName;
+  document.getElementById('issueSelect').value = '';
+  document.getElementById('issueNote').value = '';
+  document.getElementById('reportModalMsg').style.display = 'none';
+  document.getElementById('reportModal').style.display = 'flex';
+}
+
+// 當選擇議題時，自動帶入草稿
+function onIssueSelect() {
+  const val = document.getElementById('issueSelect').value;
+  if (val === '') return;
+  const idx = parseInt(val);
+  const preset = ISSUE_PRESETS[idx];
+  if (preset && preset.draft) {
+    document.getElementById('issueNote').value = preset.draft;
+  } else {
+    document.getElementById('issueNote').value = '';
+  }
+}
+
+// 確認產生報告
+async function confirmGenerateReport() {
+  const orgCode = document.getElementById('reportModalOrgCode').value;
+  const orgName = document.getElementById('reportModalOrgName').textContent;
+  const issueLabel = document.getElementById('issueSelect').value !== ''
+    ? ISSUE_PRESETS[parseInt(document.getElementById('issueSelect').value)].label
+    : '';
+  const issueNote = document.getElementById('issueNote').value.trim();
+  const msgEl = document.getElementById('reportModalMsg');
+  const btn = document.getElementById('reportModalBtn');
+
+  msgEl.className = 'msg info';
+  msgEl.textContent = '產生中，請稍候…';
+  msgEl.style.display = 'block';
+  btn.disabled = true;
+
+  try {
+    const data = await callAPI({
+      type: 'adminGenerateReport',
+      orgCode,
+      issueLabel,
+      issueNote
+    });
+    if (data.status === 'ok') {
+      document.getElementById('reportModal').style.display = 'none';
+      btn.disabled = false;
+      alert(`報告已產生！\n\n通知信已寄到你的信箱。\n報告連結：\n${data.reportUrl}\n\n完成人數：${data.completed} 人`);
+      loadReports();
+      switchTab('reports');
+    } else {
+      btn.disabled = false;
+      msgEl.className = 'msg err';
+      msgEl.textContent = data.message || '發生錯誤，請再試一次。';
+    }
+  } catch(e) {
+    btn.disabled = false;
+    msgEl.className = 'msg err';
+    msgEl.textContent = '網路錯誤，請再試一次。';
+  }
+}
+
+// ════════════════════════════════
+//  報告記錄
+// ════════════════════════════════
+async function loadReports() {
+  const el = document.getElementById('reportsContent');
+  el.innerHTML = '<div class="loading">載入中…</div>';
+  try {
+    const data = await callAPI({ type: 'adminGetReports' });
+    if (data.status !== 'ok' || data.reports.length === 0) {
+      el.innerHTML = '<div class="empty">還沒有報告記錄。</div>';
+      return;
+    }
+    el.innerHTML = data.reports.map(r => `
+      <div class="report-row">
+        <div class="report-info">
+          <div class="report-name">${r.orgName} <span style="font-size:.72rem;color:var(--hint);font-weight:400">${r.orgCode}</span></div>
+          <div class="report-meta">${r.reportId} ・ ${r.generatedAt}</div>
+          ${r.note ? `<div style="font-size:.78rem;color:var(--a);margin-top:3px">備註：${r.note}</div>` : ''}
+        </div>
+        <div class="report-actions">
+          <a href="${r.reportUrl}" target="_blank" class="btn-sec" style="text-decoration:none;font-size:.78rem">開啟報告</a>
+          <button class="btn-sec" style="font-size:.78rem" onclick="editNote('${r.reportId}','${(r.note||'').replace(/'/g,"\\'")}')">備註</button>
+        </div>
+      </div>`).join('');
+  } catch(e) {
+    el.innerHTML = '<div class="empty">載入失敗，請重新整理。</div>';
+  }
+}
+
+async function editNote(reportId, currentNote) {
+  const note = prompt('編輯這份報告的備註（供你自己參考用）：', currentNote);
+  if (note === null) return;
+  try {
+    await callAPI({ type: 'adminUpdateReportNote', reportId, note });
+    loadReports();
+  } catch(e) {
+    alert('更新失敗。');
+  }
+}
+
+// ════════════════════════════════
+//  工具
+// ════════════════════════════════
+function showMsg(el, type, text) {
+  el.className = 'msg ' + type;
+  el.textContent = text;
+  el.style.display = 'block';
+}
+
+// 點擊 modal 背景關閉
+document.getElementById('orgModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+document.getElementById('reportModal').addEventListener('click', function(e) {
+  if (e.target === this) document.getElementById('reportModal').style.display = 'none';
+});
+
+// 初始化：把議題選項填入 select
+(function initIssueSelect() {
+  const sel = document.getElementById('issueSelect');
+  ISSUE_PRESETS.forEach((p, i) => {
+    const opt = document.createElement('option');
+    opt.value = i;
+    opt.textContent = p.label;
+    sel.appendChild(opt);
+  });
+})();
+</script>
+</body>
+</html>

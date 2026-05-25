@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TA 自我狀態測驗｜企業彙整報告範例</title>
+<style>
+.sample-watermark {
+  position:fixed; top:50%; left:50%; transform:translate(-50%,-50%) rotate(-30deg);
+  font-size:8rem; font-weight:900; color:rgba(125,0,0,.04);
+  pointer-events:none; z-index:0; white-space:nowrap; letter-spacing:.2em;
+  user-select:none;
+}
+.sample-banner {
+  background:#7d0000; color:#fff; text-align:center;
+  padding:.65rem 1rem; font-size:.82rem; font-weight:700; letter-spacing:.04em;
+  position:sticky; top:0; z-index:200;
+}
+</style>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --cp: #7d0000; --cp-light: #f5e6e6; --cp-mid: #c45a5a;
+  --np: #c9637e; --np-light: #fdf0f4;
+  --a:  #5585bc; --a-light:  #eef4fb;
+  --fc: #c9a000; --fc-light: #fffbe6;
+  --ac: #a07850; --ac-light: #f7f1ec;
+  --bg: #F7F6F2; --surface: #FFFFFF; --border: #E2E0D8;
+  --text: #1A1A18; --muted: #6B6A65; --hint: #A8A7A2;
+  --radius: 14px;
+}
+body { font-family:'PingFang TC','Microsoft JhengHei','Noto Sans TC',sans-serif; background:var(--bg); color:var(--text); line-height:1.65; }
+.wrap { max-width:760px; margin:0 auto; padding:2.5rem 1.25rem 5rem; }
+
+/* ── 封面區 ── */
+.cover {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius); padding:2.5rem 2rem 2rem; margin-bottom:1.5rem;
+  position:relative; overflow:hidden;
+}
+.cover::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:5px;
+  background:linear-gradient(90deg, var(--cp) 0%, var(--np) 25%, var(--a) 50%, var(--fc) 75%, var(--ac) 100%);
+}
+.cover-badge {
+  display:inline-block; font-size:.72rem; font-weight:700; letter-spacing:.08em;
+  color:var(--cp); background:var(--cp-light); padding:4px 12px; border-radius:999px; margin-bottom:1rem;
+}
+.cover-org { font-size:1.6rem; font-weight:800; line-height:1.25; margin-bottom:.5rem; }
+.cover-meta { font-size:.82rem; color:var(--muted); }
+.cover-stats {
+  display:flex; gap:2rem; margin-top:1.5rem; padding-top:1.5rem;
+  border-top:1px solid var(--border);
+}
+.cover-stat-num { font-size:1.8rem; font-weight:800; line-height:1; }
+.cover-stat-label { font-size:.75rem; color:var(--muted); margin-top:.25rem; }
+
+/* ── 區塊 ── */
+.section { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1.75rem; margin-bottom:1.25rem; }
+.section-label { font-size:.72rem; font-weight:700; letter-spacing:.08em; color:var(--hint); margin-bottom:.5rem; }
+.section-title { font-size:1rem; font-weight:800; margin-bottom:1.25rem; }
+.section-body { font-size:.9rem; color:var(--muted); line-height:1.9; }
+.section-body p { margin-bottom:.65rem; }
+.section-body p:last-child { margin-bottom:0; }
+
+/* ── 自我圖 ── */
+.egogram { display:flex; align-items:flex-end; justify-content:space-between; gap:12px; height:220px; margin-bottom:.75rem; }
+.ego-col { display:flex; flex-direction:column; align-items:center; justify-content:flex-end; flex:1; height:100%; }
+.ego-score { font-size:.85rem; font-weight:800; margin-bottom:6px; }
+.ego-bar-wrap { width:100%; flex:1; display:flex; align-items:flex-end; }
+.ego-bar { width:100%; border-radius:8px 8px 0 0; min-height:4px; transition:height .6s ease; }
+.ego-label { margin-top:10px; text-align:center; }
+.ego-key { font-size:.88rem; font-weight:800; }
+.ego-name { font-size:.62rem; color:var(--hint); margin-top:2px; }
+.ego-note { font-size:.8rem; color:var(--muted); line-height:1.8; padding-top:.75rem; border-top:1px solid var(--border); margin-top:.5rem; }
+
+/* ── 分布圓圈圖（用 CSS 做的比例環）── */
+.dist-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin-bottom:1rem; }
+.dist-item { text-align:center; }
+.dist-ring-wrap { position:relative; width:64px; height:64px; margin:0 auto .5rem; }
+.dist-ring-wrap svg { transform:rotate(-90deg); }
+.dist-ring-bg { fill:none; stroke:var(--border); stroke-width:6; }
+.dist-ring-fg { fill:none; stroke-width:6; stroke-linecap:round; transition:stroke-dashoffset .6s ease; }
+.dist-ring-label {
+  position:absolute; inset:0; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; font-size:.75rem; font-weight:800; line-height:1.2;
+}
+.dist-name { font-size:.72rem; color:var(--muted); }
+.dist-count { font-size:.7rem; color:var(--hint); margin-top:2px; }
+
+/* ── 聲音解讀卡片 ── */
+.voice-card { border:1px solid var(--border); border-radius:12px; padding:1.1rem 1.2rem; margin-bottom:.85rem; }
+.voice-card-head { display:flex; align-items:center; gap:10px; margin-bottom:.65rem; }
+.voice-dot { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:.72rem; font-weight:800; flex-shrink:0; }
+.voice-key { font-size:.9rem; font-weight:800; }
+.voice-score { font-size:.78rem; color:var(--hint); margin-left:4px; font-weight:400; }
+.voice-bar-row { display:flex; align-items:center; gap:.75rem; margin-bottom:.65rem; }
+.voice-bar-bg { flex:1; height:7px; background:var(--border); border-radius:999px; overflow:hidden; }
+.voice-bar-fill { height:100%; border-radius:999px; }
+.voice-body { font-size:.85rem; color:var(--muted); line-height:1.85; }
+
+/* ── 互動張力區塊 ── */
+.tension-block { background:var(--bg); border-radius:10px; padding:1rem 1.1rem; margin-bottom:.75rem; }
+.tension-title { font-size:.82rem; font-weight:700; margin-bottom:.35rem; }
+.tension-body { font-size:.82rem; color:var(--muted); line-height:1.8; }
+
+/* ── 建議區塊 ── */
+.suggest-item { display:flex; gap:.85rem; padding:.85rem 0; border-bottom:1px solid var(--border); }
+.suggest-item:last-child { border-bottom:none; }
+.suggest-num { width:28px; height:28px; border-radius:50%; background:var(--cp-light); color:var(--cp); font-size:.78rem; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.suggest-text { font-size:.88rem; color:var(--muted); line-height:1.8; }
+
+/* ── 自訂備註 ── */
+.custom-note {
+  background:linear-gradient(135deg, #fdf8f0 0%, #fff9f5 100%);
+  border:1px solid #e8d5b7; border-radius:var(--radius); padding:1.5rem 1.75rem;
+  margin-bottom:1.25rem; display:none;
+}
+.custom-note-label { font-size:.72rem; font-weight:700; letter-spacing:.08em; color:#a07850; margin-bottom:.5rem; }
+.custom-note-body { font-size:.9rem; color:var(--text); line-height:1.9; white-space:pre-wrap; }
+
+/* ── 頁尾 ── */
+.footer { text-align:center; padding:2rem 0 1rem; font-size:.78rem; color:var(--hint); }
+.footer strong { color:var(--cp); }
+
+/* ── 針對性建議區塊 ── */
+.targeted-block {
+  background:linear-gradient(135deg, #fef9f0 0%, #fff8f2 100%);
+  border:1.5px solid #e8c87a; border-radius:var(--radius);
+  padding:1.75rem; margin-bottom:1.25rem; display:none;
+}
+.targeted-label {
+  font-size:.72rem; font-weight:700; letter-spacing:.08em;
+  color:#9a7200; margin-bottom:.35rem;
+}
+.targeted-issue {
+  font-size:.82rem; font-weight:700; color:#7a5800;
+  background:#fff3cc; display:inline-block; padding:3px 10px;
+  border-radius:999px; margin-bottom:1rem;
+}
+.targeted-body {
+  font-size:.9rem; color:var(--text); line-height:1.95;
+  white-space:pre-wrap;
+}
+.print-bar {
+  position:fixed; bottom:1.5rem; right:1.5rem; z-index:100;
+  display:flex; flex-direction:column; gap:.5rem; align-items:flex-end;
+}
+.print-btn {
+  padding:11px 20px; background:var(--cp); color:#fff; border:none;
+  border-radius:999px; font-size:.85rem; font-weight:700; cursor:pointer;
+  font-family:inherit; box-shadow:0 4px 16px rgba(125,0,0,.25);
+}
+.print-hint { font-size:.72rem; color:var(--hint); text-align:right; }
+
+/* ── 載入 / 錯誤畫面 ── */
+#loadingScreen { text-align:center; padding:5rem 2rem; }
+.loading-spinner { font-size:1.5rem; margin-bottom:1rem; animation:spin 1s linear infinite; display:inline-block; }
+@keyframes spin { to { transform:rotate(360deg); } }
+#errorScreen { display:none; text-align:center; padding:5rem 2rem; }
+
+@media print {
+  .print-bar { display:none; }
+  body { background:white; }
+  .wrap { padding:1rem; }
+  .section, .cover { break-inside:avoid; }
+}
+</style>
+</head>
+<body>
+<div class="sample-banner">📋 這是報告範例，所有數據皆為示意用途</div>
+<div class="sample-watermark">SAMPLE</div>
+
+<div id="loadingScreen">
+  <div class="loading-spinner">⏳</div>
+  <div style="color:var(--muted);font-size:.9rem">載入報告中…</div>
+</div>
+
+<div id="errorScreen">
+  <div style="font-size:2rem;margin-bottom:1rem">🔍</div>
+  <div style="font-size:1rem;font-weight:700;margin-bottom:.5rem">找不到這份報告</div>
+  <div style="font-size:.85rem;color:var(--muted)">連結可能已失效，或請確認網址是否正確。</div>
+</div>
+
+<div id="reportContent" style="display:none">
+  <div class="wrap">
+
+    <!-- 封面 -->
+    <div class="cover">
+      <div class="cover-badge">TA 自我狀態測驗｜企業彙整報告</div>
+      <div class="cover-org" id="coverOrg"></div>
+      <div class="cover-meta" id="coverMeta"></div>
+      <div class="cover-stats">
+        <div>
+          <div class="cover-stat-num" id="statCompleted"></div>
+          <div class="cover-stat-label">完成人數</div>
+        </div>
+        <div>
+          <div class="cover-stat-num" id="statTotal"></div>
+          <div class="cover-stat-label">受邀人數</div>
+        </div>
+        <div>
+          <div class="cover-stat-num" id="statTop" style="font-size:1.2rem"></div>
+          <div class="cover-stat-label">團隊最強聲音</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 自訂備註（如果有的話） -->
+    <div class="custom-note" id="customNote">
+      <div class="custom-note-label">黃微老師的話</div>
+      <div class="custom-note-body" id="customNoteBody"></div>
+    </div>
+
+    <!-- 團隊聲音分布（長條圖） -->
+    <div class="section">
+      <div class="section-label">五種內在聲音</div>
+      <div class="section-title">你們團隊的聲音分布</div>
+      <div class="egogram" id="egogram"></div>
+      <div class="ego-note" id="egoNote"></div>
+    </div>
+
+    <!-- 各聲音「最常出現」比例（圓圈圖） -->
+    <div class="section">
+      <div class="section-label">各聲音分布</div>
+      <div class="section-title">每個人的主要聲音是哪一個？</div>
+      <div class="dist-grid" id="distGrid"></div>
+      <div style="font-size:.8rem;color:var(--hint)">圓圈代表每個狀態「最常出現」的人數比例。</div>
+    </div>
+
+    <!-- 五種聲音逐一解讀 -->
+    <div class="section">
+      <div class="section-label">聲音解讀</div>
+      <div class="section-title">五種聲音，對你們的意義是什麼？</div>
+      <div id="voiceCards"></div>
+    </div>
+
+    <!-- 值得留意的互動張力 -->
+    <div class="section" id="tensionSection">
+      <div class="section-label">溝通動態</div>
+      <div class="section-title">值得留意的互動張力</div>
+      <div id="tensionContent"></div>
+    </div>
+
+    <!-- 建議 -->
+    <div class="section">
+      <div class="section-label">接下來</div>
+      <div class="section-title">幾個可以開始的方向</div>
+      <div id="suggestContent"></div>
+    </div>
+
+    <!-- 針對性建議（有議題才顯示） -->
+    <div class="targeted-block" id="targetedBlock">
+      <div class="targeted-label">針對你們現在最想解決的事</div>
+      <div class="targeted-issue" id="targetedIssue"></div>
+      <div class="targeted-body" id="targetedBody"></div>
+    </div>
+
+    <!-- 說明 -->
+    <div class="section">
+      <div class="section-body">
+        <p>這份報告是根據 TA 溝通分析（Transactional Analysis）理論，由黃微老師的測驗系統自動彙整產生，並經黃微老師審閱後提供。</p>
+        <p>每個人的自我狀態分布是獨特的，沒有好壞之分。報告呈現的是整體趨勢，不代表每個人都完全符合這個描述。</p>
+        <p>如需進一步的課程、工作坊或一對一諮詢，歡迎聯繫黃微老師。</p>
+      </div>
+    </div>
+
+    <div class="footer">
+      <strong>黃微｜內在聲音研究室</strong><br>
+      基於 Transactional Analysis（TA）溝通分析理論
+    </div>
+
+  </div>
+</div>
+
+<!-- 列印按鈕 -->
+<div class="print-bar" id="printBar" style="display:none">
+  <button class="print-btn" onclick="window.print()">⬇ 下載 PDF / 列印</button>
+  <div class="print-hint">瀏覽器列印 → 另存為 PDF</div>
+</div>
+
+<script>
+// ════════════════════════════════
+//  設定：GAS 網址（部署後填入新的）
+// ════════════════════════════════
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbzU8y0Sz7xablFZBaH8mQh8llwNmnpXGHvpERjt_msY0OrK3riSkZz8PR7oyjBruco-cw/exec';
+
+const STATE_ORDER = ['CP', 'NP', 'A', 'FC', 'AC'];
+const STATE_COLORS = { CP:'#7d0000', NP:'#c9637e', A:'#5585bc', FC:'#c9a000', AC:'#a07850' };
+const STATE_LIGHTS = { CP:'#f5e6e6', NP:'#fdf0f4', A:'#eef4fb', FC:'#fffbe6', AC:'#f7f1ec' };
+
+// 互動張力文案（根據最高兩個狀態組合）
+const TENSION_MAP = {
+  'CP+NP': { title:'標準與溫暖之間', body:'團隊同時擁有強的CP和NP，代表大家既在乎做好事情，也在乎彼此的感受。這是很有力量的組合。需要留意的是，CP的要求和NP的體貼有時候方向不同，在給回饋、做決定的時候，可能需要花一點時間確認：我現在說的，是在幫忙還是在評判？' },
+  'CP+A':  { title:'清醒與標準同行', body:'CP和A都高的團隊，通常很會把事情想清楚，也很清楚自己的原則。做決定快，執行力強。需要留意的是，這樣的組合有時候在「讓別人感覺被看見」上需要多一點練習——事情做好了，但人的感受有沒有被注意到？' },
+  'CP+FC': { title:'熱情與原則共存', body:'CP和FC同時高，代表團隊既有活力，也有原則。這樣的團隊通常很有能量，說到做到。需要留意的是，當兩者方向不一致的時候（例如FC想嘗試新做法，CP覺得應該按規矩來），衝突容易快速升溫，需要多一個「先停下來確認」的步驟。' },
+  'CP+AC': { title:'要求與配合之間', body:'CP高和AC高同時出現，在同一個人身上是很耗力的組合（對自己要求高，卻又很難說出口）；在一個團隊裡，則可能表現為：大家心裡有標準，但不太說出來，表面和諧，底下其實有很多沒被說清楚的期待。' },
+  'NP+A':  { title:'溫暖與清醒並存', body:'NP和A都高的團隊，是很理想的支持型組合。關心人，也能清醒地處理事情。需要留意的是，兩者有時候會在「先解決問題」和「先讓對方感覺被聽見」之間拉扯——其實這兩件事都重要，只是順序有時候需要判斷。' },
+  'NP+FC': { title:'溫暖又有活力', body:'NP和FC都高的團隊，通常氣氛很好，大家互相照顧，也敢於嘗試。這樣的環境讓人感覺安全，也感覺有趣。需要留意的是，在需要做出清楚判斷、設立邊界的時候，可能需要有人刻意扮演「把事情說清楚」的角色。' },
+  'NP+AC': { title:'照顧別人，也照顧自己', body:'NP和AC同時高，代表團隊裡有很強的照顧文化，大家都在乎彼此的感受，也傾向避免衝突。這讓氣氛通常很和諧。需要留意的是，當大家都不太說「不」的時候，一些重要的問題可能就這樣被繞過去了。' },
+  'A+FC':  { title:'清醒又有熱情', body:'A和FC都高的團隊，通常很有創意，也很有執行力。想到就做，做了又會想清楚。這是很強的組合。需要留意的是，在需要慢下來、照顧人的感受的時候，可能需要多留一點時間給「人」，而不只是「事」。' },
+  'A+AC':  { title:'理性與體貼', body:'A和AC都高的團隊，做事有邏輯，待人也細心。衝突少，效率不差。需要留意的是，這樣的組合有時候在「說出真正的想法」上需要刻意練習——大家都很好說話，但重要的事有沒有被說清楚？' },
+  'FC+AC': { title:'熱情與體貼', body:'FC和AC都高的團隊，氣氛通常很好，大家有活力，也很在意彼此。這種環境讓人感覺舒服。需要留意的是，當需要說「不」或設立清楚界線的時候，兩個聲音可能都在猶豫，最後沒有人站出來說清楚。' },
+};
+
+function getComboKey(k1, k2) {
+  const order = ['CP','NP','A','FC','AC'];
+  return [k1,k2].sort((a,b) => order.indexOf(a)-order.indexOf(b)).join('+');
+}
+
+// ════════════════════════════════
+//  主程式：取得報告數據並渲染
+// ════════════════════════════════
+async function loadReport() {
+  const params = new URLSearchParams(window.location.search);
+  const reportId = params.get('id');
+
+  if (!reportId) {
+    showError();
+    return;
+  }
+
+  try {
+    const res = await fetch(`${GAS_URL}?action=getReport&id=${encodeURIComponent(reportId)}`);
+    const data = await res.json();
+
+    if (data.status !== 'ok') {
+      showError();
+      return;
+    }
+
+    renderReport(data);
+  } catch(e) {
+    showError();
+  }
+}
+
+function showError() {
+  document.getElementById('loadingScreen').style.display = 'none';
+  document.getElementById('errorScreen').style.display = 'block';
+}
+
+function renderReport(d) {
+  document.getElementById('loadingScreen').style.display = 'none';
+  document.getElementById('reportContent').style.display = 'block';
+  document.getElementById('printBar').style.display = 'flex';
+
+  // 封面
+  document.getElementById('coverOrg').textContent = d.orgName;
+  document.getElementById('coverMeta').textContent = `報告產生日期：${d.generatedAt} ・ 報告編號：${d.reportId}`;
+  document.getElementById('statCompleted').textContent = d.completed;
+  document.getElementById('statTotal').textContent = d.totalInvited || d.completed;
+  document.getElementById('statTop').textContent = d.teamTop + ' ' + getStateName(d.teamTop, d.stateInfo);
+
+  // 自訂備註
+  if (d.note && d.note.trim()) {
+    document.getElementById('customNoteBody').textContent = d.note;
+    document.getElementById('customNote').style.display = 'block';
+  }
+
+  const avg = d.avgScores;
+  const sortedAvg = STATE_ORDER.map(k => ({ k, v: avg[k] })).sort((a,b) => b.v-a.v);
+
+  // 長條圖
+  renderEgogram(avg, d.teamTop, d.teamLow, d.stateInfo);
+
+  // 圓圈分布圖
+  renderDistGrid(d.topCount, d.completed, d.stateInfo);
+
+  // 五種聲音解讀
+  renderVoiceCards(sortedAvg, avg, d.stateInfo);
+
+  // 互動張力
+  renderTension(sortedAvg, d.teamTop);
+
+  // 針對性建議
+  if (d.issueNote && d.issueNote.trim()) {
+    document.getElementById('targetedIssue').textContent = d.issueLabel || '本次重點議題';
+    document.getElementById('targetedBody').textContent = d.issueNote;
+    document.getElementById('targetedBlock').style.display = 'block';
+  }
+
+  // 建議
+  renderSuggestions(d.teamTop, d.teamLow, d.stateInfo);
+}
+
+function getStateName(key, stateInfo) {
+  return stateInfo && stateInfo[key] ? stateInfo[key].name : key;
+}
+
+function renderEgogram(avg, teamTop, teamLow, stateInfo) {
+  const maxVal = Math.max(...STATE_ORDER.map(k => avg[k]));
+  const html = STATE_ORDER.map(k => {
+    const v = avg[k];
+    const pct = maxVal > 0 ? v / 20 * 100 : 0;
+    const name = getStateName(k, stateInfo);
+    return `<div class="ego-col">
+      <div class="ego-score" style="color:${STATE_COLORS[k]}">${v}</div>
+      <div class="ego-bar-wrap">
+        <div class="ego-bar" style="height:${pct}%;background:${STATE_COLORS[k]};opacity:.85"></div>
+      </div>
+      <div class="ego-label">
+        <div class="ego-key" style="color:${STATE_COLORS[k]}">${k}</div>
+        <div class="ego-name">${name}</div>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('egogram').innerHTML = html;
+
+  const topName = getStateName(teamTop, stateInfo);
+  const lowName = getStateName(teamLow, stateInfo);
+  document.getElementById('egoNote').innerHTML =
+    `這張圖呈現的是團隊五種聲音的<strong>平均分數</strong>，反映大家整體的溝通傾向。<br>` +
+    `團隊整體最強的聲音是 <strong style="color:${STATE_COLORS[teamTop]}">${teamTop} ${topName}</strong>，` +
+    `最安靜的聲音是 <strong style="color:${STATE_COLORS[teamLow]}">${teamLow} ${lowName}</strong>。<br>` +
+    `每個人的分布都是獨特的；這張圖呈現的是整體趨勢，而不是每個人的樣子。`;
+}
+
+function renderDistGrid(topCount, total, stateInfo) {
+  const circumference = 2 * Math.PI * 26; // r=26
+  const html = STATE_ORDER.map(k => {
+    const count = topCount[k] || 0;
+    const pct = total > 0 ? count / total : 0;
+    const dash = pct * circumference;
+    const name = getStateName(k, stateInfo);
+    const pctLabel = total > 0 ? Math.round(pct * 100) + '%' : '0%';
+    return `<div class="dist-item">
+      <div class="dist-ring-wrap">
+        <svg width="64" height="64" viewBox="0 0 64 64">
+          <circle class="dist-ring-bg" cx="32" cy="32" r="26"/>
+          <circle class="dist-ring-fg" cx="32" cy="32" r="26"
+            stroke="${STATE_COLORS[k]}"
+            stroke-dasharray="${dash} ${circumference}"
+            stroke-dashoffset="0"/>
+        </svg>
+        <div class="dist-ring-label">
+          <span style="color:${STATE_COLORS[k]};font-size:.82rem;font-weight:800">${pctLabel}</span>
+        </div>
+      </div>
+      <div class="dist-name" style="color:${STATE_COLORS[k]};font-weight:700">${k}</div>
+      <div class="dist-count">${count} 人</div>
+    </div>`;
+  }).join('');
+  document.getElementById('distGrid').innerHTML = html;
+}
+
+function renderVoiceCards(sortedAvg, avg, stateInfo) {
+  const maxVal = Math.max(...sortedAvg.map(x => x.v));
+  const html = sortedAvg.map(({ k, v }) => {
+    const info = stateInfo ? stateInfo[k] : null;
+    const isHi = v >= 12;
+    const teamDesc = info ? (isHi ? info.teamHi : info.teamLo) : '';
+    const pct = maxVal > 0 ? v / maxVal * 100 : 0;
+    return `<div class="voice-card">
+      <div class="voice-card-head">
+        <div class="voice-dot" style="background:${STATE_LIGHTS[k]};color:${STATE_COLORS[k]}">${k}</div>
+        <div>
+          <span class="voice-key" style="color:${STATE_COLORS[k]}">${k} ${info ? info.name : ''}</span>
+          <span class="voice-score">平均 ${v} 分</span>
+        </div>
+      </div>
+      <div class="voice-bar-row">
+        <div class="voice-bar-bg">
+          <div class="voice-bar-fill" style="width:${pct}%;background:${STATE_COLORS[k]}"></div>
+        </div>
+        <span style="font-size:.75rem;color:${STATE_COLORS[k]};font-weight:700;white-space:nowrap">${v}/20</span>
+      </div>
+      <div class="voice-body">${teamDesc}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('voiceCards').innerHTML = html;
+}
+
+function renderTension(sortedAvg, teamTop) {
+  const top2 = sortedAvg.slice(0, 2);
+  const comboKey = getComboKey(top2[0].k, top2[1].k);
+  const tension = TENSION_MAP[comboKey];
+
+  if (!tension) {
+    document.getElementById('tensionSection').style.display = 'none';
+    return;
+  }
+
+  document.getElementById('tensionContent').innerHTML = `
+    <div class="tension-block">
+      <div class="tension-title">${tension.title}</div>
+      <div class="tension-body">${tension.body}</div>
+    </div>
+    <div style="font-size:.8rem;color:var(--hint);margin-top:.5rem">
+      這個分析基於團隊整體分數最高的兩種聲音（${top2[0].k} 和 ${top2[1].k}）。
+    </div>`;
+}
+
+function renderSuggestions(teamTop, teamLow, stateInfo) {
+  const topName = getStateName(teamTop, stateInfo);
+  const lowName = getStateName(teamLow, stateInfo);
+
+  const suggestions = [
+    `認識自己的主要聲音是哪一個，不是為了貼標籤，而是讓你在溝通出問題的時候，多一個問自己的角度：「現在是哪個聲音在說話？」`,
+    `${teamTop} ${topName} 是你們團隊的集體優勢，值得好好運用。當它發揮得很好的時候，留意它帶來的是什麼，讓那些時刻更常發生。`,
+    `${teamLow} ${lowName} 在這個團隊裡相對安靜。這不是弱點，而是一個邀請：試著在某個場合，刻意讓這個聲音多說一句話，看看會發生什麼。`,
+    `這份報告最好的用法，不是讀完就放著，而是帶進一次真實的團隊對話。試著問彼此：「你覺得我們團隊最大聲的聲音是什麼？最難開口的聲音又是什麼？」那個對話本身，就是開始。`,
+  ];
+
+  document.getElementById('suggestContent').innerHTML = suggestions.map((s, i) => `
+    <div class="suggest-item">
+      <div class="suggest-num">${i + 1}</div>
+      <div class="suggest-text">${s}</div>
+    </div>`).join('');
+}
+
+// ════════════════════════════════
+//  預覽版：直接用假數據渲染，不需要 API
+// ════════════════════════════════
+const PREVIEW_DATA = {
+  status: 'ok',
+  reportId: 'RPT-HARVARD2025-202506101430',
+  orgCode: 'HARVARD2025',
+  orgName: '範例企業（示意用途）',
+  generatedAt: '2025-06-10 14:30',
+  note: '這個欄位由黃微老師在確認報告後手動填入，可以針對這個團隊補充觀察或提醒。報告寄出前，黃微老師會親自閱讀數據、調整文案，再確認發送。',
+  avgScores: { CP: 14.2, NP: 11.8, A: 13.5, FC: 9.4, AC: 12.1 },
+  completed: 12,
+  totalInvited: 15,
+  teamTop: 'CP',
+  teamLow: 'FC',
+  topCount: { CP: 5, NP: 2, A: 3, FC: 1, AC: 1 },
+  issueLabel: '團隊創新力與主動性不足',
+  issueNote: `這個團隊的FC整體偏低，代表大家在工作裡比較少展現自發的熱情和好奇心。不是沒有想法，是那些想法還沒有安全的地方落地。
+
+創新力不是訓練出來的，是被允許出來的。
+
+可以從這裡開始：設立一個「不需要完美才能說」的提案機制。不是正式的創新提案，而是每個月一次，每個人用三分鐘說一件「我最近觀察到的、覺得可以不一樣的事」。不評分，不要求可行性，只是讓那個聲音有機會被聽見。
+
+第二步，當有人提出想法，先問「這個方向有什麼有趣的地方」，而不是「這樣可行嗎」。FC的聲音在被評估之前，需要先被好奇。`,
+  stateInfo: {
+    CP: {
+      name: '控制型父母',
+      teamHi: '團隊的CP整體偏高，代表這個團隊重視原則、標準與責任感。大家對「把事情做好」有共同的在乎。這是很強的執行力基礎，在需要品質把關和規範建立的場合特別有力量。需要留意的是，當整個團隊的CP都偏高，溝通容易變得比較評判式，給彼此的空間可能相對少一些。',
+      teamLo: '團隊的CP整體偏低，代表這個團隊整體上比較彈性、少評判。'
+    },
+    NP: {
+      name: '撫育型父母',
+      teamHi: '團隊的NP整體偏高，代表這個團隊有很強的關懷文化。大家互相照顧，新人進來比較容易感覺被接納，壓力大的時候也有人回頭看你。這是團隊黏著度高的基礎。需要留意的是，NP高的團隊有時候會在「不想讓人難受」和「說清楚該說的話」之間拉扯。',
+      teamLo: '團隊的NP整體偏低，代表大家比較各自專注在自己的工作上，互相的情感照顧相對少一些。'
+    },
+    A: {
+      name: '成人自我',
+      teamHi: '團隊的A整體偏高，代表大家都傾向用事實和邏輯說話，做決定前會評估、開會時比較不容易情緒化。這讓團隊在複雜問題的處理上很有優勢。需要留意的是，A高的團隊有時候在情感連結和直覺判斷上會相對少一些。',
+      teamLo: '團隊的A整體偏低，代表大家比較依賴感覺和直覺。'
+    },
+    FC: {
+      name: '自由型兒童',
+      teamHi: '團隊的FC整體偏高，代表這個團隊有很強的活力和創意動能。',
+      teamLo: '團隊的FC整體偏低，代表大家比較收斂、謹慎，不太容易在工作裡展現熱情或自發性。這樣的團隊通常穩定，但在需要創意或活力的時候，可能需要刻意創造一些讓大家「可以放鬆說真話」的空間。'
+    },
+    AC: {
+      name: '順應型兒童',
+      teamHi: '團隊的AC整體偏高，代表大家普遍比較在意別人的感受，傾向配合、避免衝突。表面上氣氛通常比較和諧，但這也意味著很多真實的想法可能沒有說出來。',
+      teamLo: '團隊的AC整體偏低，代表大家比較敢表達自己的想法，不太容易被外部壓力改變立場。'
+    }
+  },
+  stateOrder: ['CP', 'NP', 'A', 'FC', 'AC']
+};
+
+// 直接渲染預覽數據
+document.getElementById('loadingScreen').style.display = 'none';
+renderReport(PREVIEW_DATA);
+</script>
+</body>
+</html>

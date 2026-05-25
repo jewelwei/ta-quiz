@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TA 自我狀態測驗｜企業版使用說明</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --cp: #7d0000; --cp-light: #f5e6e6;
+  --np: #c9637e; --np-light: #fdf0f4;
+  --a:  #5585bc; --a-light:  #eef4fb;
+  --fc: #c9a000; --fc-light: #fffbe6;
+  --ac: #a07850; --ac-light: #f7f1ec;
+  --bg: #F7F6F2; --surface: #fff; --border: #E2E0D8;
+  --text: #1A1A18; --muted: #6B6A65; --hint: #A8A7A2;
+  --radius: 14px;
+}
+body { font-family:'PingFang TC','Microsoft JhengHei','Noto Sans TC',sans-serif; background:var(--bg); color:var(--text); line-height:1.65; }
+.wrap { max-width:720px; margin:0 auto; padding:2.5rem 1.25rem 5rem; }
+
+/* ── 封面 ── */
+.hero {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius); padding:2.75rem 2rem 2.25rem;
+  margin-bottom:1.5rem; text-align:center; position:relative; overflow:hidden;
+}
+.hero::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:5px;
+  background:linear-gradient(90deg,#7d0000,#c9637e,#5585bc,#c9a000,#a07850);
+}
+.hero-badge {
+  display:inline-block; font-size:.72rem; font-weight:700; letter-spacing:.08em;
+  color:var(--cp); background:var(--cp-light); padding:4px 14px;
+  border-radius:999px; margin-bottom:1.1rem;
+}
+.hero-title { font-size:1.75rem; font-weight:800; line-height:1.25; margin-bottom:.65rem; }
+.hero-sub { font-size:.92rem; color:var(--muted); line-height:1.85; max-width:480px; margin:0 auto 1.5rem; }
+.hero-meta {
+  display:flex; justify-content:center; gap:1.75rem; flex-wrap:wrap;
+  padding-top:1.25rem; border-top:1px solid var(--border);
+}
+.hero-meta-item { text-align:center; }
+.hero-meta-num { font-size:1.5rem; font-weight:800; color:var(--cp); }
+.hero-meta-label { font-size:.72rem; color:var(--hint); margin-top:2px; }
+
+/* ── 通用區塊 ── */
+.section { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1.75rem; margin-bottom:1.25rem; }
+.section-label { font-size:.72rem; font-weight:700; letter-spacing:.08em; color:var(--hint); margin-bottom:.35rem; }
+.section-title { font-size:1rem; font-weight:800; margin-bottom:1.1rem; }
+
+/* ── 步驟 ── */
+.steps { display:flex; flex-direction:column; gap:.85rem; }
+.step { display:flex; gap:1rem; align-items:flex-start; }
+.step-num {
+  width:32px; height:32px; border-radius:50%; background:var(--cp); color:#fff;
+  font-size:.85rem; font-weight:800; display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; margin-top:.1rem;
+}
+.step-content {}
+.step-title { font-size:.92rem; font-weight:700; margin-bottom:.25rem; }
+.step-body { font-size:.85rem; color:var(--muted); line-height:1.8; }
+.step-body strong { color:var(--text); font-weight:700; }
+.step-tag {
+  display:inline-block; font-size:.72rem; font-weight:700; padding:2px 8px;
+  border-radius:999px; margin-top:.4rem;
+}
+
+/* ── 五種聲音簡介 ── */
+.states-grid { display:grid; grid-template-columns:1fr 1fr; gap:.75rem; }
+.state-card { border:1px solid var(--border); border-radius:10px; padding:.9rem 1rem; }
+.state-card-head { display:flex; align-items:center; gap:.6rem; margin-bottom:.4rem; }
+.state-dot { width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:.68rem; font-weight:800; flex-shrink:0; }
+.state-key { font-size:.85rem; font-weight:800; }
+.state-name { font-size:.72rem; color:var(--muted); margin-left:2px; }
+.state-voice { font-size:.75rem; font-style:italic; color:var(--hint); margin-bottom:.35rem; }
+.state-body { font-size:.78rem; color:var(--muted); line-height:1.7; }
+
+/* ── 報告說明 ── */
+.report-preview {
+  background:var(--bg); border-radius:10px; padding:1rem 1.1rem;
+  margin-top:.85rem;
+}
+.report-preview-title { font-size:.75rem; font-weight:700; color:var(--hint); margin-bottom:.5rem; }
+.report-item { display:flex; gap:.65rem; padding:.4rem 0; font-size:.85rem; color:var(--muted); align-items:baseline; }
+.report-item::before { content:'▸'; color:var(--cp); font-size:.75rem; flex-shrink:0; }
+
+/* ── Q&A ── */
+.qa-item { padding:.85rem 0; border-bottom:1px solid var(--border); }
+.qa-item:last-child { border-bottom:none; }
+.qa-q { font-size:.88rem; font-weight:700; margin-bottom:.35rem; }
+.qa-a { font-size:.85rem; color:var(--muted); line-height:1.8; }
+
+/* ── CTA ── */
+.cta-block {
+  background:var(--cp); color:#fff; border-radius:var(--radius);
+  padding:2rem; text-align:center; margin-bottom:1.25rem;
+}
+.cta-title { font-size:1.1rem; font-weight:800; margin-bottom:.5rem; }
+.cta-sub { font-size:.85rem; opacity:.85; line-height:1.8; margin-bottom:1.25rem; }
+.cta-link {
+  display:inline-block; padding:11px 28px; background:#fff; color:var(--cp);
+  border-radius:999px; font-size:.9rem; font-weight:800; text-decoration:none;
+}
+
+/* ── 頁尾 ── */
+.footer { text-align:center; font-size:.78rem; color:var(--hint); padding:1rem 0; }
+
+@media(max-width:520px){
+  .states-grid { grid-template-columns:1fr; }
+  .hero-meta { gap:1.25rem; }
+}
+
+@media print {
+  body { background:white; }
+  .wrap { padding:1rem; }
+  .cta-block { background:#7d0000 !important; -webkit-print-color-adjust:exact; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- 封面 -->
+  <div class="hero">
+    <div class="hero-badge">企業版測驗說明</div>
+    <h1 class="hero-title">TA 自我狀態測驗<br>——認識你們的溝通基因</h1>
+    <p class="hero-sub">
+      每個人心裡都住著五種內在聲音。<br>
+      這份測驗幫助你們的團隊看見自己的溝通傾向，<br>
+      不是為了貼標籤，而是為了讓彼此的對話更有力量。
+    </p>
+    <div class="hero-meta">
+      <div class="hero-meta-item">
+        <div class="hero-meta-num">3–5</div>
+        <div class="hero-meta-label">分鐘完成</div>
+      </div>
+      <div class="hero-meta-item">
+        <div class="hero-meta-num">50</div>
+        <div class="hero-meta-label">道題目</div>
+      </div>
+      <div class="hero-meta-item">
+        <div class="hero-meta-num">不具名</div>
+        <div class="hero-meta-label">保護個人隱私</div>
+      </div>
+      <div class="hero-meta-item">
+        <div class="hero-meta-num">即時</div>
+        <div class="hero-meta-label">完成即看結果</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 使用流程 -->
+  <div class="section">
+    <div class="section-label">使用流程</div>
+    <div class="section-title">四個步驟，從個人到團隊</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">收到邀請碼與測驗連結</div>
+          <div class="step-body">企業聯絡人會收到一批邀請碼和專屬測驗網址。每個邀請碼只能使用一次，請發給每位參與成員各一個。</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">個人完成測驗，即時拿到個人報告</div>
+          <div class="step-body">
+            成員打開測驗連結 → 輸入邀請碼 → 完成 50 道題（約 3–5 分鐘）→ 立刻看到個人結果。<br>
+            測驗<strong>不具名</strong>，個人結果只有自己看得到。如果希望收到 email 版的報告，可以自行填寫 email。
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">黃微老師審閱數據，產生企業彙整報告</div>
+          <div class="step-body">
+            全員完成後（或約定時間到），黃微老師會產生一份<strong>企業彙整報告</strong>，針對你們團隊整體的聲音分布進行解讀，並加入對應你們目前議題的具體建議。<br>
+            報告寄出前，黃微老師會親自確認內容。
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <div class="step-title">收到報告，帶進團隊對話</div>
+          <div class="step-body">
+            企業聯絡人收到報告連結，可以下載 PDF 或直接分享連結給團隊。<br>
+            報告可以作為課程前測、團隊共識討論、或主管一對一輔導的起點。
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 五種聲音簡介 -->
+  <div class="section">
+    <div class="section-label">測驗工具</div>
+    <div class="section-title">五種內在聲音，每個人都有</div>
+    <p style="font-size:.88rem;color:var(--muted);line-height:1.85;margin-bottom:1.25rem;">
+      TA（溝通分析）理論將每個人的內在溝通模式分為五種自我狀態。它們沒有好壞之分，差別只在於：在你的生命裡，哪個聲音最常搶到麥克風？
+    </p>
+    <div class="states-grid">
+      <div class="state-card">
+        <div class="state-card-head">
+          <div class="state-dot" style="background:#f5e6e6;color:#7d0000">CP</div>
+          <div><span class="state-key" style="color:#7d0000">CP</span><span class="state-name">控制型父母</span></div>
+        </div>
+        <div class="state-voice">「這件事應該這樣做。」</div>
+        <div class="state-body">重視原則與標準，有責任感，說到做到。優勢是執行力強；需要留意的是有時標準會讓人感到壓力。</div>
+      </div>
+      <div class="state-card">
+        <div class="state-card-head">
+          <div class="state-dot" style="background:#fdf0f4;color:#c9637e">NP</div>
+          <div><span class="state-key" style="color:#c9637e">NP</span><span class="state-name">撫育型父母</span></div>
+        </div>
+        <div class="state-voice">「你還好嗎？我來幫你。」</div>
+        <div class="state-body">關懷他人，有耐心，善於建立信任。優勢是凝聚人心；需要留意的是容易忘了照顧自己。</div>
+      </div>
+      <div class="state-card">
+        <div class="state-card-head">
+          <div class="state-dot" style="background:#eef4fb;color:#5585bc">A</div>
+          <div><span class="state-key" style="color:#5585bc">A</span><span class="state-name">成人自我</span></div>
+        </div>
+        <div class="state-voice">「讓我們看看數據說什麼。」</div>
+        <div class="state-body">理性分析，根據事實做判斷，冷靜穩定。優勢是清醒務實；需要留意的是有時漏掉了人的感受。</div>
+      </div>
+      <div class="state-card">
+        <div class="state-card-head">
+          <div class="state-dot" style="background:#fffbe6;color:#c9a000">FC</div>
+          <div><span class="state-key" style="color:#c9a000">FC</span><span class="state-name">自由型兒童</span></div>
+        </div>
+        <div class="state-voice">「好玩！我想試試看！」</div>
+        <div class="state-body">熱情有活力，敢於嘗試，帶動氣氛。優勢是創意與能量；需要留意的是熱情來得快去得也快。</div>
+      </div>
+      <div class="state-card" style="grid-column:1/-1">
+        <div class="state-card-head">
+          <div class="state-dot" style="background:#f7f1ec;color:#a07850">AC</div>
+          <div><span class="state-key" style="color:#a07850">AC</span><span class="state-name">順應型兒童</span></div>
+        </div>
+        <div class="state-voice">「沒關係，你決定就好。」</div>
+        <div class="state-body">體貼細膩，善於協調，不製造麻煩。優勢是維持和諧；需要留意的是真正的想法常常沒有說出來。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 報告內容說明 -->
+  <div class="section">
+    <div class="section-label">企業彙整報告</div>
+    <div class="section-title">你們會拿到什麼？</div>
+    <p style="font-size:.88rem;color:var(--muted);line-height:1.85;margin-bottom:.5rem;">
+      企業彙整報告把所有成員的數據整合在一起，讓你們看見整個團隊的溝通樣貌。報告包含：
+    </p>
+    <div class="report-preview">
+      <div class="report-preview-title">報告包含的內容</div>
+      <div class="report-item">五種聲音的團隊平均分數與長條圖</div>
+      <div class="report-item">每個人的主要聲音分布比例</div>
+      <div class="report-item">五種聲音對你們這個團隊的意義解讀</div>
+      <div class="report-item">值得留意的互動張力分析</div>
+      <div class="report-item">幾個可以馬上開始的方向</div>
+      <div class="report-item">針對你們目前議題的具體建議（黃微老師手動填入）</div>
+      <div class="report-item">黃微老師的觀察補充（選填）</div>
+    </div>
+    <p style="font-size:.82rem;color:var(--hint);line-height:1.8;margin-top:.85rem;">
+      報告以網頁形式呈現，可直接在瀏覽器開啟，也可以下載為 PDF。連結永久有效，可以隨時重新分享。
+    </p>
+  </div>
+
+  <!-- 隱私說明 -->
+  <div class="section">
+    <div class="section-label">關於隱私</div>
+    <div class="section-title">你們的數據如何被保護</div>
+    <div class="qa-item">
+      <div class="qa-q">測驗需要填寫姓名嗎？</div>
+      <div class="qa-a">不需要。測驗完全不具名，個人結果只有作答者自己看得到。企業彙整報告裡的數據是整體統計，看不出個別成員的作答內容。</div>
+    </div>
+    <div class="qa-item">
+      <div class="qa-q">公司可以看到我個人的結果嗎？</div>
+      <div class="qa-a">不會。個人結果只有作答者自己看得到，企業端拿到的是所有人加在一起的彙整數據，不包含個人資訊。</div>
+    </div>
+    <div class="qa-item">
+      <div class="qa-q">如果我想把個人報告留下來，怎麼做？</div>
+      <div class="qa-a">完成測驗後，結果頁面有填寫 email 的選項，填寫後報告會自動寄到你的信箱。這個動作是完全自願的。</div>
+    </div>
+    <div class="qa-item">
+      <div class="qa-q">測驗數據會被用在其他地方嗎？</div>
+      <div class="qa-a">不會。測驗數據只用於產生這次的報告，不會對外分享或用於其他商業目的。</div>
+    </div>
+  </div>
+
+  <!-- Q&A -->
+  <div class="section">
+    <div class="section-label">常見問題</div>
+    <div class="section-title">還有什麼想知道的？</div>
+    <div class="qa-item">
+      <div class="qa-q">需要一次全部人都做完嗎？</div>
+      <div class="qa-a">不需要。成員可以在約定的截止日期之前，自行選擇時間完成測驗。建議給大家至少三到五天的作答時間。如果到截止日前有人還沒完成，也可以提前產生報告，報告上會顯示完成人數。</div>
+    </div>
+    <div class="qa-item">
+      <div class="qa-q">測驗適合什麼情境使用？</div>
+      <div class="qa-a">最常見的使用情境包括：課程前測（讓參與者先認識自己再進入課程）、新團隊組建（讓彼此快速了解溝通風格）、主管培訓（讓主管看見自己和團隊的溝通組合），以及年度盤點（作為團隊對話的起點）。</div>
+    </div>
+    <div class="qa-item">
+      <div class="qa-q">報告產出需要多久？</div>
+      <div class="qa-a">全員完成後，黃微老師會在約定的時間內產生並寄送報告。通常在全員完成後 3–5 個工作天內完成。</div>
+    </div>
+    <div class="qa-item">
+      <div class="qa-q">如果有人臨時無法參加，怎麼辦？</div>
+      <div class="qa-a">沒有關係，邀請碼可以隨時補發。如果部分成員無法完成，報告也可以提前產生，報告上會如實呈現完成的人數。</div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-block">
+    <div class="cta-title">想先看看報告長什麼樣子？</div>
+    <div class="cta-sub">
+      我們準備了一份範例報告，讓你在正式施測之前，先了解團隊會拿到什麼。
+    </div>
+    <a class="cta-link" href="sample-report.html" target="_blank">查看範例報告 →</a>
+  </div>
+
+  <div class="footer">
+    黃微｜內在聲音研究室・基於 Transactional Analysis（TA）溝通分析理論
+  </div>
+
+</div>
+</body>
+</html>

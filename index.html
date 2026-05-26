@@ -890,10 +890,10 @@ function showResult() {
     body: JSON.stringify(payload)
   }).catch(() => {});
 
-  // 企業版：隱藏 CTA 區塊（不需要留 email、不需要分享）
+  // 企業版：只隱藏分享、追蹤、覺得不準等區塊，保留留 email 功能
   if (orgCode) {
     const ctaBlocks = document.querySelectorAll(
-      '.next-step-block, .cta-main-block, .cta-sec-grid, .cta-tert-row, .cta-notright'
+      '.next-step-block, .cta-sec-grid, .cta-tert-row, .cta-notright'
     );
     ctaBlocks.forEach(el => el.style.display = 'none');
   }

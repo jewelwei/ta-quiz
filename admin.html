@@ -347,7 +347,7 @@ input:focus { border-color:var(--cp); }
 //  設定
 // ════════════════════════════════
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbzU8y0Sz7xablFZBaH8mQh8llwNmnpXGHvpERjt_msY0OrK3riSkZz8PR7oyjBruco-cw/exec';
-const ADMIN_PASSWORD = 'lidi1030'; // ← 改成你的密碼（與 Code.gs 一致）
+const ADMIN_PASSWORD = 'YOUR_PASSWORD_HERE'; // ← 改成你的密碼（與 Code.gs 一致）
 const STATE_COLORS = { CP:'#7d0000', NP:'#c9637e', A:'#5585bc', FC:'#c9a000', AC:'#a07850' };
 const STATE_NAMES = { CP:'控制型父母', NP:'撫育型父母', A:'成人自我', FC:'自由型兒童', AC:'順應型兒童' };
 
@@ -807,7 +807,28 @@ document.getElementById('reportModal').addEventListener('click', function(e) {
   if (e.target === this) document.getElementById('reportModal').style.display = 'none';
 });
 
-// 初始化：把議題選項填入 select
+// 自動重新整理（60秒），Modal 開啟時暫停
+let autoRefreshTimer = null;
+
+function isModalOpen() {
+  return document.getElementById('orgModal').style.display === 'flex' ||
+         document.getElementById('reportModal').style.display === 'flex';
+}
+
+function startAutoRefresh() {
+  autoRefreshTimer = setInterval(() => {
+    if (!isModalOpen()) {
+      const activeTab = document.querySelector('.tab.active');
+      if (activeTab) {
+        const tabText = activeTab.textContent;
+        if (tabText.includes('企業列表')) loadOrgs();
+        if (tabText.includes('報告記錄')) loadReports();
+      }
+    }
+  }, 60000); // 60 秒
+}
+
+startAutoRefresh();
 (function initIssueSelect() {
   const sel = document.getElementById('issueSelect');
   ISSUE_PRESETS.forEach((p, i) => {

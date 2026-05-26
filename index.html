@@ -331,11 +331,15 @@ body { font-family:'PingFang TC','Microsoft JhengHei','Noto Sans TC',sans-serif;
   <div class="cta-main-block">
     <div class="cta-main-title">把這份報告留下來。</div>
     <div class="cta-main-sub">輸入你的 email，把完整報告寄給自己，慢慢讀。</div>
-    <div class="cta-email-row" style="margin-top:.85rem;">
+    <div style="margin-top:.85rem;">
+      <textarea class="cta-textarea" id="ctaQuestion"
+        placeholder="如果讀完有個問題想問，可以寫在這裡。黃微老師會親自看，並在回信裡回覆你。（選填）"></textarea>
+    </div>
+    <div class="cta-email-row" style="margin-top:.6rem;">
       <input class="cta-email-input" type="email" id="ctaEmail" placeholder="your@email.com" />
       <button class="cta-submit-btn" onclick="submitCTA()">寄給我</button>
     </div>
-    <div class="cta-meta">報告將在幾分鐘內寄達。如果你有任何想法或問題，歡迎直接回覆那封信，黃微老師會親自看。</div>
+    <div class="cta-meta">報告將在幾分鐘內寄達。如果有填寫問題，黃微老師會在回信裡回覆你。</div>
     <div class="cta-privacy">你的 email 只有黃微老師本人會看到。</div>
     <div class="cta-sent" id="ctaSent">寄出了！請去信箱收取你的報告。</div>
     <div class="cta-err" id="ctaErr">請輸入有效的 email 地址。</div>
@@ -904,6 +908,7 @@ async function submitCTA() {
   const sentEl = document.getElementById('ctaSent');
   const errEl = document.getElementById('ctaErr');
   const email = emailEl.value.trim();
+  const question = (document.getElementById('ctaQuestion') ? document.getElementById('ctaQuestion').value.trim() : '');
 
   sentEl.style.display = 'none';
   errEl.style.display = 'none';
@@ -941,11 +946,13 @@ async function submitCTA() {
   const contactPayload = {
     type: 'contact',
     email,
+    question,  // 使用者輸入的問題（可空白）
     scores: { CP: lastScores.CP, NP: lastScores.NP, A: lastScores.A, FC: lastScores.FC, AC: lastScores.AC },
     topState: sortedForContact[0].s.key,
     lowState: sortedForContact[sortedForContact.length-1].s.key,
     totalChanges: totalChangesForContact,
-    changesByState: changesByStateForContact
+    changesByState: changesByStateForContact,
+    orgCode: orgCode || ''
   };
 
   try {
@@ -959,6 +966,10 @@ async function submitCTA() {
       sentEl.style.display = 'block';
       emailEl.value = '';
       emailEl.disabled = true;
+      if (document.getElementById('ctaQuestion')) {
+        document.getElementById('ctaQuestion').value = '';
+        document.getElementById('ctaQuestion').disabled = true;
+      }
     } else {
       submitBtn.disabled = false;
       submitBtn.textContent = '寄給我';

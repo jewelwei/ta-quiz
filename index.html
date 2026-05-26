@@ -149,10 +149,77 @@ body { font-family:'PingFang TC','Microsoft JhengHei','Noto Sans TC',sans-serif;
   .cta-submit-btn { width:100%; }
   .cta-sec-grid { grid-template-columns:1fr; }
 }
+
+/* ── 企業版：邀請碼輸入畫面 ── */
+#codeView { display:none; text-align:center; padding-top:2rem; }
+.code-box {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius); padding:2rem 1.5rem; max-width:400px; margin:0 auto;
+}
+.code-badge {
+  display:inline-block; font-size:.72rem; font-weight:700; letter-spacing:.08em;
+  color:var(--a-text); background:var(--a-light); padding:4px 12px;
+  border-radius:999px; margin-bottom:1.1rem;
+}
+.code-title { font-size:1.25rem; font-weight:800; margin-bottom:.5rem; }
+.code-body { font-size:.85rem; color:var(--text-muted); line-height:1.8; margin-bottom:1.5rem; }
+.code-input {
+  width:100%; padding:13px 16px; border:2px solid var(--border);
+  border-radius:var(--radius-sm); font-size:1.1rem; font-family:monospace;
+  font-weight:700; letter-spacing:.12em; text-align:center; text-transform:uppercase;
+  color:var(--text); background:var(--bg); outline:none;
+  transition:border-color .15s; margin-bottom:.75rem;
+}
+.code-input:focus { border-color:var(--a); }
+.code-submit-btn {
+  width:100%; padding:13px; background:var(--cp); color:#fff; border:none;
+  border-radius:999px; font-size:.95rem; font-weight:700; cursor:pointer;
+  font-family:inherit; transition:background .15s;
+}
+.code-submit-btn:hover { background:var(--cp-text); }
+.code-submit-btn:disabled { background:#ccc; cursor:not-allowed; }
+.code-err { font-size:.8rem; color:#A32D2D; margin-top:.5rem; display:none; min-height:1.2em; }
+.code-success {
+  background:var(--a-light); border:1px solid #b3cce8; border-radius:var(--radius-sm);
+  padding:.85rem 1rem; margin-top:.85rem; font-size:.85rem; color:var(--a-text);
+  line-height:1.7; display:none;
+}
+.code-org-name { font-weight:800; }
+
+/* ── 企業版：結果頁頂部標識 ── */
+.org-banner {
+  background:var(--a-light); border:1px solid #b3cce8; border-radius:var(--radius);
+  padding:.85rem 1.25rem; margin-bottom:1.25rem; font-size:.85rem; color:var(--a-text);
+  display:none; text-align:center;
+}
+.org-banner strong { font-weight:800; }
 </style>
 </head>
 <body>
 <div class="wrap">
+
+<!-- 企業版：邀請碼輸入畫面 -->
+<div id="codeView">
+  <div class="code-box">
+    <div class="code-badge">企業版測驗入口</div>
+    <div class="code-title">請輸入你的邀請碼</div>
+    <div class="code-body">
+      這次測驗由你的公司安排。<br>
+      輸入邀請碼後，即可開始個人測驗。<br>
+      你的結果只有你自己看得到。
+    </div>
+    <input class="code-input" type="text" id="codeInput"
+      placeholder="例：AB3D-EF7G" maxlength="12"
+      oninput="this.value=this.value.toUpperCase()"
+      onkeydown="if(event.key==='Enter')submitCode()">
+    <button class="code-submit-btn" id="codeSubmitBtn" onclick="submitCode()">確認邀請碼</button>
+    <div class="code-err" id="codeErr"></div>
+    <div class="code-success" id="codeSuccess">
+      邀請碼確認成功！歡迎來自 <span class="code-org-name" id="codeOrgName"></span> 的你。<br>
+      這份測驗約需 3–5 分鐘，請找個安靜的時刻作答。
+    </div>
+  </div>
+</div>
 
 <!-- 封面 -->
 <div id="coverView">
@@ -209,6 +276,11 @@ body { font-family:'PingFang TC','Microsoft JhengHei','Noto Sans TC',sans-serif;
 
 <!-- 結果 -->
 <div id="resultView">
+
+  <!-- 企業版：所屬公司標識 -->
+  <div class="org-banner" id="orgBanner">
+    這份測驗由 <strong id="orgBannerName"></strong> 安排。你的個人結果只有你自己看得到。
+  </div>
 
   <!-- 開頭說明 -->
   <div class="intro-block">
@@ -448,6 +520,90 @@ const REPORT_MATERIAL = {
 ════════════════════════════════ */
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbzU8y0Sz7xablFZBaH8mQh8llwNmnpXGHvpERjt_msY0OrK3riSkZz8PR7oyjBruco-cw/exec';
 
+// ── 企業版：狀態變數 ──────────────────────────────────
+let orgCode = '';    // 從邀請碼取得的企業代碼
+let orgName = '';    // 企業名稱（驗證碼後取得）
+let validatedCode = ''; // 已驗證的邀請碼原始值
+
+// ── 企業版：頁面載入時判斷是否為企業版入口 ────────────
+(function initMode() {
+  const params = new URLSearchParams(window.location.search);
+  const org = params.get('org');
+  if (org) {
+    // 有 org 參數 → 企業版，先顯示邀請碼輸入畫面
+    document.getElementById('codeView').style.display = 'block';
+    document.getElementById('coverView').style.display = 'none';
+  }
+  // 沒有 org 參數 → 一般版，維持原本封面
+})();
+
+// ── 企業版：驗證邀請碼 ───────────────────────────────
+async function submitCode() {
+  const rawCode = document.getElementById('codeInput').value.trim().replace(/-/g, '').toUpperCase();
+  const errEl = document.getElementById('codeErr');
+  const successEl = document.getElementById('codeSuccess');
+  const btn = document.getElementById('codeSubmitBtn');
+
+  errEl.style.display = 'none';
+  successEl.style.display = 'none';
+
+  if (rawCode.length < 6) {
+    errEl.textContent = '請輸入完整的邀請碼。';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = '驗證中…';
+
+  try {
+    const res = await fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ type: 'validateCode', code: rawCode })
+    });
+    const data = await res.json();
+
+    if (data.status === 'ok') {
+      // 驗證成功
+      orgCode = data.orgCode;
+      orgName = data.orgName;
+      validatedCode = rawCode;
+
+      document.getElementById('codeOrgName').textContent = orgName;
+      successEl.style.display = 'block';
+      btn.textContent = '開始測驗 →';
+      btn.disabled = false;
+      btn.onclick = proceedFromCode;
+
+      // 標記邀請碼為已使用
+      fetch(GAS_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ type: 'useCode', code: rawCode })
+      }).catch(() => {});
+
+    } else {
+      btn.disabled = false;
+      btn.textContent = '確認邀請碼';
+      errEl.textContent = data.message || '邀請碼無效，請確認後再試。';
+      errEl.style.display = 'block';
+    }
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = '確認邀請碼';
+    errEl.textContent = '網路連線異常，請稍後再試。';
+    errEl.style.display = 'block';
+  }
+}
+
+// 驗證成功後進入封面（或直接進入測驗）
+function proceedFromCode() {
+  document.getElementById('codeView').style.display = 'none';
+  // 直接進入測驗，跳過封面
+  startQuiz();
+}
+
 const PAGE_SIZE = 10;
 let allQ = [], curPage = 0, totalPages = 0;
 let lastScores = {};
@@ -649,6 +805,12 @@ function showResult() {
   document.getElementById('resultView').style.display = 'block';
   window.scrollTo({ top: 0, behavior: 'smooth' });
 
+  // 企業版：顯示所屬公司橫幅
+  if (orgName) {
+    document.getElementById('orgBannerName').textContent = orgName;
+    document.getElementById('orgBanner').style.display = 'block';
+  }
+
   const scores = calcScores();
   lastScores = scores;
   const vals = STATES.map(s => scores[s.key]);
@@ -710,7 +872,7 @@ function showResult() {
     }
   });
 
-  // 發送完成記錄到 Google Sheets
+  // 發送完成記錄到 Google Sheets（企業版附帶 orgCode）
   const sortedForLog = [...STATES].map(s => ({ s, v: scores[s.key] })).sort((a,b) => b.v - a.v);
   const payload = {
     type: 'complete',
@@ -719,13 +881,22 @@ function showResult() {
     topState: sortedForLog[0].s.key,
     lowState: sortedForLog[sortedForLog.length-1].s.key,
     totalChanges,
-    changesByState
+    changesByState,
+    orgCode: orgCode || ''  // 企業版附帶企業代碼
   };
   fetch(GAS_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'text/plain' },
     body: JSON.stringify(payload)
   }).catch(() => {});
+
+  // 企業版：隱藏 CTA 區塊（不需要留 email、不需要分享）
+  if (orgCode) {
+    const ctaBlocks = document.querySelectorAll(
+      '.next-step-block, .cta-main-block, .cta-sec-grid, .cta-tert-row, .cta-notright'
+    );
+    ctaBlocks.forEach(el => el.style.display = 'none');
+  }
 }
 
 async function submitCTA() {
@@ -827,7 +998,21 @@ function copyResult() {
 
 function restart() {
   document.getElementById('resultView').style.display = 'none';
-  document.getElementById('coverView').style.display = 'block';
+  // 企業版：重新作答回到邀請碼畫面
+  if (orgCode) {
+    orgCode = '';
+    orgName = '';
+    validatedCode = '';
+    document.getElementById('codeView').style.display = 'block';
+    document.getElementById('codeInput').value = '';
+    document.getElementById('codeErr').style.display = 'none';
+    document.getElementById('codeSuccess').style.display = 'none';
+    document.getElementById('codeSubmitBtn').textContent = '確認邀請碼';
+    document.getElementById('codeSubmitBtn').onclick = submitCode;
+    document.getElementById('codeSubmitBtn').disabled = false;
+  } else {
+    document.getElementById('coverView').style.display = 'block';
+  }
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 </script>

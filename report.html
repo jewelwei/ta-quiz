@@ -143,36 +143,71 @@ body { font-family:'PingFang TC','Microsoft JhengHei','Noto Sans TC',sans-serif;
 
 /* ════════════════════════════════
    列印專用 CSS
-   修正：
-   1. 長條圖已改 SVG，不需要 CSS height 控制
-   2. 圓圈圖 section 加 break-inside:avoid
-   3. 列印按鈕及提示文字完全隱藏
-   4. 所有 section 和 cover 不跨頁斷行
    ════════════════════════════════ */
 @media print {
-  /* 完全隱藏列印按鈕和提示 */
+  /* ── 隱藏非報告元素 ── */
   .print-bar,
   .print-bar * { display:none !important; }
 
-  body { background:white; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
-  .wrap { padding:.5rem; max-width:100%; }
+  /* ── 基礎排版 ── */
+  body {
+    background: white;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    font-size: 10pt;
+    line-height: 1.55;
+    color: #1A1A18;
+  }
+  .wrap {
+    padding: 0;
+    max-width: 100%;
+  }
 
-  /* 所有 section 和 cover 不斷頁 */
-  .section,
+  /* ── 封面與區塊間距收緊 ── */
+  .cover { margin-bottom: .85rem; padding: 1.5rem 1.5rem 1.25rem; }
+  .section { margin-bottom: .75rem; padding: 1.1rem 1.25rem; }
+  .custom-note { margin-bottom: .75rem; padding: 1rem 1.25rem; }
+  .targeted-block { margin-bottom: .75rem; padding: 1.25rem; }
+
+  /* ── 字體大小調整 ── */
+  .cover-org { font-size: 1.3rem; }
+  .cover-meta { font-size: .72rem; }
+  .cover-stat-num { font-size: 1.4rem; }
+  .section-title { font-size: .92rem; margin-bottom: .85rem; }
+  .section-label { font-size: .65rem; }
+  .section-body { font-size: .82rem; }
+  .ego-note { font-size: .75rem; }
+  .voice-card { padding: .85rem 1rem; margin-bottom: .6rem; }
+  .voice-key { font-size: .82rem; }
+  .voice-body { font-size: .78rem; }
+  .suggest-item { padding: .6rem 0; }
+  .suggest-text { font-size: .8rem; }
+  .tension-body { font-size: .78rem; }
+  .targeted-body { font-size: .82rem; }
+  .footer { font-size: .72rem; padding: .75rem 0 .5rem; }
+
+  /* ── 防止斷頁：所有主要區塊 ── */
   .cover,
+  .section,
   .custom-note,
-  .targeted-block,
-  .voice-card { break-inside:avoid; page-break-inside:avoid; }
+  .voice-card { break-inside: avoid; page-break-inside: avoid; }
 
-  /* 圓圈圖那一整個 section 不斷頁 */
-  .section:has(.dist-grid) { break-inside:avoid; page-break-inside:avoid; }
+  /* ── 圓圈圖區塊：用 id 直接鎖定，避免 :has() 相容問題 ── */
+  #distSection { break-inside: avoid; page-break-inside: avoid; }
 
-  /* SVG 長條圖確保顏色正確輸出 */
-  .egogram-wrap svg { overflow:visible; }
+  /* ── 針對性建議：有內容才顯示（JS 控制），列印時確保不斷頁 ── */
+  .targeted-block { break-inside: avoid; page-break-inside: avoid; }
 
-  /* 針對性建議區塊不斷頁 */
-  .targeted-block { display:block !important; break-inside:avoid; page-break-inside:avoid; }
-  /* 若無 issueNote，JS 已設 display:none，這裡不衝突 */
+  /* ── SVG 長條圖顏色正確輸出 ── */
+  .egogram-wrap svg { overflow: visible; }
+
+  /* ── 聲音解讀區塊不斷頁 ── */
+  #voiceCards .voice-card:nth-child(-n+3) { break-inside: avoid; page-break-inside: avoid; }
+
+  /* ── 頁面邊距 ── */
+  @page {
+    margin: 1.8cm 1.5cm 1.8cm 1.5cm;
+  }
 }
 </style>
 </head>
@@ -228,7 +263,7 @@ body { font-family:'PingFang TC','Microsoft JhengHei','Noto Sans TC',sans-serif;
     </div>
 
     <!-- 各聲音「最常出現」比例（圓圈圖）-->
-    <div class="section">
+    <div class="section" id="distSection">
       <div class="section-label">各聲音分布</div>
       <div class="section-title">每個人的主要聲音是哪一個？</div>
       <div class="dist-grid" id="distGrid"></div>

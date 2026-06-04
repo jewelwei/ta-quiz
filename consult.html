@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>一對一諮詢預約｜黃微老師・內在聲音研究室</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --cp: #7d0000; --cp-light: #f5e6e6;
+  --bg: #F7F6F2; --surface: #ffffff; --border: #E2E0D8;
+  --text: #1A1A18; --muted: #6B6A65; --hint: #A8A7A2;
+  --radius: 14px;
+}
+body { font-family: 'PingFang TC','Microsoft JhengHei','Noto Sans TC',sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+.wrap { max-width: 680px; margin: 0 auto; padding: 2.5rem 1.25rem 5rem; }
+
+.hero {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 2.5rem 2rem 2rem;
+  margin-bottom: 1.25rem; position: relative; overflow: hidden;
+}
+.hero::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px;
+  background: linear-gradient(90deg, #7d0000, #c9637e, #5585bc, #c9a000, #a07850);
+}
+.badge {
+  display: inline-block; font-size: .72rem; font-weight: 700; letter-spacing: .08em;
+  color: var(--cp); background: var(--cp-light); padding: 4px 12px;
+  border-radius: 999px; margin-bottom: 1rem;
+}
+.hero-title { font-size: 1.75rem; font-weight: 800; line-height: 1.25; margin-bottom: .75rem; }
+.hero-sub { font-size: .92rem; color: var(--muted); line-height: 1.95; max-width: 520px; }
+.hero-sub p { margin-bottom: .5rem; }
+.hero-sub p:last-child { margin-bottom: 0; }
+.hero-meta {
+  display: flex; gap: 1.5rem; flex-wrap: wrap;
+  margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border);
+}
+.meta-item { text-align: center; }
+.meta-num { font-size: 1.4rem; font-weight: 800; color: var(--cp); line-height: 1; }
+.meta-label { font-size: .72rem; color: var(--hint); margin-top: 3px; }
+
+.section {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1.75rem; margin-bottom: 1.25rem;
+}
+.section-label { font-size: .72rem; font-weight: 700; letter-spacing: .08em; color: var(--hint); margin-bottom: .4rem; }
+.section-title { font-size: 1rem; font-weight: 800; margin-bottom: 1.1rem; }
+.section-body { font-size: .9rem; color: var(--muted); line-height: 1.9; }
+.section-body p { margin-bottom: .6rem; }
+.section-body p:last-child { margin-bottom: 0; }
+
+.topic-group { margin-bottom: 1.1rem; }
+.topic-group:last-child { margin-bottom: 0; }
+.topic-group-label {
+  font-size: .75rem; font-weight: 700; letter-spacing: .06em;
+  color: var(--cp); margin-bottom: .5rem;
+}
+.topic-list { font-size: .88rem; color: var(--muted); line-height: 1.9; }
+.topic-list li { margin-left: 1.1rem; margin-bottom: .15rem; }
+.topic-divider { border: none; border-top: 1px solid var(--border); margin: 1rem 0; }
+
+.steps { display: flex; flex-direction: column; gap: .85rem; }
+.step { display: flex; gap: 1rem; align-items: flex-start; }
+.step-num {
+  width: 32px; height: 32px; border-radius: 50%; background: var(--cp); color: #fff;
+  font-size: .85rem; font-weight: 800; display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: .1rem;
+}
+.step-title { font-size: .92rem; font-weight: 700; margin-bottom: .25rem; }
+.step-body { font-size: .85rem; color: var(--muted); line-height: 1.8; }
+
+.pricing-card {
+  background: var(--cp-light); border: 1px solid #d4a0a0;
+  border-radius: var(--radius); padding: 1.5rem 1.75rem; margin-bottom: 1.25rem;
+}
+.pricing-label { font-size: .72rem; font-weight: 700; letter-spacing: .08em; color: #8b3a3a; margin-bottom: .5rem; }
+.pricing-main { display: flex; align-items: baseline; gap: .5rem; margin-bottom: .75rem; }
+.pricing-amount { font-size: 2rem; font-weight: 800; color: var(--cp); line-height: 1; }
+.pricing-unit { font-size: .88rem; color: #8b3a3a; }
+.pricing-note { font-size: .85rem; color: #8b3a3a; line-height: 1.85; }
+.pricing-note li { margin-left: 1.1rem; margin-bottom: .2rem; }
+
+.highlight-block {
+  background: #fffbe6; border: 1.5px solid #e8c87a;
+  border-radius: var(--radius); padding: 1.25rem 1.5rem; margin-bottom: 1.25rem;
+}
+.highlight-label { font-size: .72rem; font-weight: 700; letter-spacing: .08em; color: #7a5800; margin-bottom: .5rem; }
+.highlight-body { font-size: .9rem; color: #5a4000; line-height: 1.9; }
+.highlight-body p { margin-bottom: .5rem; }
+.highlight-body p:last-child { margin-bottom: 0; }
+
+.faq-item { padding: .85rem 0; border-bottom: 1px solid var(--border); }
+.faq-item:last-child { border-bottom: none; }
+.faq-q { font-size: .9rem; font-weight: 700; margin-bottom: .3rem; }
+.faq-a { font-size: .85rem; color: var(--muted); line-height: 1.8; }
+
+.cta-block {
+  background: var(--cp); border-radius: var(--radius);
+  padding: 2rem; text-align: center; margin-bottom: 1.25rem;
+}
+.cta-title { font-size: 1.1rem; font-weight: 800; color: #fff; margin-bottom: .5rem; }
+.cta-sub { font-size: .88rem; color: rgba(255,255,255,.82); line-height: 1.85; margin-bottom: 1.25rem; }
+.cta-btn {
+  display: inline-block; padding: 12px 32px; background: #fff; color: var(--cp);
+  border-radius: 999px; font-size: .95rem; font-weight: 800; text-decoration: none;
+}
+
+.form-embed { margin-top: 1.1rem; border-radius: 10px; overflow: hidden; }
+.form-embed iframe { display: block; width: 100%; border: none; }
+
+.contact-row { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: .85rem; }
+.contact-item {
+  flex: 1; min-width: 180px; background: var(--bg);
+  border-radius: 10px; padding: .85rem 1rem;
+}
+.contact-label { font-size: .72rem; font-weight: 700; color: var(--hint); margin-bottom: .25rem; }
+.contact-value { font-size: .88rem; color: var(--text); font-weight: 600; word-break: break-all; }
+
+.footer { text-align: center; font-size: .78rem; color: var(--hint); padding: 1rem 0; }
+.footer a { color: var(--hint); }
+
+@media (max-width: 520px) {
+  .hero-title { font-size: 1.4rem; }
+  .hero-meta { gap: 1rem; }
+  .pricing-amount { font-size: 1.6rem; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- 頁頭 -->
+  <div class="hero">
+    <div class="badge">一對一個別晤談</div>
+    <h1 class="hero-title">黃微老師<br>個別諮詢預約</h1>
+    <div class="hero-sub">
+      <p>也許你做完 TA 測驗，心裡有個說不清楚的感覺，想找人好好聊聊。</p>
+      <p>也許你在職涯的某個路口卡住了，不確定下一步，或者正在猶豫要不要離開一個地方。</p>
+      <p>也許你知道溝通出了問題，卻不知道問題出在哪裡，或者你試過很多方法，但那個讓你困擾的情境還是一再重演。</p>
+      <p>不管是哪一種，你不需要先想清楚才能來。帶著你現在的狀況就好。</p>
+    </div>
+
+  </div>
+
+  <!-- 差異化定位 -->
+  <div class="highlight-block">
+    <div class="highlight-label">黃微老師的諮詢方式</div>
+    <div class="highlight-body">
+      <p>不是幫你解決眼前這一件事，而是讓你慢慢看懂自己——看懂你為什麼會這樣溝通、為什麼在某些情境裡容易卡住、以及你真正想要的是什麼。</p>
+      <p>我會在諮詢過程中帶你認識一些工具和方法，讓你在晤談結束後，有能力自己繼續往下走，而不是每次遇到問題都要再找人問。</p>
+      <p>外面有些諮詢服務以 4–6 次為一個服務組合，但我的建議是先做一次，視你的狀況再決定要不要繼續。不需要一開始就承諾很多次。</p>
+    </div>
+  </div>
+
+  <!-- 適合的議題 -->
+  <div class="section">
+    <div class="section-label">你可以帶著這些來</div>
+    <div class="section-title">不需要問題很具體，也不需要已經有方向</div>
+
+    <div class="topic-group">
+      <div class="topic-group-label">關於溝通與自我理解</div>
+      <ul class="topic-list">
+        <li>做完 TA 測驗，對結果有感覺，想更深入了解自己的溝通模式</li>
+        <li>知道溝通出了問題，但說不清楚問題在哪裡</li>
+        <li>某些情境一再重演，想搞懂是怎麼回事</li>
+        <li>跟特定的人總是說不好，想理解背後的動力</li>
+        <li>想改變溝通方式，但試了方法還是做不到</li>
+      </ul>
+    </div>
+
+    <hr class="topic-divider">
+
+    <div class="topic-group">
+      <div class="topic-group-label">關於職涯與工作</div>
+      <ul class="topic-list">
+        <li>不確定自己的職涯方向，想釐清「我到底要什麼」</li>
+        <li>考慮轉職，但不確定方向、時機，或如何開始</li>
+        <li>想找新工作，需要協助準備履歷、面試或求職策略</li>
+        <li>工作壓力大、職業倦怠，想重新評估現狀</li>
+        <li>升遷、角色轉換，或面對職場人際關係的困境</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 諮詢流程 -->
+  <div class="section">
+    <div class="section-label">諮詢流程</div>
+    <div class="section-title">從預約到晤談，怎麼進行</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div>
+          <div class="step-title">填寫預約表單</div>
+          <div class="step-body">簡單說明你的狀況和想聊的事，以及希望的晤談時間。不需要寫得很完整，現在心裡有什麼就說什麼。</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div>
+          <div class="step-title">我回覆確認，並告訴你可以準備什麼</div>
+          <div class="step-body">根據你的情況，我可能會請你在晤談前準備一些東西，例如 TA 測驗結果、履歷、或者只是把你的狀況寫得更清楚一點。每次不太一樣，視議題而定。</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div>
+          <div class="step-title">晤談當天（LINE 或 Google Meet）</div>
+          <div class="step-body">首次晤談請預留 90 分鐘，讓彼此有足夠的時間好好認識、把事情說清楚。一般晤談為 60 分鐘。如有實體見面需求，請在預約時說明。</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div>
+          <div class="step-title">晤談後，你帶走的東西</div>
+          <div class="step-body">對自己或現況更清晰的理解、一個可以開始的下一步，以及一個看自己的方法——不只是解決這一次，而是讓你有能力繼續往前走。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 費用 -->
+  <div class="pricing-card">
+    <div class="pricing-label">諮詢費用</div>
+    <div class="pricing-main">
+      <div class="pricing-amount">2,400</div>
+      <div class="pricing-unit">元 ／ 次（60分鐘）</div>
+    </div>
+    <div class="pricing-note">
+      <ul>
+        <li>首次晤談請預留 90 分鐘，讓彼此有足夠時間好好認識</li>
+        <li>晤談以線上視訊為主（LINE 或 Google Meet）</li>
+        <li>建議提前 3–7 天預約；時間急迫者歡迎先來信說明，我會盡量配合</li>
+        <li>確認預約後，我會以 email 告知銀行轉帳帳號，請於晤談前一天完成繳款</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="section">
+    <div class="section-label">常見問題</div>
+    <div class="section-title">你可能想先知道的事</div>
+    <div class="faq-item">
+      <div class="faq-q">我只是做完測驗有點感覺，這樣也可以來嗎？</div>
+      <div class="faq-a">當然可以。「有點感覺但說不清楚」就是很好的起點。有時候，那個說不清楚的地方，才是真正值得停下來看的地方。你不需要先把問題想清楚才能來。</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">一次諮詢夠嗎？</div>
+      <div class="faq-a">視情況而定。有些人一次就釐清了很多；有些人的狀況比較複雜，或需要一段時間陪伴，才會安排後續。第一次晤談結束後，我們可以一起評估。</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">這個諮詢能幫我做什麼？有沒有什麼是它做不到的？</div>
+      <div class="faq-a">我的工作是幫你看清楚自己的狀況——你為什麼會在某些情境裡卡住、你真正想要的是什麼、以及下一步可以怎麼走。這不是心理治療，如果你的狀況需要專業的心理諮商協助，我會直接告訴你，並建議你尋求合適的資源。</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">我沒有做過 TA 測驗，可以來嗎？</div>
+      <div class="faq-a">完全可以。TA 測驗不是必要條件。如果你有興趣，可以先做做看，帶著結果來討論；如果還沒做，晤談過程中我也會帶你認識這個工具。</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">我只是想先問一個問題，算諮詢嗎？</div>
+      <div class="faq-a">不一定。如果你有一個很具體的問題，歡迎先直接寫信給我，我會判斷是否需要安排正式晤談，或者信裡就能回答。</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">可以實體見面嗎？</div>
+      <div class="faq-a">以線上視訊為主（LINE 或 Google Meet）。如有特別需求，可以在預約時說明，我們再另外討論安排。</div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-block">
+    <div class="cta-title">帶著你現在的狀況來就好</div>
+    <div class="cta-sub">
+      不需要先想清楚，不需要問題很具體。<br>
+      填寫表單，說說你現在的狀況，我會在 1–2 個工作天內回覆你。
+    </div>
+    <a class="cta-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSeuT2OVvsfo672L_wxv3ztYwydM_uexiyUBHRuw3YRAjsTOww/viewform" target="_blank">填寫預約表單 →</a>
+  </div>
+
+  <!-- 嵌入表單 -->
+  <div class="section">
+    <div class="section-label">預約表單</div>
+    <div class="section-title">直接在這裡填寫也可以</div>
+    <div class="form-embed">
+      <iframe
+        src="https://docs.google.com/forms/d/e/1FAIpQLSeuT2OVvsfo672L_wxv3ztYwydM_uexiyUBHRuw3YRAjsTOww/viewform?embedded=true"
+        width="100%"
+        height="900"
+        frameborder="0"
+        marginheight="0"
+        marginwidth="0">
+        載入中…
+      </iframe>
+    </div>
+  </div>
+
+  <!-- 其他聯絡方式 -->
+  <div class="section">
+    <div class="section-label">其他聯絡方式</div>
+    <div class="section-title">填表前有問題，也可以先問我</div>
+    <p class="section-body">有任何疑問，歡迎直接聯絡。</p>
+    <div class="contact-row">
+      <div class="contact-item">
+        <div class="contact-label">Email</div>
+        <div class="contact-value">weihuang.tw@gmail.com</div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-label">LINE ID</div>
+        <div class="contact-value">jewel_huang_wei</div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-label">Facebook</div>
+        <div class="contact-value">內在聲音研究室</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    黃微｜內在聲音研究室・基於 Transactional Analysis（TA）溝通分析理論<br>
+    <a href="https://jewelwei.github.io/ta-quiz/" target="_blank">TA 自我狀態測驗</a>　｜　
+    <a href="https://www.facebook.com/profile.php?id=61589193428575" target="_blank">Facebook 粉絲專頁</a>
+  </div>
+
+</div>
+</body>
+</html>

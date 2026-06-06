@@ -305,28 +305,6 @@ body { font-family:'PingFang TC','Microsoft JhengHei','Noto Sans TC',sans-serif;
     <div id="voiceCards"></div>
   </div>
 
-  <!-- 【修改3】下一步輕量入口 -->
-  <div class="next-step-block">
-    <div class="next-step-title">想更深入認識自己的溝通模式？</div>
-    <div class="next-step-body">這份測驗是起點。TA 牌卡和課程能幫你把結果帶進真實的對話裡，看見慣性，開始有選擇。</div>
-    <div class="next-step-links">
-      <a class="next-step-link" href="https://www.facebook.com/profile.php?id=61589193428575" target="_blank">
-        <span class="next-step-link-icon">🃏</span>
-        <div>
-          <div class="next-step-link-text">認識 TA 牌卡</div>
-          <div class="next-step-link-desc">把五種聲音帶進日常練習</div>
-        </div>
-      </a>
-      <a class="next-step-link" href="https://www.facebook.com/profile.php?id=61589193428575" target="_blank">
-        <span class="next-step-link-icon">🗓</span>
-        <div>
-          <div class="next-step-link-text">了解課程與工作坊</div>
-          <div class="next-step-link-desc">與黃微老師一起深入探索</div>
-        </div>
-      </a>
-    </div>
-  </div>
-
   <!-- CTA 主要：留下 email 收報告 -->
   <div class="cta-main-block">
     <div class="cta-main-title">這份報告給了你一個輪廓。</div>
@@ -335,18 +313,22 @@ body { font-family:'PingFang TC','Microsoft JhengHei','Noto Sans TC',sans-serif;
       <input class="cta-email-input" type="email" id="ctaEmail" placeholder="your@email.com" />
       <button class="cta-submit-btn" onclick="submitCTA()">寄給我</button>
     </div>
-    <div class="cta-privacy" style="margin-top:.6rem;">你的 email 只有黃微老師本人會看到。</div>
     <div class="cta-sent" id="ctaSent">寄出了！請去信箱收取你的完整報告。</div>
     <div class="cta-err" id="ctaErr">請輸入有效的 email 地址。</div>
   </div>
 
-  <!-- 分享給朋友（LINE） -->
-  <div class="cta-sec-grid" style="grid-template-columns:1fr;">
-    <div class="cta-sec-card" onclick="shareToLine()">
+  <!-- 分享給朋友 + 追蹤粉專 -->
+  <div class="cta-sec-grid">
+    <div class="cta-sec-card" onclick="copyResult()">
       <div class="cta-sec-icon">&#128172;</div>
       <div class="cta-sec-title">分享給朋友做做看</div>
-      <div class="cta-sec-desc">傳到 LINE，讓朋友也來認識自己的內在聲音</div>
-      <div class="cta-sec-copied" id="lineCopied">開啟 LINE 分享中…</div>
+      <div class="cta-sec-desc">複製結果，傳給朋友一起來認識自己的內在聲音</div>
+      <div class="cta-sec-copied" id="resultCopied">已複製！貼到任何地方分享吧</div>
+    </div>
+    <div class="cta-sec-card" onclick="window.open('https://www.facebook.com/profile.php?id=61589193428575','_blank')">
+      <div class="cta-sec-icon">&#128214;</div>
+      <div class="cta-sec-title">追蹤內在聲音研究室</div>
+      <div class="cta-sec-desc">每週更新：職場溝通故事、TA 概念解析、牌卡示範對話</div>
     </div>
   </div>
 

@@ -329,50 +329,25 @@ body { font-family:'PingFang TC','Microsoft JhengHei','Noto Sans TC',sans-serif;
 
   <!-- CTA 主要：留下 email 收報告 -->
   <div class="cta-main-block">
-    <div class="cta-main-title">把這份報告留下來。</div>
-    <div class="cta-main-sub">輸入你的 email，把完整報告寄給自己，慢慢讀。</div>
-    <div style="margin-top:.85rem;">
-      <textarea class="cta-textarea" id="ctaQuestion"
-        placeholder="如果讀完有個問題想問，可以寫在這裡。黃微老師會親自看，並在回信裡回覆你。（選填）"></textarea>
-    </div>
-    <div class="cta-email-row" style="margin-top:.6rem;">
+    <div class="cta-main-title">這份報告給了你一個輪廓。</div>
+    <div class="cta-main-sub">Email 版本會提供更深入的解析說明，以及個人成長與和他人互動的具體建議。<br>輸入你的 email，完整報告寄到你的信箱，可以慢慢讀、反覆看。</div>
+    <div class="cta-email-row" style="margin-top:1rem;">
       <input class="cta-email-input" type="email" id="ctaEmail" placeholder="your@email.com" />
       <button class="cta-submit-btn" onclick="submitCTA()">寄給我</button>
     </div>
-    <div class="cta-meta">報告將在幾分鐘內寄達。如果有填寫問題，黃微老師會在回信裡回覆你。</div>
-    <div class="cta-privacy">你的 email 只有黃微老師本人會看到。</div>
-    <div class="cta-sent" id="ctaSent">寄出了！請去信箱收取你的報告。</div>
+    <div class="cta-privacy" style="margin-top:.6rem;">你的 email 只有黃微老師本人會看到。</div>
+    <div class="cta-sent" id="ctaSent">寄出了！請去信箱收取你的完整報告。</div>
     <div class="cta-err" id="ctaErr">請輸入有效的 email 地址。</div>
   </div>
 
-  <!-- CTA 次要：分享 -->
-  <div class="cta-sec-grid">
-    <div class="cta-sec-card" onclick="copyLink()">
-      <div class="cta-sec-icon">&#128279;</div>
-      <div class="cta-sec-title">傳給朋友做做看</div>
-      <div class="cta-sec-desc">把這個測驗傳給一個你想了解的人</div>
-      <div class="cta-sec-copied" id="linkCopied">連結已複製！</div>
+  <!-- 分享給朋友（LINE） -->
+  <div class="cta-sec-grid" style="grid-template-columns:1fr;">
+    <div class="cta-sec-card" onclick="shareToLine()">
+      <div class="cta-sec-icon">&#128172;</div>
+      <div class="cta-sec-title">分享給朋友做做看</div>
+      <div class="cta-sec-desc">傳到 LINE，讓朋友也來認識自己的內在聲音</div>
+      <div class="cta-sec-copied" id="lineCopied">開啟 LINE 分享中…</div>
     </div>
-    <div class="cta-sec-card" onclick="copyResult()">
-      <div class="cta-sec-icon">&#128203;</div>
-      <div class="cta-sec-title">分享我的結果</div>
-      <!-- 【修改2】說明複製內容包含結果摘要 -->
-      <div class="cta-sec-desc">複製含結果的一句話，貼到社群上</div>
-      <div class="cta-sec-copied" id="resultCopied">已複製！</div>
-    </div>
-  </div>
-
-  <!-- CTA 第三層 -->
-  <div class="cta-tert-row">
-    <a class="cta-tert-link" href="https://www.facebook.com/profile.php?id=61589193428575" target="_blank">認識黃微老師</a>
-    <span class="cta-tert-dot">·</span>
-    <a class="cta-tert-link" href="https://www.facebook.com/profile.php?id=61589193428575" target="_blank">追蹤內在聲音研究室</a>
-  </div>
-
-  <!-- 覺得不準 -->
-  <div class="cta-notright">
-    覺得結果跟你想的不一樣？
-    <span class="cta-notright-link" onclick="document.getElementById('ctaQuestion').focus();document.getElementById('ctaQuestion').placeholder='說說你覺得哪裡不太準…';document.querySelector('.cta-main-block').scrollIntoView({behavior:'smooth'})">這反而值得聊聊 →</span>
   </div>
 
   <button class="restart" onclick="restart()">重新作答</button>
@@ -894,11 +869,9 @@ function showResult() {
     body: JSON.stringify(payload)
   }).catch(() => {});
 
-  // 企業版：只隱藏分享、追蹤、覺得不準等區塊，保留留 email 功能
+  // 企業版：隱藏分享區塊，保留留 email 功能
   if (orgCode) {
-    const ctaBlocks = document.querySelectorAll(
-      '.next-step-block, .cta-sec-grid, .cta-tert-row, .cta-notright'
-    );
+    const ctaBlocks = document.querySelectorAll('.cta-sec-grid');
     ctaBlocks.forEach(el => el.style.display = 'none');
   }
 }
@@ -946,7 +919,7 @@ async function submitCTA() {
   const contactPayload = {
     type: 'contact',
     email,
-    question,  // 使用者輸入的問題（可空白）
+    question: '',
     scores: { CP: lastScores.CP, NP: lastScores.NP, A: lastScores.A, FC: lastScores.FC, AC: lastScores.AC },
     topState: sortedForContact[0].s.key,
     lowState: sortedForContact[sortedForContact.length-1].s.key,
@@ -966,10 +939,6 @@ async function submitCTA() {
       sentEl.style.display = 'block';
       emailEl.value = '';
       emailEl.disabled = true;
-      if (document.getElementById('ctaQuestion')) {
-        document.getElementById('ctaQuestion').value = '';
-        document.getElementById('ctaQuestion').disabled = true;
-      }
     } else {
       submitBtn.disabled = false;
       submitBtn.textContent = '寄給我';
@@ -984,13 +953,13 @@ async function submitCTA() {
   }
 }
 
-function copyLink() {
+function shareToLine() {
+  const sorted = [...STATES].map(s => ({ s, v: lastScores[s.key] })).sort((a,b) => b.v - a.v);
+  const hiState = sorted[0].s;
   const url = window.location.href.split('?')[0];
-  navigator.clipboard.writeText(url).then(() => {
-    const el = document.getElementById('linkCopied');
-    el.style.display = 'block';
-    setTimeout(() => el.style.display = 'none', 2500);
-  });
+  const text = `我做了 TA 自我狀態測驗，最常出現的內在聲音是「${hiState.key} ${hiState.name}」。你的呢？來試試看！`;
+  const lineUrl = `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`;
+  window.open(lineUrl, '_blank');
 }
 
 /* 【修改2】分享結果包含完整結果摘要與分數 */

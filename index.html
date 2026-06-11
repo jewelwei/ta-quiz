@@ -481,6 +481,11 @@ const REPORT_MATERIAL = {
 ════════════════════════════════ */
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbzU8y0Sz7xablFZBaH8mQh8llwNmnpXGHvpERjt_msY0OrK3riSkZz8PR7oyjBruco-cw/exec';
 
+// ── MailerLite 身份識別：從網址參數讀取 ──────────────
+const _urlParams = new URLSearchParams(window.location.search);
+const mlEmail = _urlParams.get('mlEmail') || '';  // 從邀請信連結帶來的 email
+const mlSeg   = _urlParams.get('mlSeg')   || '';  // 名單來源：course / consulting
+
 // ── 企業版：狀態變數 ──────────────────────────────────
 let orgCode = '';    // 從邀請碼取得的企業代碼
 let orgName = '';    // 企業名稱（驗證碼後取得）
@@ -907,7 +912,9 @@ async function submitCTA() {
     lowState: sortedForContact[sortedForContact.length-1].s.key,
     totalChanges: totalChangesForContact,
     changesByState: changesByStateForContact,
-    orgCode: orgCode || ''
+    orgCode: orgCode || '',
+    mlEmail: mlEmail || '',  // MailerLite 身份識別
+    mlSeg:   mlSeg   || ''   // 名單來源
   };
 
   try {

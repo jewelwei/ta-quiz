@@ -848,7 +848,9 @@ function showResult() {
     lowState: sortedForLog[sortedForLog.length-1].s.key,
     totalChanges,
     changesByState,
-    orgCode: orgCode || ''  // 企業版附帶企業代碼
+    orgCode: orgCode || '',  // 企業版附帶企業代碼
+    mlEmail: mlEmail || '',  // MailerLite 身份識別（從邀請連結帶來）
+    mlSeg:   mlSeg   || ''   // 名單來源：course / consulting
   };
   fetch(GAS_URL, {
     method: 'POST',

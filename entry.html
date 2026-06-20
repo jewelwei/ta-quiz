@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>企業版測驗入口｜內在聲音研究室</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --cp: #7d0000; --cp-light: #f5e6e6; --cp-text: #5a0000;
+  --a: #5585bc; --a-light: #eef4fb; --a-text: #2d5a8e;
+  --bg: #F7F6F2; --surface: #FFFFFF; --border: #E2E0D8;
+  --text: #1A1A18; --text-muted: #6B6A65; --text-hint: #A8A7A2;
+  --radius: 14px; --radius-sm: 9px;
+}
+body { font-family:'PingFang TC','Microsoft JhengHei','Noto Sans TC',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; line-height:1.65; }
+.wrap { max-width:480px; margin:0 auto; padding:3rem 1.25rem 5rem; }
+
+#codeView { text-align:center; padding-top:2rem; }
+.code-box {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius); padding:2.2rem 1.5rem; max-width:400px; margin:0 auto;
+}
+.code-badge {
+  display:inline-block; font-size:.72rem; font-weight:700; letter-spacing:.08em;
+  color:var(--a-text); background:var(--a-light); padding:4px 12px;
+  border-radius:999px; margin-bottom:1.1rem;
+}
+.code-title { font-size:1.25rem; font-weight:800; margin-bottom:.5rem; }
+.code-body { font-size:.85rem; color:var(--text-muted); line-height:1.8; margin-bottom:1.5rem; }
+.code-input {
+  width:100%; padding:13px 16px; border:2px solid var(--border);
+  border-radius:var(--radius-sm); font-size:1.1rem; font-family:monospace;
+  font-weight:700; letter-spacing:.12em; text-align:center; text-transform:uppercase;
+  color:var(--text); background:var(--bg); outline:none;
+  transition:border-color .15s; margin-bottom:.75rem;
+}
+.code-input:focus { border-color:var(--a); }
+.code-submit-btn {
+  width:100%; padding:13px; background:var(--cp); color:#fff; border:none;
+  border-radius:999px; font-size:.95rem; font-weight:700; cursor:pointer;
+  font-family:inherit; transition:background .15s;
+}
+.code-submit-btn:hover { background:var(--cp-text); }
+.code-submit-btn:disabled { background:#ccc; cursor:not-allowed; }
+.code-err { font-size:.8rem; color:#A32D2D; margin-top:.5rem; display:none; min-height:1.2em; }
+.code-success {
+  background:var(--a-light); border:1px solid #b3cce8; border-radius:var(--radius-sm);
+  padding:.85rem 1rem; margin-top:.85rem; font-size:.85rem; color:var(--a-text);
+  line-height:1.7; display:none;
+}
+.code-org-name { font-weight:800; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div id="codeView">
+  <div class="code-box">
+    <div class="code-badge">企業版測驗入口</div>
+    <div class="code-title">請輸入你的邀請碼</div>
+    <div class="code-body">
+      這次測驗由你的公司安排。<br>
+      輸入邀請碼後，系統會自動帶你進入對應的測驗流程。
+    </div>
+    <input class="code-input" type="text" id="codeInput"
+      placeholder="例：AB3D-EF7G" maxlength="12"
+      oninput="this.value=this.value.toUpperCase()"
+      onkeydown="if(event.key==='Enter')submitCode()">
+    <button class="code-submit-btn" id="codeSubmitBtn" onclick="submitCode()">確認邀請碼</button>
+    <div class="code-err" id="codeErr"></div>
+    <div class="code-success" id="codeSuccess">
+      邀請碼確認成功！歡迎來自 <span class="code-org-name" id="codeOrgName"></span> 的你。<br>
+      即將為你導向測驗頁面…
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════
+//  企業版邀請碼驗證與分流入口
+//  驗證成功後依「類型」導向不同的測驗頁面：
+//    leadership → leadership.html（主管領導力）
+//    interview  → interview.html（面試者，尚未建置）
+// ════════════════════════════════════════════════════════
+
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbzU8y0Sz7xablFZBaH8mQh8llwNmnpXGHvpERjt_msY0OrK3riSkZz8PR7oyjBruco-cw/exec';
+
+async function submitCode() {
+  const rawCode = document.getElementById('codeInput').value.trim().replace(/-/g, '').toUpperCase();
+  const errEl = document.getElementById('codeErr');
+  const successEl = document.getElementById('codeSuccess');
+  const btn = document.getElementById('codeSubmitBtn');
+
+  errEl.style.display = 'none';
+  successEl.style.display = 'none';
+
+  if (rawCode.length < 6) {
+    errEl.textContent = '請輸入完整的邀請碼。';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = '驗證中…';
+
+  try {
+    const res = await fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ type: 'validateCode', code: rawCode })
+    });
+    const data = await res.json();
+
+    if (data.status === 'ok') {
+      document.getElementById('codeOrgName').textContent = data.orgName;
+      successEl.style.display = 'block';
+      btn.textContent = '驗證成功';
+
+      // 標記邀請碼為已使用
+      fetch(GAS_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ type: 'useCode', code: rawCode })
+      }).catch(() => {});
+
+      // 依類型導向對應頁面，帶上 orgCode 與 orgName 參數
+      const params = new URLSearchParams({
+        org: data.orgCode,
+        orgName: data.orgName
+      });
+
+      setTimeout(() => {
+        if (data.codeType === 'interview') {
+          // 面試者版尚未建置，先停留並提示
+          successEl.innerHTML = '此邀請碼為「面試者版」，該流程尚未開放，請聯繫窗口確認。';
+          btn.style.display = 'none';
+        } else {
+          // 預設導向 leadership（主管領導力版）
+          window.location.href = 'leadership.html?' + params.toString();
+        }
+      }, 900);
+
+    } else {
+      btn.disabled = false;
+      btn.textContent = '確認邀請碼';
+      errEl.textContent = data.message || '邀請碼無效，請確認後再試。';
+      errEl.style.display = 'block';
+    }
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = '確認邀請碼';
+    errEl.textContent = '網路連線異常，請稍後再試。';
+    errEl.style.display = 'block';
+  }
+}
+</script>
+</body>
+</html>

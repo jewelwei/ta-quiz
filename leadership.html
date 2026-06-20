@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>領導溝通風格分析｜內在聲音研究室</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --cp: #7d0000; --cp-light: #f5e6e6; --cp-text: #5a0000;
+  --np: #c9637e; --np-light: #fdf0f4; --np-text: #8b3a52;
+  --a: #5585bc; --a-light: #eef4fb; --a-text: #2d5a8e;
+  --fc: #c9a000; --fc-light: #fffbe6; --fc-text: #7a5c00;
+  --ac: #a07850; --ac-light: #f7f1ec; --ac-text: #6b4a2e;
+  --bg: #F7F6F2; --surface: #FFFFFF; --border: #E2E0D8;
+  --text: #1A1A18; --text-muted: #6B6A65; --text-hint: #A8A7A2;
+  --radius: 14px; --radius-sm: 9px;
+}
+body { font-family:'PingFang TC','Microsoft JhengHei','Noto Sans TC',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; line-height:1.65; }
+.wrap { max-width:660px; margin:0 auto; padding:2.5rem 1.25rem 5rem; }
+
+.org-banner { background:var(--a-light); border:1px solid #b3cce8; border-radius:var(--radius); padding:.85rem 1.25rem; margin-bottom:1.25rem; font-size:.85rem; color:var(--a-text); text-align:center; }
+.org-banner strong { font-weight:800; }
+
+#coverView { text-align:center; padding-top:1rem; }
+.cover-badge { display:inline-block; font-size:.75rem; font-weight:700; letter-spacing:.08em; color:var(--cp); background:var(--cp-light); padding:5px 14px; border-radius:999px; margin-bottom:1.4rem; }
+.cover-title { font-size:1.85rem; font-weight:800; line-height:1.3; letter-spacing:-.02em; margin-bottom:1.1rem; color:var(--text); }
+.cover-body { font-size:.92rem; color:var(--text-muted); max-width:440px; margin:0 auto 1.1rem; line-height:1.95; }
+.cover-body p { margin-bottom:.5rem; }
+.cover-body p:last-child { margin-bottom:0; }
+.cover-meta { display:flex; justify-content:center; gap:1.1rem; font-size:.8rem; color:var(--text-hint); margin:1.25rem 0 1.5rem; flex-wrap:wrap; }
+.start-btn { display:inline-block; padding:14px 40px; background:var(--cp); color:#fff; border:none; border-radius:999px; font-size:1rem; font-weight:700; cursor:pointer; font-family:inherit; transition:background .15s; }
+.start-btn:hover { background:var(--cp-text); }
+.cover-notice { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1.1rem 1.25rem; max-width:440px; margin:1.75rem auto 0; text-align:left; }
+.cover-notice-title { font-size:.75rem; font-weight:700; color:var(--text-hint); margin-bottom:.5rem; letter-spacing:.04em; }
+.cover-notice-body { font-size:.83rem; color:var(--text-muted); line-height:1.9; }
+
+.quizPhase { display:none; }
+.prog-meta { display:flex; justify-content:space-between; font-size:.78rem; color:var(--text-hint); margin-bottom:7px; }
+.prog-track { background:var(--border); border-radius:999px; height:5px; overflow:hidden; margin-bottom:1.75rem; }
+.prog-fill { height:5px; border-radius:999px; background:var(--cp); transition:width .4s ease; }
+.qcard { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1.2rem 1.3rem 1.1rem; margin-bottom:10px; }
+.qcard.done { border-color:#c4a0a0; }
+.qnum { font-size:.7rem; font-weight:700; letter-spacing:.06em; color:var(--text-hint); margin-bottom:5px; }
+.qtext { font-size:.95rem; color:var(--text); line-height:1.6; margin-bottom:1rem; }
+.opts { display:grid; grid-template-columns:repeat(3,1fr); gap:7px; }
+.opt { padding:10px 6px; border:1.5px solid var(--border); border-radius:var(--radius-sm); background:transparent; font-size:.88rem; color:var(--text-muted); cursor:pointer; text-align:center; font-family:inherit; transition:all .12s; -webkit-tap-highlight-color:transparent; }
+.opt:hover { border-color:#aaa; color:var(--text); background:var(--bg); }
+.opt.sy { background:#f5e6e6; border-color:var(--cp); color:var(--cp-text); font-weight:700; }
+.opt.sm { background:#e8f5e9; border-color:#4caf50; color:#2e7d32; font-weight:700; }
+.opt.sn { background:#F1EFE8; border-color:#888780; color:#444441; font-weight:700; }
+.nav { display:flex; align-items:center; gap:10px; margin-top:2rem; flex-wrap:wrap; }
+.btn { padding:11px 22px; border:1.5px solid var(--border); border-radius:999px; background:var(--surface); font-size:.88rem; color:var(--text); cursor:pointer; font-family:inherit; font-weight:600; transition:all .12s; }
+.btn:hover { border-color:#999; }
+.btn.p { background:var(--cp); border-color:var(--cp); color:#fff; margin-left:auto; }
+.btn.p:hover { background:var(--cp-text); }
+.warn { font-size:.78rem; color:#A32D2D; width:100%; text-align:center; margin-top:-6px; }
+
+.sit-guide { background:var(--a-light); border-radius:var(--radius-sm); padding:1rem 1.2rem; font-size:.85rem; color:var(--a-text); line-height:1.8; margin-bottom:1.5rem; }
+.sit-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1.4rem 1.4rem 1.2rem; margin-bottom:1.25rem; }
+.sit-num { font-size:.72rem; font-weight:700; letter-spacing:.06em; color:var(--text-hint); margin-bottom:8px; }
+.sit-text { font-size:1rem; color:var(--text); line-height:1.7; margin-bottom:1.2rem; font-weight:500; }
+.sit-opts { display:flex; flex-direction:column; gap:8px; }
+.sit-opt { display:flex; align-items:flex-start; gap:10px; padding:12px 14px; border:1.5px solid var(--border); border-radius:var(--radius-sm); background:transparent; font-size:.86rem; color:var(--text-muted); cursor:pointer; text-align:left; font-family:inherit; line-height:1.6; transition:all .12s; -webkit-tap-highlight-color:transparent; }
+.sit-opt:hover { border-color:#aaa; background:var(--bg); }
+.sit-opt.picked { background:var(--cp-light); border-color:var(--cp); color:var(--cp-text); font-weight:600; }
+.sit-opt-letter { font-weight:700; flex-shrink:0; }
+
+#finishView { display:none; text-align:center; padding-top:1.5rem; }
+.finish-icon { font-size:2.4rem; margin-bottom:1rem; }
+.finish-title { font-size:1.4rem; font-weight:800; margin-bottom:.75rem; }
+.finish-body { font-size:.9rem; color:var(--text-muted); max-width:420px; margin:0 auto 1.75rem; line-height:1.95; }
+.finish-box { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1.75rem 1.5rem; max-width:420px; margin:0 auto; }
+.finish-label { font-size:.78rem; font-weight:700; color:var(--text-hint); margin-bottom:.6rem; text-align:left; }
+.finish-input { width:100%; padding:13px 16px; border:1.5px solid var(--border); border-radius:var(--radius-sm); font-size:.95rem; font-family:inherit; color:var(--text); background:var(--bg); outline:none; transition:border-color .15s; margin-bottom:1rem; }
+.finish-input:focus { border-color:var(--cp); }
+.finish-submit-btn { width:100%; padding:13px; background:var(--cp); color:#fff; border:none; border-radius:999px; font-size:.95rem; font-weight:700; cursor:pointer; font-family:inherit; transition:background .15s; }
+.finish-submit-btn:hover { background:var(--cp-text); }
+.finish-submit-btn:disabled { background:#ccc; cursor:not-allowed; }
+.finish-err { font-size:.8rem; color:#A32D2D; margin-top:.6rem; display:none; }
+.finish-privacy { font-size:.74rem; color:var(--text-hint); margin-top:1rem; line-height:1.7; }
+
+#sentView { display:none; text-align:center; padding-top:2.5rem; }
+.sent-icon { font-size:2.6rem; margin-bottom:1.1rem; }
+.sent-title { font-size:1.3rem; font-weight:800; margin-bottom:.75rem; }
+.sent-body { font-size:.9rem; color:var(--text-muted); max-width:400px; margin:0 auto; line-height:1.95; }
+
+@media(max-width:480px){
+  .cover-title { font-size:1.5rem; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="org-banner" id="orgBanner" style="display:none;">
+  歡迎來自 <strong id="orgBannerName"></strong> 的你
+</div>
+
+<div id="coverView">
+  <div class="cover-badge">領導溝通風格分析</div>
+  <h1 class="cover-title">看見你原本帶人的方式，<br>找到更適合自己的領導選擇</h1>
+  <div class="cover-body">
+    <p>這份測驗分成兩個部分：先是五大自我狀態測驗，接著是八題職場領導情境題。</p>
+    <p>兩者結合，會產出一份完整的領導溝通風格報告，協助你看見自己慣用的領導資源，以及在壓力與衝突中真正的反應模式。</p>
+  </div>
+  <div class="cover-meta">
+    <span>⏱ 約 8–10 分鐘</span>
+    <span>📧 完成後以 Email 寄送報告</span>
+  </div>
+  <button class="start-btn" onclick="startTaPhase()">開始測驗 →</button>
+  <div class="cover-notice">
+    <div class="cover-notice-title">作答提醒</div>
+    <div class="cover-notice-body">
+      情境題的部分，請以你目前或曾經擔任主管的角色來回答。如果你尚未擔任主管，請想像自己是一個小團隊的負責人來作答。每題請選出最符合你第一時間直覺反應的選項，沒有對錯之分。
+    </div>
+  </div>
+</div>
+
+<div class="quizPhase" id="taPhaseView">
+  <div class="prog-meta">
+    <span id="pLabel">已回答 0 / 50 題</span>
+    <span id="pPct">0%</span>
+  </div>
+  <div class="prog-track"><div class="prog-fill" id="pFill" style="width:0%"></div></div>
+  <div id="qArea"></div>
+  <div class="nav">
+    <button class="btn" id="prevBtn" onclick="goPage(-1)" style="visibility:hidden;">← 上一頁</button>
+    <button class="btn p" id="nextBtn" onclick="goPage(1)">下一頁 →</button>
+    <div class="warn" id="warnMsg"></div>
+  </div>
+</div>
+
+<div class="quizPhase" id="sitPhaseView">
+  <div class="prog-meta">
+    <span id="sitPLabel">已回答 0 / 8 題</span>
+    <span id="sitPPct">0%</span>
+  </div>
+  <div class="prog-track"><div class="prog-fill" id="sitPFill" style="width:0%"></div></div>
+  <div class="sit-guide">
+    請以你目前或曾經擔任主管的角色來回答。如果你尚未擔任主管，請想像自己是一個小團隊的負責人。每題請選出最符合你第一時間直覺反應的選項，沒有對錯之分。
+  </div>
+  <div id="sitArea"></div>
+  <div class="nav">
+    <span></span>
+    <button class="btn p" id="sitNextBtn" onclick="goFinish()">完成測驗 →</button>
+    <div class="warn" id="sitWarnMsg"></div>
+  </div>
+</div>
+
+<div id="finishView">
+  <div class="finish-icon">✅</div>
+  <div class="finish-title">測驗完成，謝謝你的作答</div>
+  <div class="finish-body">
+    這份領導溝通風格報告需要一些時間整理與生成，我們會在完成後直接寄到你的信箱，請輸入你的 Email。
+  </div>
+  <div class="finish-box">
+    <div class="finish-label">你的 Email</div>
+    <input class="finish-input" type="email" id="finishEmail" placeholder="example@email.com">
+    <button class="finish-submit-btn" id="finishSubmitBtn" onclick="submitFinish()">送出，接收報告</button>
+    <div class="finish-err" id="finishErr"></div>
+    <div class="finish-privacy">你的作答內容僅用於產生這份個人報告，我們不會將你的個別結果提供給企業窗口或第三方。</div>
+  </div>
+</div>
+
+<div id="sentView">
+  <div class="sent-icon">📬</div>
+  <div class="sent-title">已收到，報告製作中</div>
+  <div class="sent-body">
+    你的領導溝通風格報告正在準備，完成後會寄到你剛才留的信箱。<br><br>
+    如果有任何問題，歡迎直接回覆收到的信件，我會親自看到。
+  </div>
+</div>
+
+</div>
+
+<script>
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbzU8y0Sz7xablFZBaH8mQh8llwNmnpXGHvpERjt_msY0OrK3riSkZz8PR7oyjBruco-cw/exec';
+
+const _urlParams = new URLSearchParams(window.location.search);
+const orgCode = _urlParams.get('org') || '';
+const orgName = _urlParams.get('orgName') || '';
+
+if (orgName) {
+  document.getElementById('orgBannerName').textContent = orgName;
+  document.getElementById('orgBanner').style.display = 'block';
+}
+
+const STATES = [
+  { key: 'CP', name: '控制型父母', qs: ['你會打斷別人的談話，訴說自己的想法嗎？','你會對別人嚴格要求、批判嗎？','你會嚴守約會時間嗎？','你會懷抱理想並去實現嗎？','你會重視社會規則、倫理道德嗎？','你會強烈要求別人盡他的職責嗎？','你會對小小的差錯也在意嗎？','你對他人的教育嚴格嗎？','你認為要求得到權利，先盡義務嗎？','你經常說「應該、不能、你要……」？'] },
+  { key: 'NP', name: '撫育型父母', qs: ['你對別人有強烈的關懷嗎？','你重視人情嗎？','你能常常發現別人的長處與優點嗎？','你看見別人遇到困難，會忍不住主動出手幫忙嗎？','你喜歡孩子或者喜歡照顧別人嗎？','你對他人的錯誤寬容嗎？','你很容易通融和商量嗎？','你能傾聽別人說話嗎？','你喜歡服務他人嗎？','你喜歡參加公益活動嗎？'] },
+  { key: 'A', name: '成人自我', qs: ['你會評估自己的損益並採取行動嗎？','你很少感性的談話嗎？','你做決定時是否經過分析或者深思熟慮？','你會詢問正反意見作為參考嗎？','任何事情都喜歡根據事實做出判讀嗎？','你的談話是理性多情緒少嗎？','你能很快做出決斷而無需煩惱嗎？','你在處理事情時，是快速而有效率的嗎？','你對未來的事情是否會冷靜地預估後再行事？','你身體不佳時，是否會愛惜自己而不勉強工作？'] },
+  { key: 'FC', name: '自由型兒童', qs: ['你認為自己任性嗎？','你的好奇心很重嗎？','你重視娛樂並追求滿足嗎？','在無法得到自己想要的東西時，你會難受嗎？','你經常使用「哇、耶、太棒了」等感嘆詞嗎？','你會以直覺判斷事物嗎？','你興奮時候會得意忘形嗎？','你想說的事情你會沒有顧慮地說出來嗎？','你容易生氣嗎？','你容易掉淚嗎？'] },
+  { key: 'AC', name: '順應型兒童', qs: ['心裡想的事你經常會說不出口嗎？','你希望別人喜歡你嗎？','你為人客氣處世低調嗎？','與他人意見不同時，你是否經常妥協呢？','你難受的時候經常強忍下來嗎？','你會照著別人的期待而努力嗎？','你會注意在乎別人的臉色和言談嗎？','你會常常壓抑自己的感情嗎？','你會覺得自己不如別人嗎？','你覺得現在不像真正的自己或應該有的自己嗎？'] }
+];
+
+const SITUATION_QUESTIONS = [
+  { id: '01', theme: '衝突處理', text: '團隊裡兩個成員已經鬧了一段時間，你剛收到通知，下週就要一起跑一個重要專案。你的第一步會是？', opts: [
+    { code: 'A', state: 'CP', text: '直接約他們，說清楚這次不能再迴避，要求雙方在專案開始前拿出解決方案。' },
+    { code: 'B', state: 'NP', text: '分別找他們聊，先讓每個人把話說出來，感覺被聽見了，才有辦法往前走。' },
+    { code: 'C', state: 'A',  text: '先搞清楚衝突的根源在哪，再決定怎麼介入才最有效。' },
+    { code: 'D', state: 'FC', text: '把兩人找來一起討論，透過對話看看能不能重新建立合作方式。' },
+    { code: 'E', state: 'AC', text: '先觀察，只要他們在專案裡還能正常配合，我不會急著介入。' }
+  ]},
+  { id: '02', theme: '給回饋', text: '成員昨晚趕出一份報告，今天早上要對客戶簡報，你翻開來看，發現品質明顯不如預期。你怎麼做？', opts: [
+    { code: 'A', state: 'CP', text: '直接指出問題，告訴他這份報告沒有達到要求，需要按照我的標準修改。' },
+    { code: 'B', state: 'NP', text: '先問他昨晚怎麼了、有沒有遇到什麼困難，再一起想怎麼處理。' },
+    { code: 'C', state: 'A',  text: '快速列出最關鍵的幾個落差，聚焦在能在時間內補救的部分。' },
+    { code: 'D', state: 'FC', text: '跟他一起重新看，邊討論邊找切入點，把它變成一個可以用的版本。' },
+    { code: 'E', state: 'AC', text: '簡報前不是給壓力的時機，先讓他上場，事後再好好談。' }
+  ]},
+  { id: '03', theme: '做決策', text: '會議已經討論了一個小時，大家還是沒共識，但今天一定要定案。你怎麼做？', opts: [
+    { code: 'A', state: 'CP', text: '我來拍板，我們不能再耗下去，執行中還可以調整。' },
+    { code: 'B', state: 'NP', text: '再給每個人一次機會說出最核心的顧慮，然後找出大家都能接受的方向。' },
+    { code: 'C', state: 'A',  text: '把各方意見整理出來，對照目標，選出最有根據的那個方向。' },
+    { code: 'D', state: 'FC', text: '提出一個我認為可行的方向，開放大家快速回應，再收斂定案。' },
+    { code: 'E', state: 'AC', text: '我傾向讓最了解這件事的人做決定，我提供資源並配合他的判斷。' }
+  ]},
+  { id: '04', theme: '壓力反應', text: '專案已經落後兩週，今天上午主管來電，語氣明顯不滿。掛掉電話後，你做的第一件事是？', opts: [
+    { code: 'A', state: 'CP', text: '立刻召集團隊，重新確認優先順序，要求大家今天就要看到進度。' },
+    { code: 'B', state: 'NP', text: '先跟核心成員說一聲，讓他們知道狀況，但不想讓整個團隊因此更緊繃。' },
+    { code: 'C', state: 'A',  text: '自己先把卡點整理清楚，再決定要調整哪些計畫、怎麼跟上面回報。' },
+    { code: 'D', state: 'FC', text: '跟團隊說現在的狀況，然後說「我們一起衝過去」，把氣勢帶起來。' },
+    { code: 'E', state: 'AC', text: '先不要讓上面的壓力影響團隊，我會自己消化這件事，再找適當時間說明。' }
+  ]},
+  { id: '05', theme: '帶人風格', text: '新成員下週一報到，但你這週已經排滿了，沒有太多時間手把手帶他。你會怎麼安排？', opts: [
+    { code: 'A', state: 'CP', text: '在他來之前把規範和期望整理清楚，讓他第一天就知道怎麼做、標準在哪。' },
+    { code: 'B', state: 'NP', text: '先安排一個輕鬆的時間認識他，讓他感覺這個團隊歡迎他，其他的之後再說。' },
+    { code: 'C', state: 'A',  text: '準備好工作目標和流程說明，讓他有清楚的起點可以自己推進。' },
+    { code: 'D', state: 'FC', text: '直接讓他參與實際工作，我會在過程中給他即時調整。' },
+    { code: 'E', state: 'AC', text: '讓他先觀察、自己摸索，每個人的學習節奏不同，不需要急著介入。' }
+  ]},
+  { id: '06', theme: '面對不確定', text: '公司昨天宣布策略調整，你的團隊任務還不明朗，但成員今天就開始問「我們接下來要做什麼」。你怎麼回應？', opts: [
+    { code: 'A', state: 'CP', text: '跟大家說目前已知的是什麼，不確定的部分我今天會去確認，明天給答覆。' },
+    { code: 'B', state: 'NP', text: '先讓大家說出目前最大的擔心，讓團隊知道彼此正在一起面對。' },
+    { code: 'C', state: 'A',  text: '先整理出現在還可以繼續推進的事，讓團隊不要停下來，資訊確認後再調整。' },
+    { code: 'D', state: 'FC', text: '跟大家說，變動也代表空間，帶著他們從這個調整裡找可能性。' },
+    { code: 'E', state: 'AC', text: '先說「方向還在確認中」，等資訊更清楚再開口，避免現在說錯讓大家更亂。' }
+  ]},
+  { id: '07', theme: '被挑戰', text: '你在全組會議上宣布一個決策，話才說完，一個成員當場表達強烈反對，其他人都在看你。你怎麼回應？', opts: [
+    { code: 'A', state: 'CP', text: '說明我做這個決定的理由，立場不會因為有人當場反對就改變。' },
+    { code: 'B', state: 'NP', text: '先謝謝他願意說出來，請他說說他的顧慮，我認真聽。' },
+    { code: 'C', state: 'A',  text: '請他提出具體的理由與依據，我們一起來看哪個方向更站得住腳。' },
+    { code: 'D', state: 'FC', text: '歡迎這種當場碰撞，開放大家一起加入討論，好的決策經得起挑戰。' },
+    { code: 'E', state: 'AC', text: '當下先不回應太多，我不希望公開衝突升高，會後再處理。' }
+  ]},
+  { id: '08', theme: '激勵團隊', text: '團隊已經連續趕了三週，有人開始請假、有人明顯在撐，下週還有一個大交付。你怎麼做？', opts: [
+    { code: 'A', state: 'CP', text: '跟大家說就差這一關，撐過去就是里程碑，現在不能散。' },
+    { code: 'B', state: 'NP', text: '安排一個讓大家喘口氣的時間，讓他們知道努力有被看見。' },
+    { code: 'C', state: 'A',  text: '重新盤點哪些事可以砍掉或延後，在交付前替團隊減輕不必要的負擔。' },
+    { code: 'D', state: 'FC', text: '帶大家做點不一樣的事，換個氣氛，把能量找回來。' },
+    { code: 'E', state: 'AC', text: '給大家空間，不多干預，成熟的團隊知道怎麼撐過最後一段。' }
+  ]}
+];
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+const PAGE_SIZE = 10;
+let allQ = [], curPage = 0, totalPages = 0;
+
+function startTaPhase() {
+  const raw = [];
+  STATES.forEach(s => s.qs.forEach(q => raw.push({ q, key: s.key, ans: null })));
+  allQ = shuffle(raw);
+  totalPages = Math.ceil(allQ.length / PAGE_SIZE);
+  curPage = 0;
+
+  document.getElementById('coverView').style.display = 'none';
+  document.getElementById('taPhaseView').style.display = 'block';
+  renderTaPage();
+}
+
+function updateTaProgress() {
+  const done = allQ.filter(q => q.ans !== null).length;
+  const pct = Math.round(done / 50 * 100);
+  document.getElementById('pLabel').textContent = `已回答 ${done} / 50 題`;
+  document.getElementById('pPct').textContent = pct + '%';
+  document.getElementById('pFill').style.width = pct + '%';
+}
+
+function renderTaPage() {
+  updateTaProgress();
+  const start = curPage * PAGE_SIZE;
+  const questions = allQ.slice(start, start + PAGE_SIZE);
+  const isLast = curPage === totalPages - 1;
+  document.getElementById('prevBtn').style.visibility = curPage === 0 ? 'hidden' : 'visible';
+  document.getElementById('nextBtn').textContent = isLast ? '進入情境題 →' : '下一頁 →';
+  document.getElementById('warnMsg').textContent = '';
+  const area = document.getElementById('qArea');
+  area.innerHTML = '';
+  questions.forEach((item, idx) => {
+    const absIdx = start + idx;
+    const absNum = absIdx + 1;
+    const card = document.createElement('div');
+    card.className = 'qcard' + (item.ans ? ' done' : '');
+    card.innerHTML = `<div class="qnum">Q${absNum}</div><div class="qtext">${item.q}</div><div class="opts"></div>`;
+    const opts = card.querySelector('.opts');
+    [['yes','是','sy'],['maybe','不一定','sm'],['no','否','sn']].forEach(([val, label, cls]) => {
+      const btn = document.createElement('button');
+      btn.className = 'opt' + (item.ans === val ? ' ' + cls : '');
+      btn.textContent = label;
+      btn.onclick = () => {
+        allQ[absIdx].ans = val;
+        opts.querySelectorAll('.opt').forEach(b => b.className = 'opt');
+        btn.className = 'opt ' + cls;
+        card.className = 'qcard done';
+        updateTaProgress();
+        document.getElementById('warnMsg').textContent = '';
+      };
+      opts.appendChild(btn);
+    });
+    area.appendChild(card);
+  });
+}
+
+function goPage(dir) {
+  if (dir === 1) {
+    const start = curPage * PAGE_SIZE;
+    const unanswered = allQ.slice(start, start + PAGE_SIZE).filter(q => q.ans === null).length;
+    if (unanswered > 0) {
+      document.getElementById('warnMsg').textContent = `還有 ${unanswered} 題尚未作答`;
+      return;
+    }
+    if (curPage === totalPages - 1) { startSitPhase(); return; }
+    curPage++;
+  } else {
+    if (curPage > 0) curPage--;
+  }
+  renderTaPage();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function calcScores() {
+  const scores = {};
+  STATES.forEach(s => scores[s.key] = 0);
+  allQ.forEach(item => {
+    if (!item.ans) return;
+    scores[item.key] += item.ans === 'yes' ? 2 : item.ans === 'maybe' ? 1 : 0;
+  });
+  return scores;
+}
+
+let sitQ = [];
+
+function startSitPhase() {
+  sitQ = shuffle(SITUATION_QUESTIONS).map(q => ({
+    id: q.id,
+    theme: q.theme,
+    text: q.text,
+    opts: shuffle(q.opts),
+    picked: null
+  }));
+
+  document.getElementById('taPhaseView').style.display = 'none';
+  document.getElementById('sitPhaseView').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  renderSitPhase();
+}
+
+function updateSitProgress() {
+  const done = sitQ.filter(q => q.picked !== null).length;
+  const pct = Math.round(done / sitQ.length * 100);
+  document.getElementById('sitPLabel').textContent = `已回答 ${done} / ${sitQ.length} 題`;
+  document.getElementById('sitPPct').textContent = pct + '%';
+  document.getElementById('sitPFill').style.width = pct + '%';
+}
+
+function renderSitPhase() {
+  updateSitProgress();
+  const area = document.getElementById('sitArea');
+  area.innerHTML = '';
+  sitQ.forEach((item, qIdx) => {
+    const card = document.createElement('div');
+    card.className = 'sit-card';
+    card.innerHTML = `<div class="sit-num">${qIdx + 1} · ${item.theme}</div><div class="sit-text">${item.text}</div><div class="sit-opts"></div>`;
+    const optsWrap = card.querySelector('.sit-opts');
+    const displayLetters = ['A','B','C','D','E'];
+    item.opts.forEach((opt, oIdx) => {
+      const btn = document.createElement('button');
+      btn.className = 'sit-opt' + (item.picked === opt.code ? ' picked' : '');
+      btn.innerHTML = `<span class="sit-opt-letter">${displayLetters[oIdx]}</span><span>${opt.text}</span>`;
+      btn.onclick = () => {
+        item.picked = opt.code;
+        optsWrap.querySelectorAll('.sit-opt').forEach(b => b.className = 'sit-opt');
+        btn.className = 'sit-opt picked';
+        updateSitProgress();
+        document.getElementById('sitWarnMsg').textContent = '';
+      };
+      optsWrap.appendChild(btn);
+    });
+    area.appendChild(card);
+  });
+}
+
+function goFinish() {
+  const unanswered = sitQ.filter(q => q.picked === null).length;
+  if (unanswered > 0) {
+    document.getElementById('sitWarnMsg').textContent = `還有 ${unanswered} 題尚未作答`;
+    return;
+  }
+  document.getElementById('sitPhaseView').style.display = 'none';
+  document.getElementById('finishView').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+async function submitFinish() {
+  const emailEl = document.getElementById('finishEmail');
+  const errEl = document.getElementById('finishErr');
+  const btn = document.getElementById('finishSubmitBtn');
+  const email = emailEl.value.trim();
+
+  errEl.style.display = 'none';
+
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailPattern.test(email)) {
+    errEl.textContent = '請輸入正確的 Email 格式。';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = '送出中…';
+
+  const scores = calcScores();
+  const sortedForLog = [...STATES].map(s => ({ key: s.key, v: scores[s.key] })).sort((a,b) => b.v - a.v);
+
+  const situationAnswers = sitQ.map(q => ({
+    questionId: q.id,
+    optionCode: q.picked
+  }));
+
+  const payload = {
+    type: 'leadershipComplete',
+    email: email,
+    orgCode: orgCode || '',
+    scores: { CP: scores.CP, NP: scores.NP, A: scores.A, FC: scores.FC, AC: scores.AC },
+    topState: sortedForLog[0].key,
+    lowState: sortedForLog[sortedForLog.length-1].key,
+    situationAnswers: situationAnswers
+  };
+
+  try {
+    await fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify(payload)
+    });
+  } catch(e) {
+    // 即使網路請求出狀況，也不在前端顯示失敗，避免使用者重複提交造成困惑
+  }
+
+  document.getElementById('finishView').style.display = 'none';
+  document.getElementById('sentView').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

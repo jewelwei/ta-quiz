@@ -82,6 +82,7 @@ body { font-family:'PingFang TC','Microsoft JhengHei',sans-serif; background:var
 .form-row { display:grid; gap:.75rem; margin-bottom:1rem; }
 .form-row.cols2 { grid-template-columns:1fr 1fr; }
 .form-row.cols3 { grid-template-columns:1fr 1fr 80px; }
+.form-row.cols4 { grid-template-columns:1fr 80px 140px 80px; }
 label { font-size:.78rem; font-weight:700; color:var(--muted); display:block; margin-bottom:.3rem; }
 input[type=text], input[type=number], input[type=email] {
   width:100%; padding:9px 13px; border:1.5px solid var(--border);
@@ -169,7 +170,7 @@ input:focus { border-color:var(--cp); }
 .loading { text-align:center; padding:2rem; color:var(--hint); font-size:.85rem; }
 
 @media(max-width:600px) {
-  .form-row.cols2, .form-row.cols3 { grid-template-columns:1fr; }
+  .form-row.cols2, .form-row.cols3, .form-row.cols4 { grid-template-columns:1fr; }
   .org-table th:nth-child(4), .org-table td:nth-child(4) { display:none; }
 }
 </style>
@@ -221,10 +222,17 @@ input:focus { border-color:var(--cp); }
             <input type="text" id="orgCodeInput" placeholder="例：HARVARD2025" style="text-transform:uppercase">
           </div>
         </div>
-        <div class="form-row" style="grid-template-columns:120px 1fr">
+        <div class="form-row" style="grid-template-columns:120px 160px 1fr">
           <div>
             <label>產生幾個碼</label>
             <input type="number" id="codeCount" value="10" min="1" max="200">
+          </div>
+          <div>
+            <label>邀請碼類型</label>
+            <select id="codeType">
+              <option value="leadership">主管領導力版</option>
+              <option value="interview">面試者版</option>
+            </select>
           </div>
           <div style="display:flex;align-items:flex-end;">
             <button class="btn-primary" onclick="createCodes()">產生邀請碼</button>
@@ -244,7 +252,7 @@ input:focus { border-color:var(--cp); }
 
       <div class="card">
         <div class="card-title">補發邀請碼（為現有企業增加人數）</div>
-        <div class="form-row cols3">
+        <div class="form-row cols4">
           <div>
             <label>企業代碼</label>
             <input type="text" id="addOrgCode" placeholder="輸入現有企業代碼" style="text-transform:uppercase">
@@ -252,6 +260,13 @@ input:focus { border-color:var(--cp); }
           <div>
             <label>補發幾個</label>
             <input type="number" id="addCount" value="5" min="1" max="100">
+          </div>
+          <div>
+            <label>邀請碼類型</label>
+            <select id="addCodeType">
+              <option value="leadership">主管領導力版</option>
+              <option value="interview">面試者版</option>
+            </select>
           </div>
           <div style="display:flex;align-items:flex-end;">
             <button class="btn-primary" onclick="addCodes()">補發</button>
@@ -349,7 +364,7 @@ input:focus { border-color:var(--cp); }
 //  設定
 // ════════════════════════════════
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbzU8y0Sz7xablFZBaH8mQh8llwNmnpXGHvpERjt_msY0OrK3riSkZz8PR7oyjBruco-cw/exec';
-const ADMIN_PASSWORD = 'lidi1030'; // ← 改成你的密碼（與 Code.gs 一致）
+const ADMIN_PASSWORD = 'YOUR_PASSWORD_HERE'; // ← 改成你的密碼（與 Code.gs 一致）
 const STATE_COLORS = { CP:'#7d0000', NP:'#c9637e', A:'#5585bc', FC:'#c9a000', AC:'#a07850' };
 const STATE_NAMES = { CP:'控制型父母', NP:'撫育型父母', A:'成人自我', FC:'自由型兒童', AC:'順應型兒童' };
 
@@ -412,6 +427,7 @@ async function createCodes() {
   const orgName = document.getElementById('orgName').value.trim();
   const orgCode = document.getElementById('orgCodeInput').value.trim().toUpperCase();
   const count = parseInt(document.getElementById('codeCount').value) || 10;
+  const codeType = document.getElementById('codeType').value;
   const msg = document.getElementById('codeMsg');
 
   if (!orgName || !orgCode) {
@@ -423,7 +439,7 @@ async function createCodes() {
   document.querySelector('#tabCodes .btn-primary').disabled = true;
 
   try {
-    const data = await callAPI({ type: 'adminCreateCodes', orgCode, orgName, count });
+    const data = await callAPI({ type: 'adminCreateCodes', orgCode, orgName, count, codeType });
     document.querySelector('#tabCodes .btn-primary').disabled = false;
 
     if (data.status === 'ok') {
@@ -444,6 +460,7 @@ async function createCodes() {
 async function addCodes() {
   const orgCode = document.getElementById('addOrgCode').value.trim().toUpperCase();
   const count = parseInt(document.getElementById('addCount').value) || 5;
+  const codeType = document.getElementById('addCodeType').value;
   const msg = document.getElementById('addMsg');
 
   if (!orgCode) {
@@ -455,7 +472,7 @@ async function addCodes() {
 
   try {
     // 補發時企業名稱留空，後端會沿用現有名稱
-    const data = await callAPI({ type: 'adminCreateCodes', orgCode, orgName: orgCode, count });
+    const data = await callAPI({ type: 'adminCreateCodes', orgCode, orgName: orgCode, count, codeType });
     if (data.status === 'ok') {
       showMsg(msg, 'ok', `成功補發 ${data.count} 個邀請碼`);
       lastAddCodes = data.codes;

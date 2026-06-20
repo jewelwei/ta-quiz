@@ -364,7 +364,6 @@ input:focus { border-color:var(--cp); }
 //  設定
 // ════════════════════════════════
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbzU8y0Sz7xablFZBaH8mQh8llwNmnpXGHvpERjt_msY0OrK3riSkZz8PR7oyjBruco-cw/exec';
-const ADMIN_PASSWORD = 'YOUR_PASSWORD_HERE'; // ← 改成你的密碼（與 Code.gs 一致）
 const STATE_COLORS = { CP:'#7d0000', NP:'#c9637e', A:'#5585bc', FC:'#c9a000', AC:'#a07850' };
 const STATE_NAMES = { CP:'控制型父母', NP:'撫育型父母', A:'成人自我', FC:'自由型兒童', AC:'順應型兒童' };
 
@@ -374,18 +373,51 @@ let lastAddCodes = [];
 
 // ════════════════════════════════
 //  登入 / 登出
+//  密碼驗證完全在後端（Code.gs）進行，前端不存放、不比對密碼，
+//  避免密碼以明文形式出現在公開的 GitHub 原始碼裡。
 // ════════════════════════════════
-function doLogin() {
+async function doLogin() {
   const pw = document.getElementById('pwInput').value;
-  if (pw === ADMIN_PASSWORD) {
-    adminToken = pw;
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('mainScreen').style.display = 'block';
-    document.getElementById('topbarHint').textContent = new Date().toLocaleDateString('zh-TW');
-    loadOrgs();
-    loadReports();
-  } else {
-    document.getElementById('loginErr').style.display = 'block';
+  const btn = document.querySelector('.login-btn');
+  const errEl = document.getElementById('loginErr');
+  errEl.style.display = 'none';
+
+  if (!pw) {
+    errEl.textContent = '請輸入密碼。';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = '驗證中…';
+
+  try {
+    const res = await fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ type: 'adminLogin', password: pw })
+    });
+    const data = await res.json();
+
+    btn.disabled = false;
+    btn.textContent = '進入後台';
+
+    if (data.status === 'ok') {
+      adminToken = pw; // 驗證通過後，後續 API 呼叫沿用這組密碼作為 token
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('mainScreen').style.display = 'block';
+      document.getElementById('topbarHint').textContent = new Date().toLocaleDateString('zh-TW');
+      loadOrgs();
+      loadReports();
+    } else {
+      errEl.textContent = data.message || '密碼錯誤，請再試一次。';
+      errEl.style.display = 'block';
+    }
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = '進入後台';
+    errEl.textContent = '網路連線異常，請稍後再試。';
+    errEl.style.display = 'block';
   }
 }
 

@@ -98,7 +98,21 @@ body { font-family:'PingFang TC','Microsoft JhengHei','Noto Sans TC',sans-serif;
   歡迎來自 <strong id="orgBannerName"></strong> 的你
 </div>
 
-<div id="coverView">
+<div id="checkingView" style="text-align:center;padding-top:4rem;">
+  <div style="font-size:.9rem;color:var(--text-hint);">驗證邀請碼中，請稍候…</div>
+</div>
+
+<div id="blockedView" style="display:none;text-align:center;padding-top:3rem;">
+  <div class="code-box" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:2.2rem 1.5rem;max-width:420px;margin:0 auto;">
+    <div style="font-size:2rem;margin-bottom:1rem;">⚠️</div>
+    <div style="font-size:1.1rem;font-weight:800;margin-bottom:.75rem;" id="blockedTitle">這個連結已經無法使用</div>
+    <div style="font-size:.88rem;color:var(--text-muted);line-height:1.85;" id="blockedBody">
+      這組邀請碼已經完成過測驗，或不再有效。如果你需要重新作答，請聯繫你的企業窗口取得新的邀請碼。
+    </div>
+  </div>
+</div>
+
+<div id="coverView" style="display:none;">
   <div class="cover-badge">領導溝通風格分析</div>
   <h1 class="cover-title">看見你原本帶人的方式，<br>找到更適合自己的領導選擇</h1>
   <div class="cover-body">
@@ -178,13 +192,54 @@ body { font-family:'PingFang TC','Microsoft JhengHei','Noto Sans TC',sans-serif;
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbzU8y0Sz7xablFZBaH8mQh8llwNmnpXGHvpERjt_msY0OrK3riSkZz8PR7oyjBruco-cw/exec';
 
 const _urlParams = new URLSearchParams(window.location.search);
+const inviteCode = _urlParams.get('code') || '';
 const orgCode = _urlParams.get('org') || '';
 const orgName = _urlParams.get('orgName') || '';
 
 if (orgName) {
   document.getElementById('orgBannerName').textContent = orgName;
-  document.getElementById('orgBanner').style.display = 'block';
 }
+
+// ════════════════════════════════════════════════════════
+//  進場驗證：每次載入這個頁面，都重新向後端確認邀請碼仍然有效。
+//  這可以防止使用者透過瀏覽器「上一頁」、複製網址、或保留舊連結，
+//  在沒有重新輸入邀請碼的情況下繞過驗證、重複進入測驗。
+//  邀請碼會在「完成測驗並成功送出」時才被標記為已使用（見 submitFinish）。
+// ════════════════════════════════════════════════════════
+async function verifyEntryAndShowCover() {
+  if (!inviteCode) {
+    showBlocked('找不到邀請碼', '請從企業版測驗入口重新輸入邀請碼進入，不要直接使用這個頁面的網址。');
+    return;
+  }
+
+  try {
+    const res = await fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ type: 'validateCode', code: inviteCode })
+    });
+    const data = await res.json();
+
+    if (data.status === 'ok') {
+      document.getElementById('checkingView').style.display = 'none';
+      document.getElementById('orgBanner').style.display = orgName ? 'block' : 'none';
+      document.getElementById('coverView').style.display = 'block';
+    } else {
+      showBlocked('這個連結已經無法使用', data.message || '這組邀請碼已經完成過測驗，或不再有效。如果你需要重新作答，請聯繫你的企業窗口取得新的邀請碼。');
+    }
+  } catch(e) {
+    showBlocked('無法驗證邀請碼', '網路連線異常，請重新整理頁面，或稍後再試。');
+  }
+}
+
+function showBlocked(title, body) {
+  document.getElementById('checkingView').style.display = 'none';
+  document.getElementById('blockedTitle').textContent = title;
+  document.getElementById('blockedBody').textContent = body;
+  document.getElementById('blockedView').style.display = 'block';
+}
+
+verifyEntryAndShowCover();
 
 const STATES = [
   { key: 'CP', name: '控制型父母', qs: ['你會打斷別人的談話，訴說自己的想法嗎？','你會對別人嚴格要求、批判嗎？','你會嚴守約會時間嗎？','你會懷抱理想並去實現嗎？','你會重視社會規則、倫理道德嗎？','你會強烈要求別人盡他的職責嗎？','你會對小小的差錯也在意嗎？','你對他人的教育嚴格嗎？','你認為要求得到權利，先盡義務嗎？','你經常說「應該、不能、你要……」？'] },
@@ -454,6 +509,7 @@ async function submitFinish() {
     name: name,
     email: email,
     orgCode: orgCode || '',
+    inviteCode: inviteCode || '',
     scores: { CP: scores.CP, NP: scores.NP, A: scores.A, FC: scores.FC, AC: scores.AC },
     topState: sortedForLog[0].key,
     lowState: sortedForLog[sortedForLog.length-1].key,
@@ -461,13 +517,27 @@ async function submitFinish() {
   };
 
   try {
-    await fetch(GAS_URL, {
+    const res = await fetch(GAS_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify(payload)
     });
+    const result = await res.json();
+
+    if (result.status !== 'ok') {
+      // 後端拒絕（例如邀請碼已被使用），停在此頁並告知使用者，不顯示「已收到」
+      btn.disabled = false;
+      btn.textContent = '送出，接收報告';
+      errEl.textContent = result.message || '送出失敗，請重新整理頁面後再試一次。';
+      errEl.style.display = 'block';
+      return;
+    }
   } catch(e) {
-    // 即使網路請求出狀況，也不在前端顯示失敗，避免使用者重複提交造成困惑
+    btn.disabled = false;
+    btn.textContent = '送出，接收報告';
+    errEl.textContent = '網路連線異常，請稍後再試一次。';
+    errEl.style.display = 'block';
+    return;
   }
 
   document.getElementById('finishView').style.display = 'none';

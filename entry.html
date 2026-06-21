@@ -119,15 +119,15 @@ async function submitCode() {
       successEl.style.display = 'block';
       btn.textContent = '驗證成功';
 
-      // 標記邀請碼為已使用
-      fetch(GAS_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify({ type: 'useCode', code: rawCode })
-      }).catch(() => {});
+      // 注意：這裡不標記邀請碼為已使用。
+      // 標記時機改為「使用者真正完成測驗並成功送出」之後，
+      // 避免有人驗證碼後中途放棄，導致邀請碼被白白燒掉、無法重新使用。
+      // leadership.html 進入時會拿著這組邀請碼再次向後端驗證是否仍然有效，
+      // 防止有人用瀏覽器「上一頁」或保留舊網址繞過驗證、重複作答。
 
-      // 依類型導向對應頁面，帶上 orgCode 與 orgName 參數
+      // 依類型導向對應頁面，帶上邀請碼本身（供 leadership.html 進場時重新驗證）
       const params = new URLSearchParams({
+        code: rawCode,
         org: data.orgCode,
         orgName: data.orgName
       });

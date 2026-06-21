@@ -433,6 +433,11 @@ async function submitFinish() {
     return;
   }
 
+  const confirmed = confirm('請確認你的 Email 沒有打錯：\n\n' + email + '\n\n報告將會寄到這個信箱。');
+  if (!confirmed) {
+    return;
+  }
+
   btn.disabled = true;
   btn.textContent = '送出中…';
 

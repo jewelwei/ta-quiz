@@ -31,6 +31,7 @@ body { font-family:'PingFang TC','Microsoft JhengHei','Noto Sans TC',sans-serif;
 .cover-meta { display:flex; justify-content:center; gap:1.1rem; font-size:.8rem; color:var(--text-hint); margin:1.25rem 0 1.5rem; flex-wrap:wrap; }
 .start-btn { display:inline-block; padding:14px 40px; background:var(--cp); color:#fff; border:none; border-radius:999px; font-size:1rem; font-weight:700; cursor:pointer; font-family:inherit; transition:background .15s; }
 .start-btn:hover { background:var(--cp-text); }
+.privacy-notice { background:var(--a-light); border-radius:var(--radius-sm); padding:.85rem 1.1rem; max-width:440px; margin:1.5rem auto 0; font-size:.78rem; color:var(--a-text); line-height:1.8; }
 .cover-notice { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1.1rem 1.25rem; max-width:440px; margin:1.75rem auto 0; text-align:left; }
 .cover-notice-title { font-size:.75rem; font-weight:700; color:var(--text-hint); margin-bottom:.5rem; letter-spacing:.04em; }
 .cover-notice-body { font-size:.83rem; color:var(--text-muted); line-height:1.9; }
@@ -109,6 +110,9 @@ body { font-family:'PingFang TC','Microsoft JhengHei','Noto Sans TC',sans-serif;
     <span>📧 完成後以 Email 寄送報告</span>
   </div>
   <button class="start-btn" onclick="startTaPhase()">開始測驗 →</button>
+  <div class="privacy-notice">
+    這份報告只會提供給你個人，企業端僅會收到全體主管的匿名群體分析，不會看到任何人的個別作答結果，請安心作答。
+  </div>
 </div>
 
 <div class="quizPhase" id="taPhaseView">
@@ -146,9 +150,11 @@ body { font-family:'PingFang TC','Microsoft JhengHei','Noto Sans TC',sans-serif;
   <div class="finish-icon">✅</div>
   <div class="finish-title">測驗完成，謝謝你的作答</div>
   <div class="finish-body">
-    這份領導溝通風格報告需要一些時間整理與生成，我們會在完成後直接寄到你的信箱，請輸入你的 Email。
+    這份領導溝通風格報告需要一些時間整理與生成，我們會在完成後直接寄到你的信箱。請留下你的姓名與 Email，讓報告可以正確地稱呼你。
   </div>
   <div class="finish-box">
+    <div class="finish-label">你的姓名</div>
+    <input class="finish-input" type="text" id="finishName" placeholder="王小明" style="margin-bottom:1rem;">
     <div class="finish-label">你的 Email</div>
     <input class="finish-input" type="email" id="finishEmail" placeholder="example@email.com">
     <button class="finish-submit-btn" id="finishSubmitBtn" onclick="submitFinish()">送出，接收報告</button>
@@ -405,12 +411,20 @@ function goFinish() {
 }
 
 async function submitFinish() {
+  const nameEl = document.getElementById('finishName');
   const emailEl = document.getElementById('finishEmail');
   const errEl = document.getElementById('finishErr');
   const btn = document.getElementById('finishSubmitBtn');
+  const name = nameEl.value.trim();
   const email = emailEl.value.trim();
 
   errEl.style.display = 'none';
+
+  if (!name) {
+    errEl.textContent = '請輸入你的姓名，讓報告可以正確稱呼你。';
+    errEl.style.display = 'block';
+    return;
+  }
 
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailPattern.test(email)) {
@@ -432,6 +446,7 @@ async function submitFinish() {
 
   const payload = {
     type: 'leadershipComplete',
+    name: name,
     email: email,
     orgCode: orgCode || '',
     scores: { CP: scores.CP, NP: scores.NP, A: scores.A, FC: scores.FC, AC: scores.AC },
